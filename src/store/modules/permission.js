@@ -8,6 +8,10 @@ const hiddenMenuList = [
   '/system/menuButton'
 ]
 
+const affixMenuList = [
+  '/system/group'
+]
+
 /**
  * Use meta.role to determine if the current user has permission
  * @param roles
@@ -61,7 +65,7 @@ export function generaMenu(routes, data) {
       children: [],
       hidden: hiddenMenuList.includes(item.menuUrl),
       name: item.menuUrl,
-      meta: { title: item.menuName, id: item.menuId, roles: ['admin'], icon: 'people' }
+      meta: { title: item.menuName, id: item.menuId, roles: ['admin'], icon: 'people', affix: affixMenuList.includes(item.menuUrl) }
     }
     menuButtonModel[menu.name] = item.menuButtons
     if (isMenu === 1) {

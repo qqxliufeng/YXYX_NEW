@@ -96,17 +96,6 @@
             <el-input v-model="baseInfo.password" placeholder="请输入登录密码" maxlength="11" readonly />
           </el-col>
         </el-form-item>
-        <el-form-item label="选择地址">
-          <el-col :span="10">
-            <el-cascader
-              v-model="baseInfo.area"
-              style="width: 100%"
-              :options="level"
-              :props="{label: 'name', value: 'name'}"
-              clearable
-            />
-          </el-col>
-        </el-form-item>
         <el-form-item label="详细地址">
           <el-col :span="10">
             <el-input
@@ -156,7 +145,6 @@ export default {
     return {
       deptList: [],
       roleList: [],
-      level: this.$privinceData,
       baseInfo: {
         deptId: 0,
         roleId: '',
@@ -170,7 +158,6 @@ export default {
         phone: '', //       手机号
         password: '', //     用户密码
         sex: 1, //      性别 1男 0女
-        area: [],
         address: '', //     家庭住址
         note: '', //     备注
         isyxuser: 0 //     是否集团用户 0否 1是
@@ -205,10 +192,6 @@ export default {
       }
       if (!isvalidPhone(this.baseInfo.phone)) {
         this.$errorMsg('请输入合法的用户手机号')
-        return
-      }
-      if (!this.baseInfo.area || this.baseInfo.area.length === 0) {
-        this.$errorMsg('请选择省市地区')
         return
       }
       if (!this.baseInfo.address) {

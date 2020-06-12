@@ -22,12 +22,11 @@
         <el-table-column
           align="center"
           label="操作"
-          width="200"
-          class-name="small-padding fixed-width"
         >
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button type="primary" :size="$style.tableButtonSize" @click="handleUpdate(scope.row)">编辑</el-button>
+            <el-button type="danger" :size="$style.tableButtonSize" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button :disabled="scope.row.parentMenuId === null" type="success" :size="$style.tableButtonSize" @click="buttonManger(scope.row)">按钮管理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -36,7 +35,7 @@
       <el-form
         :model="tempItem"
         label-position="left"
-        label-width="120px"
+        label-width="180px"
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="父级菜单" prop="parentDeptId">
@@ -164,6 +163,15 @@ export default {
           this.$successMsg('删除成功')
           this.getData()
         })
+      })
+    },
+    buttonManger(item) {
+      this.$router.push({
+        name: 'MenuButton',
+        params: {
+          menuId: item.menuId,
+          menuName: item.menuName
+        }
       })
     },
     handleDialogConfirm() {

@@ -26,8 +26,6 @@
         <el-table-column
           align="center"
           label="操作"
-          width="100"
-          class-name="small-padding fixed-width"
         >
           <template slot-scope="scope">
             <el-button
@@ -57,31 +55,38 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="部门名称" prop="deptName">
-          <el-input v-model="tempItem.deptName" placeholder="请输入部门名称" clearable />
+          <el-col :span="20">
+            <el-input v-model="tempItem.deptName" placeholder="请输入部门名称" clearable />
+          </el-col>
         </el-form-item>
         <el-form-item label="部门编码" prop="deptCode">
-          <el-input
-            v-model="tempItem.deptCode"
-            οnkeyup="this.value=this.value.replace(/[\u4E00-\u9FA5]/g,'')"
-            placeholder="请输入部门编码"
-            clearable
-          />
+          <el-col :span="20">
+            <el-input
+              v-model="tempItem.deptCode"
+              placeholder="请输入部门编码"
+              clearable
+            />
+          </el-col>
         </el-form-item>
         <el-form-item label="上级部门" prop="parentDeptId">
-          <el-select v-model="tempItem.parentDeptId" class="filter-item" placeholder="请选择上级部门">
-            <el-option
-              v-for="item of allDepts"
-              :key="item.deptId"
-              :label="item.deptName"
-              :value="item.deptId"
-            />
-          </el-select>
+          <el-col :span="20">
+            <el-select v-model="tempItem.parentDeptId" class="filter-item" style="width: 100%" placeholder="请选择上级部门">
+              <el-option
+                v-for="item of allDepts"
+                :key="item.deptId"
+                :label="item.deptName"
+                :value="item.deptId"
+              />
+            </el-select>
+          </el-col>
         </el-form-item>
         <el-form-item label="部门状态" prop="status">
-          <el-radio-group v-model="tempItem.status">
-            <el-radio :label="0">正常</el-radio>
-            <el-radio :label="1">禁用</el-radio>
-          </el-radio-group>
+          <el-col :span="20">
+            <el-radio-group v-model="tempItem.status">
+              <el-radio :label="0">正常</el-radio>
+              <el-radio :label="1">禁用</el-radio>
+            </el-radio-group>
+          </el-col>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

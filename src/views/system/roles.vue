@@ -21,12 +21,12 @@
             <el-link>{{ scope.row.dept.deptName | emptyFormat }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="createTime" label="创建时间" width="140" />
+        <el-table-column align="center" prop="createTime" label="创建时间" />
         <el-table-column align="center" prop="dr" label="删除状态" :formatter="statusFormatter" />
         <el-table-column
           align="center"
           label="操作"
-          width="250"
+          width="270"
           class-name="small-padding fixed-width"
         >
           <template slot-scope="scope">
@@ -82,20 +82,26 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="modeObj.temp.roleName" placeholder="请输入角色名称" />
+          <el-col :span="20">
+            <el-input v-model="modeObj.temp.roleName" placeholder="请输入角色名称" />
+          </el-col>
         </el-form-item>
         <el-form-item label="角色编码" prop="roleCode">
-          <el-input v-model="modeObj.temp.roleCode" placeholder="请输入角色编码" />
+          <el-col :span="20">
+            <el-input v-model="modeObj.temp.roleCode" placeholder="请输入角色编码" />
+          </el-col>
         </el-form-item>
         <el-form-item label="所属部门" prop="deptId">
-          <el-select v-model="modeObj.temp.deptId" class="filter-item" placeholder="请选择部门">
-            <el-option
-              v-for="item of allDepts"
-              :key="item.deptId"
-              :label="item.deptName"
-              :value="item.deptId"
-            />
-          </el-select>
+          <el-col :span="20">
+            <el-select v-model="modeObj.temp.deptId" class="filter-item" style="width: 100%" placeholder="请选择部门">
+              <el-option
+                v-for="item of allDepts"
+                :key="item.deptId"
+                :label="item.deptName"
+                :value="item.deptId"
+              />
+            </el-select>
+          </el-col>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

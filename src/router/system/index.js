@@ -15,6 +15,22 @@ export default [
         }
       },
       {
+        path: '/grantmenubutton/:userId/:roleId',
+        component: () => import('@/views/system/GrantMenuButton.vue'),
+        name: 'GrantMenuButton',
+        meta: {
+          title: '分配按钮'
+        }
+      },
+      {
+        path: '/menubutton/:menuId/:menuName',
+        component: () => import('@/views/system/menuButton.vue'),
+        name: 'MenuButton',
+        meta: {
+          title: '按钮管理'
+        }
+      },
+      {
         path: '/textbooklist/:studyCardId/:studyCardCode/:studyCardErcode',
         component: () => import('@/views/system/TextBookList.vue'),
         name: 'TextBookList',
