@@ -26,7 +26,7 @@
           :label="item.label"
           style="padding: 10px"
         >
-          <el-input v-if="item.type === 'input'" v-model="item.value" placeholder="请输入内容" />
+          <el-input v-if="item.type === 'input'" v-model="item.value" placeholder="请输入内容" clearable />
           <el-cascader
             v-else-if="item.type === 'address'"
             v-model="item.value"
@@ -34,7 +34,7 @@
             :props="{label: 'name', value: 'name'}"
             clearable
           />
-          <el-select v-else-if="item.type === 'select'" v-model="item.value">
+          <el-select v-else-if="item.type === 'select'" v-model="item.value" clearable>
             <el-option
               v-for="it of item.selectOptions"
               :key="it.value"

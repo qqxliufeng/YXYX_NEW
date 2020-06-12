@@ -3,8 +3,8 @@
  * @version: 版本
  * @Author: lf
  * @Date: 2020-06-08 14:35:29
- * @LastEditors: lf
- * @LastEditTime: 2020-06-08 15:31:23
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-06-12 19:04:17
 -->
 <template>
   <div class="container" style="padding: 0">
@@ -43,16 +43,14 @@
         updateId: null
         updateTime: null-->
         <el-table-column align="center" label="学校名称" prop="schoolName" />
-        <el-table-column align="center" label="账号" prop="schoolTel" width="100" />
+        <el-table-column align="center" label="账号" prop="schoolTel" />
         <el-table-column align="center" label="管理员">
           <template slot-scope="scope">{{ scope.row.schoolLeaderName | emptyFormat }}</template>
         </el-table-column>
-        <el-table-column align="center" label="联系方式" prop="schoolTel" width="100" />
+        <el-table-column align="center" label="联系方式" prop="schoolTel" />
         <el-table-column align="center" label="地区" show-overflow-tooltip>
           <template slot-scope="scope">
-            <span
-              class="text-cut"
-            >{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+            <span class="text-cut">{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="详细地址" prop="addressDetail" show-overflow-tooltip>
@@ -67,7 +65,7 @@
           <template slot-scope="scope">{{ scope.row.endTime | parseTime }}</template>
         </el-table-column>
         <el-table-column align="center" label="状态" prop="status" :formatter="statusFormat" />
-        <el-table-column align="center" label="操作" fixed="right" min-width="150">
+        <el-table-column align="center" label="操作" fixed="right">
           <template slot-scope="scope">
             <el-button
               size="mini"

@@ -71,6 +71,7 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
+    <!-- 批量生成学习卡对话框 -->
     <el-dialog title="批量生成学习卡" :visible.sync="dialogFormVisible">
       <el-form label-position="left" label-width="120px" style="width: 400px; margin-left:50px;">
         <el-form-item label="学习卡类型" prop="parentDeptId">
@@ -111,6 +112,35 @@
         <el-button :size="$style.dialogButtonSize" type="primary" @click="handleDialogConfirm">确定</el-button>
       </div>
     </el-dialog>
+    <!-- 批量生成学习卡对话框 -->
+
+    <!-- 授权列表对话框 -->
+    <el-dialog title="授权教材列表" :visible.sync="dialogGrantTextBookVisible">
+      <el-table
+        v-loading="grantTextBookLoading"
+        :stripe="tableConfig.stripe"
+        :header-cell-style="tableConfig.headerCellStyle"
+        :data="grantTextBookTableData"
+        :border="tableConfig.border"
+        :size="tableConfig.size"
+        :default-sort="tableConfig.defalutSort"
+        :style="tableConfig.style"
+      >
+        <el-table-column align="center" prop="textbookId" label="ID" />
+        <el-table-column align="center" prop="textbookName" label="教材名称" />
+        <el-table-column align="center" prop="textbookVersionId" label="教材版本" />
+        <el-table-column align="center" prop="resourceFileUrl" label="资源地址" show-overflow-tooltip />
+        <el-table-column align="center" prop="createTime" label="创建时间" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <span>{{ scope.row.createTime | parseTime }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button :size="$style.dialogButtonSize" @click="dialogGrantTextBookVisible = false">知道了</el-button>
+      </div>
+    </el-dialog>
+    <!-- 授权列表对话框 -->
   </div>
 </template>
 
@@ -195,7 +225,10 @@ export default {
           label: '初中体验卡',
           value: 'TM'
         }
-      ]
+      ],
+      grantTextBookLoading: false,
+      dialogGrantTextBookVisible: false,
+      grantTextBookTableData: []
     }
   },
   mounted() {
@@ -289,6 +322,8 @@ export default {
       })
     },
     grantTextBookList(item) {
+      this.dialogGrantTextBookVisible = true
+      this.grantTextBookLoading = true
       this.$http({
         url: this.$urlPath.queryTextBookByStudyCardId,
         methods: this.HTTP_GET,
@@ -296,7 +331,8 @@ export default {
           studyCardId: item.studyCardId
         }
       }).then(res => {
-        console.log(res)
+        this.grantTextBookLoading = false
+        this.grantTextBookTableData = res.obj
       })
     },
     getData() {
