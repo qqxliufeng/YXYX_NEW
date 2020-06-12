@@ -8,7 +8,7 @@
 -->
 <template>
   <div class="container">
-    <el-card>
+    <el-card :body-style="{padding: 0}">
       <div slot="header">
         <span class="title text-bold">提示：请选择指定的菜单后选择对应的按钮</span>
       </div>
@@ -27,8 +27,17 @@
         <el-table-column type="expand" label="点击展开" width="100">
           <template slot-scope="scope">
             <div v-if="scope.row.menuButtons.length > 0">
-              <el-checkbox v-for="item of scope.row.menuButtons" :key="item.buttonId" v-model="item.select">{{ item.buttonName }}</el-checkbox>
-              <el-button size="mini" type="danger" class="margin-left" @click="confirmGrantButton(scope.row)">确定分配</el-button>
+              <el-checkbox
+                v-for="item of scope.row.menuButtons"
+                :key="item.buttonId"
+                v-model="item.select"
+              >{{ item.buttonName }}</el-checkbox>
+              <el-button
+                size="mini"
+                type="danger"
+                class="margin-left"
+                @click="confirmGrantButton(scope.row)"
+              >确定分配</el-button>
             </div>
             <div v-else class="text-center">
               <span>该菜单下暂无按钮选项</span>
@@ -60,7 +69,10 @@ export default {
           data: {
             userId: this.$route.params.userId,
             menuId: item.menuId,
-            buttonIds: item.menuButtons.filter(it => it.select).map(it => it.buttonId).join(',')
+            buttonIds: item.menuButtons
+              .filter(it => it.select)
+              .map(it => it.buttonId)
+              .join(',')
           }
         }).then(res => {
           this.$successMsg('按钮分配成功')

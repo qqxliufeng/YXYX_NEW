@@ -8,7 +8,13 @@
 -->
 <template>
   <div class="container" style="padding: 0">
-    <table-header :form-model-array="formModelArray" @onsearch="onSearch" />
+    <table-header
+      :form-model-array="formModelArray"
+      :show-add="true"
+      :show-delete="false"
+      :show-search="true"
+      @onsearch="onSearch"
+    />
     <el-card :body-style="{padding: '2px'}">
       <el-table
         v-loading="loading"
@@ -50,7 +56,9 @@
         <el-table-column align="center" label="联系方式" prop="schoolTel" />
         <el-table-column align="center" label="地区" show-overflow-tooltip>
           <template slot-scope="scope">
-            <span class="text-cut">{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+            <span
+              class="text-cut"
+            >{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="详细地址" prop="addressDetail" show-overflow-tooltip>
@@ -65,14 +73,34 @@
           <template slot-scope="scope">{{ scope.row.endTime | parseTime }}</template>
         </el-table-column>
         <el-table-column align="center" label="状态" prop="status" :formatter="statusFormat" />
-        <el-table-column align="center" label="操作" fixed="right">
+        <el-table-column align="center" label="操作" fixed="right" min-width="150">
           <template slot-scope="scope">
             <el-button
-              size="mini"
+              :size="$style.tableButtonSize"
               type="danger"
               @click="changeAccountStatus(scope.row)"
             >{{ scope.row.status === 0 ? '禁用' : '正常' }}</el-button>
-            <el-button size="mini" type="primary" @click="editAccountInfo(scope.row)">编辑</el-button>
+            <el-button
+              :size="$style.tableButtonSize"
+              type="primary"
+              @click="editAccountInfo(scope.row)"
+            >编辑</el-button>
+            <el-dropdown
+              style="margin-left: 10px"
+              :size="$style.tableButtonSize"
+              type="success"
+              split-button
+              @command="handleSchoolCommand"
+            >
+              更多操作
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{tag: 1, item: scope.row}">已分配的学习卡</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 2, item: scope.row}">未分配的学习卡</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 3, item: scope.row}">查询服务记录</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 4, item: scope.row}">增加服务记录</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 5, item: scope.row}">查看学校详情</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -85,6 +113,28 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
+    <!-- 增加服务记录对话框 -->
+    <el-dialog title="添加服务记录" :visible.sync="dialogAddRecordVisible">
+      <el-form label-position="left" label-width="120px" style="width: 90%; ">
+        <el-form-item label="服务内容">
+          <el-col :span="24">
+            <el-input
+              style="width: 100%"
+              v-model="recordModel.content"
+              type="textarea"
+              :rows="5"
+              maxlength="200"
+              placeholder="请输入服务内容"
+              show-word-limit
+            ></el-input>
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button :size="$style.dialogButtonSize" @click="addRecordItem" type="primary">添加</el-button>
+      </div>
+    </el-dialog>
+    <!-- 增加服务记录对话框 -->
   </div>
 </template>
 
@@ -136,7 +186,12 @@ export default {
           span: 5,
           type: 'address'
         }
-      ]
+      ],
+      dialogAddRecordVisible: false,
+      recordModel: {
+        schoolId: '',
+        content: ''
+      }
     }
   },
   mounted() {
@@ -208,6 +263,71 @@ export default {
       this.$router.push({
         name: 'VipSchoolInfo',
         params: { schoolId: item.schoolId }
+      })
+    },
+    handleSchoolCommand({ tag, item }) {
+      switch (tag) {
+        case 1:
+          this.$router.push({
+            name: 'SchoolStudyCardList',
+            params: {
+              schoolId: item.schoolId,
+              schoolName: item.schoolName,
+              type: 1
+            }
+          })
+          break
+        case 2:
+          this.$router.push({
+            name: 'SchoolStudyCardList',
+            params: {
+              schoolId: item.schoolId,
+              schoolName: item.schoolName,
+              type: 0
+            }
+          })
+          break
+        case 3:
+          this.$http({
+            url: this.$urlPath.querySchoolRecordList,
+            methods: this.HTTP_GET,
+            data: {
+              schoolId: item.schoolId,
+              pageNum: 0,
+              pageSize: 10
+            }
+          }).then(res => {
+            console.log(res)
+          })
+          break
+        case 4:
+          this.recordModel.schoolId = item.schoolId
+          this.dialogAddRecordVisible = true
+          break
+        case 5:
+          this.$http({
+            url: this.$urlPath.querySchoolBySchoolId,
+            methods: this.HTTP_GET,
+            data: {
+              schoolId: item.schoolId
+            }
+          }).then(res => {
+            console.log(res)
+          })
+          break
+      }
+    },
+    addRecordItem() {
+      if (!this.recordModel.content) {
+        this.$errorMsg('请输入服务内容')
+        return
+      }
+      this.dialogAddRecordVisible = false
+      this.$http({
+        url: this.$urlPath.addSchoolRecord,
+        data: this.recordModel
+      }).then(res => {
+        this.$successMsg('服务添加成功')
       })
     }
   }

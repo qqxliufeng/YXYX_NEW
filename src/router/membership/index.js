@@ -12,6 +12,14 @@ export default [
         meta: {
           title: '学校详情'
         }
+      },
+      {
+        path: '/schoolstudycardlist/:schoolId/:schoolName/:type',
+        component: () => import('@/views/membership/SchoolStudyCardList.vue'),
+        name: 'SchoolStudyCardList',
+        meta: {
+          title: '学习卡列表'
+        }
       }
     ]
   }
