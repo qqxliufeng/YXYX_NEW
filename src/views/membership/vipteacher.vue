@@ -1,14 +1,22 @@
 <!--
  * @Author: your name
  * @Date: 2020-06-13 10:34:43
- * @LastEditTime: 2020-06-13 15:26:52
+ * @LastEditTime: 2020-06-13 17:16:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /YXYX_NEW/src/views/membership/vipteacher.vue
 -->
 <template>
   <div class="container">
-    <table-header title="查询内容" :form-model-array="formModelArray" :show-search="true" :show-add="true" :show-delete="false" @onadd="onAdd" />
+    <table-header
+      title="查询内容"
+      :form-model-array="formModelArray"
+      :show-search="true"
+      :show-add="true"
+      :show-delete="false"
+      @onadd="onAdd"
+      @onsearch="onSearch($urlPath.queryTeacherListLike)"
+    />
     <el-card :body-style="{padding: '2px'}">
       <el-table
         v-loading="loading"

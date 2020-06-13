@@ -175,6 +175,20 @@ export default {
       })
       return form
     },
+    onSearch(url) {
+      this.loading = true
+      const form = this.generatorFormObj(this.formModelArray)
+      this.$http({
+        url,
+        methods: this.HTTP_GET,
+        data: form
+      }).then(res => {
+        this.onSuccess(res.obj)
+      }).catch(error => {
+        console.log(error)
+        this.loading = false
+      })
+    },
     /**
      * 统一封装禁用、解除用户状态的方法
      * @example: {item: scope.row, statusField: 'status', data: { schoolId: scope.row.schoolId }, lockUrl: $urlPath.lockSchool, unLockUrl: $urlPath.unLockSchool}

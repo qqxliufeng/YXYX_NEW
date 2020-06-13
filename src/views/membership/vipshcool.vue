@@ -4,7 +4,7 @@
  * @Author: lf
  * @Date: 2020-06-08 14:35:29
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2020-06-13 13:54:28
+ * @LastEditTime: 2020-06-13 17:17:31
 -->
 <template>
   <div class="container" style="padding: 0">
@@ -13,7 +13,7 @@
       :show-add="true"
       :show-delete="false"
       :show-search="true"
-      @onsearch="onSearch"
+      @onsearch="onSearch($urlPath.querySchoolListLike)"
     />
     <el-card :body-style="{padding: '2px'}">
       <el-table
@@ -193,17 +193,6 @@ export default {
           pageNum: this.page,
           pageSize: this.pageSize
         }
-      }).then(res => {
-        this.onSuccess(res.obj)
-      })
-    },
-    onSearch() {
-      this.loading = true
-      const form = this.generatorFormObj(this.formModelArray)
-      this.$http({
-        url: this.$urlPath.querySchoolListLike,
-        methods: this.HTTP_GET,
-        data: form
       }).then(res => {
         this.onSuccess(res.obj)
       })
