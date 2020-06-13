@@ -135,3 +135,57 @@ export const addSchoolRecord = baseModuleUrl + 'addSchoolRecord'
 export const queryStudyCardNotBind = baseModuleUrl + 'queryStudyCardNotBind'
 
 // ****************会员管理 --- 学校管理 **************** //
+
+// ****************会员管理 --- 老师管理 **************** //
+
+export const queryTeacherList = baseModuleUrl + 'queryTeacherList'
+
+export const queryTeacherListLike = baseModuleUrl + 'queryTeacherListLike'
+
+export const saveTeacher = baseModuleUrl + 'saveTeacher'
+
+export const updateTeacher = baseModuleUrl + 'updateTeacher'
+
+export const lockTeacher = baseModuleUrl + 'lockTeacher'
+
+export const unLockTeacher = baseModuleUrl + 'unLockTeacher'
+
+export const initPassword = baseModuleUrl + 'initPassword'
+
+// ****************会员管理 --- 老师管理 **************** //
+
+// ****************会员管理 --- 班级管理 **************** //
+
+export const querySchoolClass = baseModuleUrl + 'querySchoolClass'
+
+export const querySchoolClassLike = baseModuleUrl + 'querySchoolClassLike'
+
+export const saveSchoolClass = baseModuleUrl + 'saveSchoolClass'
+
+export const editSchoolClass = baseModuleUrl + 'editSchoolClass'
+
+export const lockSchoolClass = baseModuleUrl + 'lockSchoolClass'
+
+export const unLockSchoolClass = baseModuleUrl + 'unLockSchoolClass'
+
+// ****************会员管理 --- 班级管理 **************** //
+
+// ****************会员管理 --- 学生管理 **************** //
+
+export const queryStudentList = baseModuleUrl + 'queryStudentList'
+
+export const queryStudentListLike = baseModuleUrl + 'queryStudentListLike'
+
+export const saveStudent = baseModuleUrl + 'saveStudent'
+
+export const updateStudent = baseModuleUrl + 'updateStudent'
+
+export const lockStudent = baseModuleUrl + 'lockStudent'
+
+export const unLockStudent = baseModuleUrl + 'unLockStudent'
+
+export const initStudentPassword = baseModuleUrl + 'initStudentPassword'
+
+export const studentAssignedTextBook = baseModuleUrl + 'studentAssignedTextBook'
+
+// ****************会员管理 --- 学生管理 **************** //

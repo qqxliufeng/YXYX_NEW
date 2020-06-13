@@ -125,6 +125,10 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    onError(error) {
+      console.log(error)
+      this.loading = false
+    },
     onSuccess(data) {
       this.loading = false
       this.tableData = data.list
@@ -151,6 +155,9 @@ export default {
       }
       this.total = this.pageInfo.total
     },
+    /**
+     * 生成搜索对象
+     */
     generatorFormObj(formModelArray = []) {
       const form = {}
       form['pageNum'] = this.page
@@ -167,6 +174,22 @@ export default {
         }
       })
       return form
+    },
+    /**
+     * 统一封装禁用、解除用户状态的方法
+     * @example: {item: scope.row, statusField: 'status', data: { schoolId: scope.row.schoolId }, lockUrl: $urlPath.lockSchool, unLockUrl: $urlPath.unLockSchool}
+     */
+    changeLockStatus({ item, statusField = 'isLock', data = {}, lockUrl, unLockUrl, methods = 'POST' }) {
+      this.$warningConfirm('是否要' + (item[statusField] === 0 ? '禁用' : '解锁') + '此信息？', _ => {
+        this.$http({
+          url: item[statusField] === 0 ? lockUrl : unLockUrl,
+          methods,
+          data
+        }).then(res => {
+          this.$successMsg('操作成功')
+          item[statusField] = item[statusField] === 0 ? 1 : 0
+        })
+      })
     }
   }
 }

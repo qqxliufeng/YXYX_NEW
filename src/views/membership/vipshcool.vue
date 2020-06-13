@@ -4,7 +4,7 @@
  * @Author: lf
  * @Date: 2020-06-08 14:35:29
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2020-06-12 19:04:17
+ * @LastEditTime: 2020-06-13 13:54:28
 -->
 <template>
   <div class="container" style="padding: 0">
@@ -26,28 +26,6 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <!-- addressDetail: "小河南街子书堂读书馆绘本馆"
-        addressDetailList: null
-        area: "灵石县"
-        city: "晋中"
-        createId: 1
-        createTime: 1584084541000
-        dr: 0
-        endTime: 1623254400000
-        isOnLine: 0
-        note: null
-        province: "山西"
-        salesId: 1
-        schoolId: 1
-        schoolLeaderId: 1
-        schoolLeaderName: null
-        schoolName: "子书堂"
-        schoolTel: "	18935447667"
-        schoolType: 0
-        status: 0
-        superviseId: 1
-        updateId: null
-        updateTime: null-->
         <el-table-column align="center" label="学校名称" prop="schoolName" />
         <el-table-column align="center" label="账号" prop="schoolTel" />
         <el-table-column align="center" label="管理员">
@@ -77,9 +55,9 @@
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
-              type="danger"
-              @click="changeAccountStatus(scope.row)"
-            >{{ scope.row.status === 0 ? '禁用' : '正常' }}</el-button>
+              :type="scope.row.status === 0 ? 'danger' : 'warning'"
+              @click="changeLockStatus({item: scope.row, statusField: 'status', data: { schoolId: scope.row.schoolId }, lockUrl: $urlPath.lockSchool, unLockUrl: $urlPath.unLockSchool})"
+            >{{ scope.row.status === 0 ? '禁用' : '解锁' }}</el-button>
             <el-button
               :size="$style.tableButtonSize"
               type="primary"
@@ -119,19 +97,19 @@
         <el-form-item label="服务内容">
           <el-col :span="24">
             <el-input
-              style="width: 100%"
               v-model="recordModel.content"
+              style="width: 100%"
               type="textarea"
               :rows="5"
               maxlength="200"
               placeholder="请输入服务内容"
               show-word-limit
-            ></el-input>
+            />
           </el-col>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="addRecordItem" type="primary">添加</el-button>
+        <el-button :size="$style.dialogButtonSize" type="primary" @click="addRecordItem">添加</el-button>
       </div>
     </el-dialog>
     <!-- 增加服务记录对话框 -->
@@ -229,35 +207,6 @@ export default {
       }).then(res => {
         this.onSuccess(res.obj)
       })
-    },
-    changeAccountStatus(item) {
-      if (item.status === 0) {
-        this.$warningConfirm('是否要禁用此账号？', () => {
-          this.$http({
-            url: this.$urlPath.lockSchool,
-            methods: this.HTTP_POST,
-            data: {
-              schoolId: item.schoolId
-            }
-          }).then(res => {
-            this.$successMsg(res.msg)
-            item.status = 1
-          })
-        })
-      } else {
-        this.$warningConfirm('是否要解封此账号？', () => {
-          this.$http({
-            url: this.$urlPath.unLockSchool,
-            methods: this.HTTP_POST,
-            data: {
-              schoolId: item.schoolId
-            }
-          }).then(res => {
-            this.$successMsg(res.msg)
-            item.status = 0
-          })
-        })
-      }
     },
     editAccountInfo(item) {
       this.$router.push({

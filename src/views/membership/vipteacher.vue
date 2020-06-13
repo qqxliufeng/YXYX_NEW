@@ -1,0 +1,319 @@
+<!--
+ * @Author: your name
+ * @Date: 2020-06-13 10:34:43
+ * @LastEditTime: 2020-06-13 15:26:52
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /YXYX_NEW/src/views/membership/vipteacher.vue
+-->
+<template>
+  <div class="container">
+    <table-header title="查询内容" :form-model-array="formModelArray" :show-search="true" :show-add="true" :show-delete="false" @onadd="onAdd" />
+    <el-card :body-style="{padding: '2px'}">
+      <el-table
+        v-loading="loading"
+        :stripe="tableConfig.stripe"
+        :header-cell-style="tableConfig.headerCellStyle"
+        :data="tableData"
+        :border="tableConfig.border"
+        :size="tableConfig.size"
+        :default-sort="tableConfig.defalutSort"
+        :style="tableConfig.style"
+      >
+        <el-table-column align="center" label="学校名称" prop="schoolName" />
+        <el-table-column align="center" label="账号" prop="schoolTel" />
+        <el-table-column align="center" label="管理员">
+          <template slot-scope="scope">{{ scope.row.schoolLeaderName | emptyFormat }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="联系方式" prop="schoolTel" />
+        <el-table-column align="center" label="地区" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <span
+              class="text-cut"
+            >{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="详细地址" prop="addressDetail" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <span class="text-cut">{{ scope.row.addressDetail }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="创建时间" prop="createTime">
+          <template slot-scope="scope">{{ scope.row.createTime | parseTime }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="到期时间">
+          <template slot-scope="scope">{{ scope.row.endTime | parseTime }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="状态" prop="status" />
+        <el-table-column align="center" label="操作" fixed="right" min-width="150">
+          <template slot-scope="scope">
+            <el-button
+              :size="$style.tableButtonSize"
+              :type="scope.row.status === 0 ? 'danger' : 'warning'"
+              @click="changeLockStatus(scope.row)"
+            >{{ scope.row.status === 0 ? '禁用' : '正常' }}</el-button>
+            <el-button
+              :size="$style.tableButtonSize"
+              type="primary"
+              @click="initPassword(scope.row)"
+            >重置密码</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+    <table-foot
+      :total="total"
+      :page-size="pageSize"
+      @prev-click="prevClick"
+      @next-click="nextClick"
+      @current-change="currentChange"
+      @refresh="reloadData"
+    />
+    <!-- 增加老师对话框 -->
+    <el-dialog :title="mode === 'add' ? '添加老师' : '编辑老师信息'" :visible.sync="dialogFormVisible">
+      <el-form label-position="right" label-width="120px" style="width: 90%; ">
+        <el-form-item label="学校名称">
+          <el-col :span="24">
+            <el-select
+              v-model="teacherModel.schoolId"
+              style="width: 100%"
+              class="filter-item"
+              placeholder="请选择学校名称"
+            >
+              <el-option
+                v-for="item of schoolList"
+                :key="item.schoolId"
+                :label="item.schoolName"
+                :value="item.schoolId"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="老师名称">
+          <el-col :span="24">
+            <el-input v-model="teacherModel.userName" placeholder="请输入老师姓名（必填）" maxlength="6" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-col :span="24">
+            <el-input v-model="teacherModel.phone" placeholder="请输入老师手机号码（必填）" maxlength="11" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="登录密码">
+          <el-col :span="24">
+            <el-link :underline="false" type="danger">默认密码为手机号码的后六位</el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="家庭住址">
+          <el-col :span="24">
+            <el-input v-model="teacherModel.address" type="textarea" :rows="3" maxlength="100" placeholder="请输入老师家庭住址（必填）" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="老师性别">
+          <el-col :span="24">
+            <el-radio-group v-model="teacherModel.sex">
+              <el-radio :label="1">男</el-radio>
+              <el-radio :label="0">女</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="用户状态">
+          <el-col :span="24">
+            <el-radio-group v-model="teacherModel.isLock">
+              <el-radio :label="0">正常</el-radio>
+              <el-radio :label="1">禁用</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-form-item>
+        <el-form-item v-if="mode === 'edit'" label="备注说明">
+          <el-col :span="24">
+            <el-input v-model="teacherModel.note" type="textarea" :rows="3" maxlength="100" placeholder="请输入备注说明" />
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button :size="$style.dialogButtonSize" @click="dialogFormVisible = false">取消</el-button>
+        <el-button :size="$style.dialogButtonSize" type="primary" @click="handlerFormConfirm">确定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 增加老师对话框 -->
+  </div>
+</template>
+
+<script>
+import tableMixins from '../../mixins/table-mixins'
+import { isvalidPhone } from '../../utils/validate'
+import schoolMixins from '../../mixins/school-mixins'
+export default {
+  name: 'VipTeacher',
+  mixins: [tableMixins, schoolMixins],
+  data() {
+    return {
+      schoolList: [],
+      formModelArray: [
+        {
+          id: 1,
+          value: '',
+          label: '学校名称',
+          name: 'schoolId',
+          span: 5,
+          type: 'select',
+          selectOptions: []
+        },
+        {
+          id: 2,
+          value: '',
+          label: '状态',
+          name: 'isLock',
+          span: 5,
+          type: 'select',
+          selectOptions: [
+            {
+              label: '正常',
+              value: 0
+            },
+            {
+              label: '禁用',
+              value: 1
+            }
+          ]
+        },
+        {
+          id: 3,
+          value: '',
+          label: '姓名',
+          name: 'userName',
+          span: 5,
+          type: 'input'
+        },
+        {
+          id: 4,
+          value: '',
+          label: '手机号',
+          name: 'phone',
+          span: 5,
+          type: 'input'
+        }
+      ],
+      teacherModel: {
+        schoolId: '', // 学校ID
+        userName: '', // 老师姓名
+        phone: '', // 老师手机(默认登录密码为手机号后6位)
+        address: '', // 家庭住址
+        sex: 1, // 性别，1男 0女
+        isLock: 0, // 状态，0正常 1禁用
+        note: ''
+      },
+      dialogFormVisible: false,
+      mode: 'add'
+    }
+  },
+  mounted() {
+    this.getData()
+    this.getSchoolList(_ => {
+      if (this.schoolList && this.schoolList.length > 0) {
+        this.formModelArray[0].selectOptions = this.schoolList.map(it => {
+          return {
+            label: it.schoolName,
+            value: it.schoolId
+          }
+        })
+      }
+    })
+  },
+  methods: {
+    getData() {
+      this.$http({
+        url: this.$urlPath.queryTeacherList,
+        methods: this.HTTP_GET,
+        data: {
+          pageNum: this.page,
+          pageSize: this.pageSize
+        },
+        withRoleId: false,
+        withUserId: false
+      }).then(res => {
+        this.onSuccess(res.obj)
+      }).catch(error => {
+        this.onError(error)
+      })
+    },
+    onAdd() {
+      this.dialogFormVisible = true
+      this.mode = 'add'
+      this.teacherModel = {
+        schoolId: '',
+        userName: '',
+        phone: '',
+        address: '',
+        sex: 1,
+        isLock: 0
+      }
+    },
+    hanlderUpdate(item) {
+      this.dialogFormVisible = true
+      this.mode = 'edit'
+      this.teacherModel.schoolId = item.schoolId
+      this.teacherModel.userName = item.userName
+      this.teacherModel.phone = item.phone
+      this.teacherModel.address = item.address
+      this.teacherModel.sex = item.sex
+      this.teacherModel.isLock = item.isLock
+      this.teacherModel.note = item.note
+    },
+    handlerFormConfirm() {
+      if (!this.teacherModel.schoolId) {
+        this.$errorMsg('请选择学校')
+        return
+      }
+      if (!this.teacherModel.userName) {
+        this.$errorMsg('请输入老师名称')
+        return
+      }
+      if (!this.teacherModel.phone) {
+        this.$errorMsg('请输入老师手机号码')
+        return
+      }
+      if (!isvalidPhone(this.teacherModel.phone)) {
+        this.$errorMsg('请输入合法的老师手机号码')
+        return
+      }
+      if (!this.teacherModel.address) {
+        this.$errorMsg('请输入老师家庭地址')
+        return
+      }
+      this.dialogFormVisible = false
+      if (this.mode === 'add') {
+        this.$http({
+          url: this.$urlPath.saveTeacher,
+          data: this.teacherModel
+        }).then(res => {
+          this.$successMsg('添加成功')
+          this.getData()
+        })
+      } else {
+        this.$http({
+          url: this.$urlPath.updateTeacher,
+          data: this.teacherModel
+        }).then(res => {
+          this.$successMsg('修改成功')
+          this.getData()
+        })
+      }
+    },
+    initPassword(item) {
+      this.$warningConfirm('是否要重新设置密码为手机号后六位？', _ => {
+        this.$http({
+          url: this.$urlPath.initPassword,
+          data: {
+            userId: item.userId,
+            phone: item.phone
+          }
+        }).then(res => {
+          this.$successMsg('密码重置成功')
+        })
+      })
+    }
+  }
+}
+</script>
