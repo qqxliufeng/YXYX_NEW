@@ -28,32 +28,70 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <el-table-column align="center" label="学校名称" prop="schoolName" />
-        <el-table-column align="center" label="账号" prop="schoolTel" />
-        <el-table-column align="center" label="管理员">
+        <el-table-column
+          align="center"
+          label="学校名称"
+          prop="schoolName"
+        />
+        <el-table-column
+          align="center"
+          label="账号"
+          prop="schoolTel"
+        />
+        <el-table-column
+          align="center"
+          label="管理员"
+        >
           <template slot-scope="scope">{{ scope.row.schoolLeaderName | emptyFormat }}</template>
         </el-table-column>
-        <el-table-column align="center" label="联系方式" prop="schoolTel" />
-        <el-table-column align="center" label="地区" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          label="联系方式"
+          prop="schoolTel"
+        />
+        <el-table-column
+          align="center"
+          label="地区"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">
-            <span
-              class="text-cut"
-            >{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+            <span class="text-cut">{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="详细地址" prop="addressDetail" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          label="详细地址"
+          prop="addressDetail"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">
             <span class="text-cut">{{ scope.row.addressDetail }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="创建时间" prop="createTime">
+        <el-table-column
+          align="center"
+          label="创建时间"
+          prop="createTime"
+        >
           <template slot-scope="scope">{{ scope.row.createTime | parseTime }}</template>
         </el-table-column>
-        <el-table-column align="center" label="到期时间">
+        <el-table-column
+          align="center"
+          label="到期时间"
+        >
           <template slot-scope="scope">{{ scope.row.endTime | parseTime }}</template>
         </el-table-column>
-        <el-table-column align="center" label="状态" prop="status" />
-        <el-table-column align="center" label="操作" fixed="right" min-width="150">
+        <el-table-column
+          align="center"
+          label="状态"
+          prop="status"
+        />
+        <el-table-column
+          align="center"
+          label="操作"
+          fixed="right"
+          min-width="150"
+        >
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
@@ -78,8 +116,15 @@
       @refresh="reloadData"
     />
     <!-- 增加学生对话框 -->
-    <el-dialog :title="mode === 'add' ? '添加学生' : '编辑学生信息'" :visible.sync="dialogFormVisible">
-      <el-form label-position="right" label-width="120px" style="width: 90%; ">
+    <el-dialog
+      :title="mode === 'add' ? '添加学生' : '编辑学生信息'"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        label-position="right"
+        label-width="120px"
+        style="width: 90%; "
+      >
         <el-form-item label="学校名称">
           <el-col :span="24">
             <el-select
@@ -116,22 +161,39 @@
         </el-form-item>
         <el-form-item label="学生姓名">
           <el-col :span="24">
-            <el-input v-model="studentModel.studentName" placeholder="请输入学生姓名（必填）" maxlength="6" />
+            <el-input
+              v-model="studentModel.studentName"
+              placeholder="请输入学生姓名（必填）"
+              maxlength="6"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="手机号码">
           <el-col :span="24">
-            <el-input v-model="studentModel.studentPhone" placeholder="请输入手机号码（必填）" maxlength="11" />
+            <el-input
+              v-model="studentModel.studentPhone"
+              placeholder="请输入手机号码（必填）"
+              maxlength="11"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="登录密码">
           <el-col :span="24">
-            <el-link :underline="false" type="danger">默认密码为手机号码的后六位</el-link>
+            <el-link
+              :underline="false"
+              type="danger"
+            >默认密码为手机号码的后六位</el-link>
           </el-col>
         </el-form-item>
         <el-form-item label="家庭住址">
           <el-col :span="24">
-            <el-input v-model="studentModel.address" type="textarea" :rows="3" maxlength="100" placeholder="请输入家庭住址（必填）" />
+            <el-input
+              v-model="studentModel.address"
+              type="textarea"
+              :rows="3"
+              maxlength="100"
+              placeholder="请输入家庭住址（必填）"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="学生性别">
@@ -167,9 +229,19 @@
           </el-col>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogFormVisible = false">取消</el-button>
-        <el-button :size="$style.dialogButtonSize" type="primary" @click="handlerFormConfirm">确定</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handlerFormConfirm"
+        >确定</el-button>
       </div>
     </el-dialog>
     <!-- 增加班级对话框 -->
@@ -241,7 +313,7 @@ export default {
         {
           id: 5,
           value: '',
-          label: '学生联系方式',
+          label: '联系方式',
           name: 'studentPhone',
           span: 5,
           type: 'input'
@@ -296,6 +368,8 @@ export default {
         withUserId: false
       }).then(res => {
         this.onSuccess(res.obj)
+      }).catch(error => {
+        this.onError(error)
       })
     },
     onAdd() {
@@ -316,50 +390,51 @@ export default {
     handlerUpdate(item) {
       this.dialogFormVisible = true
       this.mode = 'edit'
-      this.classModel.classId = item.classId
-      this.classModel.schoolId = item.schoolId
-      this.classModel.classLevel = item.classLevel
-      this.classModel.className = item.className
-      this.classModel.classLeaderId = item.classLeaderId
-      this.classModel.classLeaderName = item.classLeaderName
-      this.classModel.status = item.status
-      this.classModel.note = item.note
+      this.studentModel.studentId = item.studentId
+      this.studentModel.classId = item.classId
+      this.studentModel.studentName = item.studentName
+      this.studentModel.studentPhone = item.studentPhone
+      this.studentModel.address = item.address
+      this.studentModel.sex = item.sex
+      this.studentModel.isTeacher = item.isTeacher
+      this.studentModel.isOnLine = item.isOnLine
+      this.studentModel.status = item.status
     },
     handlerFormConfirm() {
-      if (!this.classModel.schoolId) {
+      if (!this.studentModel.schoolId) {
         this.$errorMsg('请选择学校')
         return
       }
-      if (!this.classModel.classLevel) {
+      if (!this.studentModel.classId) {
         this.$errorMsg('请输入年级名称')
         return
       }
-      if (!this.classModel.className) {
-        this.$errorMsg('请输入班级名称')
+      if (!this.studentModel.studentName) {
+        this.$errorMsg('请输入学生姓名')
         return
       }
-      if (!this.classModel.classLeaderId) {
-        this.$errorMsg('请选择班级负责人')
+      if (!this.studentModel.studentPhone) {
+        this.$errorMsg('请选择学生联系方式')
         return
       }
-      if (!this.classModel.classLeaderName) {
-        this.$errorMsg('请输入班级负责人姓名')
+      if (!this.studentModel.address) {
+        this.$errorMsg('请输入学生家庭地址')
         return
       }
       if (this.mode === 'add') {
         this.$http({
           url: this.$urlPath.saveSchoolClass,
-          data: this.classModel
+          data: this.studentModel
         }).then(res => {
-          this.$successMsg('班级添加成功')
+          this.$successMsg('学生添加成功')
           this.getData()
         })
       } else {
         this.$http({
           url: this.$urlPath.editSchoolClass,
-          data: this.classModel
+          data: this.studentModel
         }).then(res => {
-          this.$successMsg('班级信息修改成功')
+          this.$successMsg('学生信息修改成功')
           this.getData()
         })
       }
