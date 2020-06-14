@@ -8,24 +8,9 @@
 -->
 <template>
   <div class="container" style="padding: 0">
-    <table-header
-      :form-model-array="formModelArray"
-      :show-add="true"
-      :show-delete="false"
-      :show-search="true"
-      @onsearch="onSearch($urlPath.querySchoolListLike)"
-    />
+    <table-header :form-model-array="formModelArray" :show-add="true" :show-delete="false" :show-search="true" @onsearch="onSearch($urlPath.querySchoolListLike)" />
     <el-card :body-style="{padding: '2px'}">
-      <el-table
-        v-loading="loading"
-        :stripe="tableConfig.stripe"
-        :header-cell-style="tableConfig.headerCellStyle"
-        :data="tableData"
-        :border="tableConfig.border"
-        :size="tableConfig.size"
-        :default-sort="tableConfig.defalutSort"
-        :style="tableConfig.style"
-      >
+      <el-table v-loading="loading" :stripe="tableConfig.stripe" :header-cell-style="tableConfig.headerCellStyle" :data="tableData" :border="tableConfig.border" :size="tableConfig.size" :default-sort="tableConfig.defalutSort" :style="tableConfig.style">
         <el-table-column align="center" label="学校名称" prop="schoolName" />
         <el-table-column align="center" label="账号" prop="schoolTel" />
         <el-table-column align="center" label="管理员">
@@ -34,9 +19,7 @@
         <el-table-column align="center" label="联系方式" prop="schoolTel" />
         <el-table-column align="center" label="地区" show-overflow-tooltip>
           <template slot-scope="scope">
-            <span
-              class="text-cut"
-            >{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+            <span class="text-cut">{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="详细地址" prop="addressDetail" show-overflow-tooltip>
@@ -53,23 +36,9 @@
         <el-table-column align="center" label="状态" prop="status" :formatter="statusFormat" />
         <el-table-column align="center" label="操作" fixed="right" min-width="150">
           <template slot-scope="scope">
-            <el-button
-              :size="$style.tableButtonSize"
-              :type="scope.row.status === 0 ? 'danger' : 'warning'"
-              @click="changeLockStatus({item: scope.row, statusField: 'status', data: { schoolId: scope.row.schoolId }, lockUrl: $urlPath.lockSchool, unLockUrl: $urlPath.unLockSchool})"
-            >{{ scope.row.status === 0 ? '禁用' : '解锁' }}</el-button>
-            <el-button
-              :size="$style.tableButtonSize"
-              type="primary"
-              @click="editAccountInfo(scope.row)"
-            >编辑</el-button>
-            <el-dropdown
-              style="margin-left: 10px"
-              :size="$style.tableButtonSize"
-              type="success"
-              split-button
-              @command="handleSchoolCommand"
-            >
+            <el-button :size="$style.tableButtonSize" :type="scope.row.status === 0 ? 'danger' : 'warning'" @click="changeLockStatus({item: scope.row, statusField: 'status', data: { schoolId: scope.row.schoolId }, lockUrl: $urlPath.lockSchool, unLockUrl: $urlPath.unLockSchool})">{{ scope.row.status === 0 ? '禁用' : '解锁' }}</el-button>
+            <el-button :size="$style.tableButtonSize" type="primary" @click="editAccountInfo(scope.row)">编辑</el-button>
+            <el-dropdown style="margin-left: 10px" :size="$style.tableButtonSize" type="success" split-button @command="handleSchoolCommand">
               更多操作
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{tag: 1, item: scope.row}">已分配的学习卡</el-dropdown-item>
@@ -83,28 +52,13 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <table-foot
-      :total="total"
-      :page-size="pageSize"
-      @prev-click="prevClick"
-      @next-click="nextClick"
-      @current-change="currentChange"
-      @refresh="reloadData"
-    />
+    <table-foot :total="total" :page-size="pageSize" @prev-click="prevClick" @next-click="nextClick" @current-change="currentChange" @refresh="reloadData" />
     <!-- 增加服务记录对话框 -->
     <el-dialog title="添加服务记录" :visible.sync="dialogAddRecordVisible">
       <el-form label-position="left" label-width="120px" style="width: 90%; ">
         <el-form-item label="服务内容">
           <el-col :span="24">
-            <el-input
-              v-model="recordModel.content"
-              style="width: 100%"
-              type="textarea"
-              :rows="5"
-              maxlength="200"
-              placeholder="请输入服务内容"
-              show-word-limit
-            />
+            <el-input v-model="recordModel.content" style="width: 100%" type="textarea" :rows="5" maxlength="200" placeholder="请输入服务内容" show-word-limit />
           </el-col>
         </el-form-item>
       </el-form>
@@ -121,7 +75,7 @@ import TableMixins from '../../mixins/table-mixins'
 export default {
   name: 'VIPShcool',
   mixins: [TableMixins],
-  data() {
+  data () {
     return {
       formModelArray: [
         {
@@ -172,11 +126,11 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     this.getData()
   },
   methods: {
-    statusFormat(item) {
+    statusFormat (item) {
       if (parseInt(item.status) === 0) {
         return '正常'
       }
@@ -185,7 +139,7 @@ export default {
       }
       return '未知'
     },
-    getData() {
+    getData () {
       this.$http({
         url: this.$urlPath.querySchoolList,
         methods: this.HTTP_GET,
@@ -197,13 +151,13 @@ export default {
         this.onSuccess(res.obj)
       })
     },
-    editAccountInfo(item) {
+    editAccountInfo (item) {
       this.$router.push({
         name: 'VipSchoolInfo',
         params: { schoolId: item.schoolId }
       })
     },
-    handleSchoolCommand({ tag, item }) {
+    handleSchoolCommand ({ tag, item }) {
       switch (tag) {
         case 1:
           this.$router.push({
@@ -255,7 +209,7 @@ export default {
           break
       }
     },
-    addRecordItem() {
+    addRecordItem () {
       if (!this.recordModel.content) {
         this.$errorMsg('请输入服务内容')
         return

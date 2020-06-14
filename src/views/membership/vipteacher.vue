@@ -28,32 +28,70 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <el-table-column align="center" label="学校名称" prop="schoolName" />
-        <el-table-column align="center" label="账号" prop="schoolTel" />
-        <el-table-column align="center" label="管理员">
+        <el-table-column
+          align="center"
+          label="学校名称"
+          prop="schoolName"
+        />
+        <el-table-column
+          align="center"
+          label="账号"
+          prop="schoolTel"
+        />
+        <el-table-column
+          align="center"
+          label="管理员"
+        >
           <template slot-scope="scope">{{ scope.row.schoolLeaderName | emptyFormat }}</template>
         </el-table-column>
-        <el-table-column align="center" label="联系方式" prop="schoolTel" />
-        <el-table-column align="center" label="地区" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          label="联系方式"
+          prop="schoolTel"
+        />
+        <el-table-column
+          align="center"
+          label="地区"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">
-            <span
-              class="text-cut"
-            >{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+            <span class="text-cut">{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="详细地址" prop="addressDetail" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          label="详细地址"
+          prop="addressDetail"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">
             <span class="text-cut">{{ scope.row.addressDetail }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="创建时间" prop="createTime">
+        <el-table-column
+          align="center"
+          label="创建时间"
+          prop="createTime"
+        >
           <template slot-scope="scope">{{ scope.row.createTime | parseTime }}</template>
         </el-table-column>
-        <el-table-column align="center" label="到期时间">
+        <el-table-column
+          align="center"
+          label="到期时间"
+        >
           <template slot-scope="scope">{{ scope.row.endTime | parseTime }}</template>
         </el-table-column>
-        <el-table-column align="center" label="状态" prop="status" />
-        <el-table-column align="center" label="操作" fixed="right" min-width="150">
+        <el-table-column
+          align="center"
+          label="状态"
+          prop="status"
+        />
+        <el-table-column
+          align="center"
+          label="操作"
+          fixed="right"
+          min-width="150"
+        >
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
@@ -78,8 +116,15 @@
       @refresh="reloadData"
     />
     <!-- 增加老师对话框 -->
-    <el-dialog :title="mode === 'add' ? '添加老师' : '编辑老师信息'" :visible.sync="dialogFormVisible">
-      <el-form label-position="right" label-width="120px" style="width: 90%; ">
+    <el-dialog
+      :title="mode === 'add' ? '添加老师' : '编辑老师信息'"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        label-position="right"
+        label-width="120px"
+        style="width: 90%; "
+      >
         <el-form-item label="学校名称">
           <el-col :span="24">
             <el-select
@@ -99,22 +144,39 @@
         </el-form-item>
         <el-form-item label="老师名称">
           <el-col :span="24">
-            <el-input v-model="teacherModel.userName" placeholder="请输入老师姓名（必填）" maxlength="6" />
+            <el-input
+              v-model="teacherModel.userName"
+              placeholder="请输入老师姓名（必填）"
+              maxlength="6"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="手机号码">
           <el-col :span="24">
-            <el-input v-model="teacherModel.phone" placeholder="请输入老师手机号码（必填）" maxlength="11" />
+            <el-input
+              v-model="teacherModel.phone"
+              placeholder="请输入老师手机号码（必填）"
+              maxlength="11"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="登录密码">
           <el-col :span="24">
-            <el-link :underline="false" type="danger">默认密码为手机号码的后六位</el-link>
+            <el-link
+              :underline="false"
+              type="danger"
+            >默认密码为手机号码的后六位</el-link>
           </el-col>
         </el-form-item>
         <el-form-item label="家庭住址">
           <el-col :span="24">
-            <el-input v-model="teacherModel.address" type="textarea" :rows="3" maxlength="100" placeholder="请输入老师家庭住址（必填）" />
+            <el-input
+              v-model="teacherModel.address"
+              type="textarea"
+              :rows="3"
+              maxlength="100"
+              placeholder="请输入老师家庭住址（必填）"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="老师性别">
@@ -133,15 +195,34 @@
             </el-radio-group>
           </el-col>
         </el-form-item>
-        <el-form-item v-if="mode === 'edit'" label="备注说明">
+        <el-form-item
+          v-if="mode === 'edit'"
+          label="备注说明"
+        >
           <el-col :span="24">
-            <el-input v-model="teacherModel.note" type="textarea" :rows="3" maxlength="100" placeholder="请输入备注说明" />
+            <el-input
+              v-model="teacherModel.note"
+              type="textarea"
+              :rows="3"
+              maxlength="100"
+              placeholder="请输入备注说明"
+            />
           </el-col>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogFormVisible = false">取消</el-button>
-        <el-button :size="$style.dialogButtonSize" type="primary" @click="handlerFormConfirm">确定</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handlerFormConfirm"
+        >确定</el-button>
       </div>
     </el-dialog>
     <!-- 增加老师对话框 -->
@@ -155,7 +236,7 @@ import schoolMixins from '../../mixins/school-mixins'
 export default {
   name: 'VipTeacher',
   mixins: [tableMixins, schoolMixins],
-  data() {
+  data () {
     return {
       schoolList: [],
       formModelArray: [
@@ -216,7 +297,7 @@ export default {
       mode: 'add'
     }
   },
-  mounted() {
+  mounted () {
     this.getData()
     this.getSchoolList(_ => {
       if (this.schoolList && this.schoolList.length > 0) {
@@ -230,7 +311,7 @@ export default {
     })
   },
   methods: {
-    getData() {
+    getData () {
       this.$http({
         url: this.$urlPath.queryTeacherList,
         methods: this.HTTP_GET,
@@ -246,7 +327,7 @@ export default {
         this.onError(error)
       })
     },
-    onAdd() {
+    onAdd () {
       this.dialogFormVisible = true
       this.mode = 'add'
       this.teacherModel = {
@@ -258,7 +339,7 @@ export default {
         isLock: 0
       }
     },
-    hanlderUpdate(item) {
+    hanlderUpdate (item) {
       this.dialogFormVisible = true
       this.mode = 'edit'
       this.teacherModel.schoolId = item.schoolId
@@ -269,7 +350,7 @@ export default {
       this.teacherModel.isLock = item.isLock
       this.teacherModel.note = item.note
     },
-    handlerFormConfirm() {
+    handlerFormConfirm () {
       if (!this.teacherModel.schoolId) {
         this.$errorMsg('请选择学校')
         return
@@ -309,7 +390,7 @@ export default {
         })
       }
     },
-    initPassword(item) {
+    initPassword (item) {
       this.$warningConfirm('是否要重新设置密码为手机号后六位？', _ => {
         this.$http({
           url: this.$urlPath.initPassword,
