@@ -16,6 +16,7 @@
       :show-add="true"
       :show-delete="false"
       :show-search="true"
+      @onadd="onAdd"
       @onsearch="onSearch($urlPath.querySchoolListLike)"
     />
     <el-card :body-style="{padding: '2px'}">
@@ -240,6 +241,9 @@ export default {
         return '禁用'
       }
       return '未知'
+    },
+    onAdd() {
+      this.$router.push({ name: 'AddSchool' })
     },
     getData() {
       this.$http({

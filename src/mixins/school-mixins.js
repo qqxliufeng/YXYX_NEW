@@ -10,7 +10,9 @@ import { Loading } from 'element-ui'
 export default {
   data() {
     return {
-      schoolList: []
+      schoolList: [],
+      teacherList: [],
+      youXingUserList: []
     }
   },
   methods: {
@@ -29,6 +31,62 @@ export default {
             loadingInstance.close()
           })
           this.schoolList = res.obj.list
+          if (callback) {
+            callback()
+          }
+        })
+      } else {
+        if (callback) {
+          callback()
+        }
+      }
+    },
+    /**
+     * 获取老师的列表信息
+     */
+    getTeacherList(callback) {
+      const loadingInstance = Loading.service(document.getElementsByClassName('container')[0])
+      if (this.schoolList.length === 0) {
+        this.$http({
+          url: this.$urlPath.queryTeacherList,
+          methods: this.HTTP_GET,
+          data: {
+            pageNum: 0,
+            pageSize: 1000
+          }
+        }).then(res => {
+          this.$nextTick(_ => {
+            loadingInstance.close()
+          })
+          this.teacherList = res.obj.list
+          if (callback) {
+            callback()
+          }
+        })
+      } else {
+        if (callback) {
+          callback()
+        }
+      }
+    },
+    /**
+     * 获取集团用户的列表信息
+     */
+    getYouXingList(callback) {
+      const loadingInstance = Loading.service(document.getElementsByClassName('container')[0])
+      if (this.schoolList.length === 0) {
+        this.$http({
+          url: this.$urlPath.queryYouXingUserList,
+          methods: this.HTTP_GET,
+          data: {
+            pageNum: 0,
+            pageSize: 1000
+          }
+        }).then(res => {
+          this.$nextTick(_ => {
+            loadingInstance.close()
+          })
+          this.youXingUserList = res.obj.list
           if (callback) {
             callback()
           }

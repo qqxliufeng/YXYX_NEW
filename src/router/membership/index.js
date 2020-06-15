@@ -6,6 +6,14 @@ export default [
     hidden: true,
     children: [
       {
+        path: '/addschool',
+        component: () => import('@/views/membership/AddSchool.vue'),
+        name: 'AddSchool',
+        meta: {
+          title: '添加学校'
+        }
+      },
+      {
         path: '/vipshcoolinfo/:schoolId',
         component: () => import('@/views/membership/VipSchoolInfo.vue'),
         name: 'VipSchoolInfo',

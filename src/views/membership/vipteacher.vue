@@ -236,7 +236,7 @@ import schoolMixins from '../../mixins/school-mixins'
 export default {
   name: 'VipTeacher',
   mixins: [tableMixins, schoolMixins],
-  data () {
+  data() {
     return {
       schoolList: [],
       formModelArray: [
@@ -297,7 +297,7 @@ export default {
       mode: 'add'
     }
   },
-  mounted () {
+  mounted() {
     this.getData()
     this.getSchoolList(_ => {
       if (this.schoolList && this.schoolList.length > 0) {
@@ -311,7 +311,7 @@ export default {
     })
   },
   methods: {
-    getData () {
+    getData() {
       this.$http({
         url: this.$urlPath.queryTeacherList,
         methods: this.HTTP_GET,
@@ -327,7 +327,7 @@ export default {
         this.onError(error)
       })
     },
-    onAdd () {
+    onAdd() {
       this.dialogFormVisible = true
       this.mode = 'add'
       this.teacherModel = {
@@ -339,7 +339,7 @@ export default {
         isLock: 0
       }
     },
-    hanlderUpdate (item) {
+    hanlderUpdate(item) {
       this.dialogFormVisible = true
       this.mode = 'edit'
       this.teacherModel.schoolId = item.schoolId
@@ -350,7 +350,7 @@ export default {
       this.teacherModel.isLock = item.isLock
       this.teacherModel.note = item.note
     },
-    handlerFormConfirm () {
+    handlerFormConfirm() {
       if (!this.teacherModel.schoolId) {
         this.$errorMsg('请选择学校')
         return
@@ -390,7 +390,7 @@ export default {
         })
       }
     },
-    initPassword (item) {
+    initPassword(item) {
       this.$warningConfirm('是否要重新设置密码为手机号后六位？', _ => {
         this.$http({
           url: this.$urlPath.initPassword,

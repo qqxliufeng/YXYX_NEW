@@ -8,8 +8,16 @@
       @onsearch="onSearch"
     >
       <template slot="other">
-        <el-button type="warning" size="mini" @click="generatorCards">批量生成学习卡</el-button>
-        <el-button type="danger" size="mini" @click="downCards">批量下载学习卡</el-button>
+        <el-button
+          type="warning"
+          size="mini"
+          @click="generatorCards"
+        >批量生成学习卡</el-button>
+        <el-button
+          type="danger"
+          size="mini"
+          @click="downCards"
+        >批量下载学习卡</el-button>
       </template>
     </table-header>
     <el-card :body-style="{padding: 0}">
@@ -24,36 +32,82 @@
         :style="tableConfig.style"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column align="center" type="selection" width="55" />
-        <el-table-column align="center" prop="cardCode" label="学习卡编码" width />
-        <el-table-column align="center" prop="cardErcode" label="二维码" show-overflow-tooltip />
+        <el-table-column
+          align="center"
+          type="selection"
+          width="55"
+        />
+        <el-table-column
+          align="center"
+          prop="cardCode"
+          label="学习卡编码"
+          width
+        />
+        <el-table-column
+          align="center"
+          prop="cardErcode"
+          label="二维码"
+          show-overflow-tooltip
+        />
         <el-table-column
           align="center"
           prop="cardType"
           label="学习卡类型"
           :formatter="cardTypeFormatter"
         />
-        <el-table-column align="center" prop="isBind" label="绑定状态" :formatter="bindFormatter" />
-        <el-table-column align="center" prop="validityMonth" label="有效期">
+        <el-table-column
+          align="center"
+          prop="validityMonth"
+          label="有效期"
+        >
           <template slot-scope="scope">
             <span>{{ scope.row.validityMonth + '个月' }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="createTime" label="创建时间" show-overflow-tooltip />
-        <el-table-column align="center" prop="endTime" label="到期时间" :formatter="endTimeFormatter" />
-        <el-table-column align="center" prop="status" label="状态" :formatter="statusFormatter" />
-        <el-table-column align="center" label="操作" width="280">
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          prop="endTime"
+          label="到期时间"
+          :formatter="endTimeFormatter"
+        />
+        <el-table-column
+          align="center"
+          prop="isBind"
+          label="绑定状态"
+          :formatter="bindFormatter"
+        />
+        <el-table-column
+          align="center"
+          prop="status"
+          label="状态"
+          :formatter="statusFormatter"
+        />
+        <el-table-column
+          align="center"
+          label="操作"
+          width="280"
+        >
           <template slot-scope="scope">
+            <!-- 只有在已激活或者已过期的情况下才能修改到期时间 -->
             <el-button
+              v-if="scope.row.status === 3 || scope.row.status === 4"
               type="primary"
               :size="$style.tableButtonSize"
-              @click="handleUpdate(scope.row)"
-            >编辑</el-button>
+              @click="addEndTime(scope.row)"
+            >延期</el-button>
+            <!-- 只有在未激活的情况下才能编辑分配教材的 -->
             <el-button
+              v-if="scope.row.status <= 2"
               type="danger"
               :size="$style.tableButtonSize"
               @click="textBookList(scope.row)"
-            >教材列表</el-button>
+            >授权教材</el-button>
             <el-button
               type="warning"
               :size="$style.tableButtonSize"
@@ -72,9 +126,19 @@
       @refresh="reloadData"
     />
     <!-- 批量生成学习卡对话框 -->
-    <el-dialog title="批量生成学习卡" :visible.sync="dialogFormVisible">
-      <el-form label-position="left" label-width="120px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="学习卡类型" prop="parentDeptId">
+    <el-dialog
+      title="批量生成学习卡"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        label-position="left"
+        label-width="120px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <el-form-item
+          label="学习卡类型"
+          prop="parentDeptId"
+        >
           <el-col :span="24">
             <el-select
               v-model="generatorCardObj.cardType"
@@ -91,7 +155,10 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="学习卡数量" prop="menuSequence">
+        <el-form-item
+          label="学习卡数量"
+          prop="menuSequence"
+        >
           <el-col :span="24">
             <el-input-number
               v-model="generatorCardObj.studyCardNum"
@@ -103,19 +170,76 @@
         </el-form-item>
         <el-form-item label="有效期单位（月）">
           <el-col :span="24">
-            <el-input-number v-model="generatorCardObj.validityMonth" style="width: 100%" :min="1" />
+            <el-input-number
+              v-model="generatorCardObj.validityMonth"
+              style="width: 100%"
+              :min="1"
+            />
           </el-col>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogFormVisible = false">取消</el-button>
-        <el-button :size="$style.dialogButtonSize" type="primary" @click="handleDialogConfirm">确定</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handleDialogConfirm"
+        >确定</el-button>
       </div>
     </el-dialog>
     <!-- 批量生成学习卡对话框 -->
 
+    <!-- 编辑学习卡对话框 -->
+    <el-dialog
+      title="编辑学习卡信息"
+      :visible.sync="dialogEditVisible"
+    >
+      <el-form
+        label-position="left"
+        label-width="120px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <el-form-item label="到期时间">
+          <el-col :span="24">
+            <el-date-picker
+              v-model="tempItem.endTime"
+              style="width: 100%"
+              type="date"
+              placeholder="选择到期时间"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+            />
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogEditVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handleEditDialogConfirm"
+        >确定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 编辑学习卡对话框 -->
+
     <!-- 授权列表对话框 -->
-    <el-dialog title="授权教材列表" :visible.sync="dialogGrantTextBookVisible">
+    <el-dialog
+      title="授权教材列表"
+      :visible.sync="dialogGrantTextBookVisible"
+    >
       <el-table
         v-loading="grantTextBookLoading"
         :stripe="tableConfig.stripe"
@@ -126,18 +250,46 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <el-table-column align="center" prop="textbookId" label="ID" />
-        <el-table-column align="center" prop="textbookName" label="教材名称" />
-        <el-table-column align="center" prop="textbookVersionId" label="教材版本" />
-        <el-table-column align="center" prop="resourceFileUrl" label="资源地址" show-overflow-tooltip />
-        <el-table-column align="center" prop="createTime" label="创建时间" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          prop="textbookId"
+          label="ID"
+        />
+        <el-table-column
+          align="center"
+          prop="textbookName"
+          label="教材名称"
+        />
+        <el-table-column
+          align="center"
+          prop="textbookVersionId"
+          label="教材版本"
+        />
+        <el-table-column
+          align="center"
+          prop="resourceFileUrl"
+          label="资源地址"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">
             <span>{{ scope.row.createTime | parseTime }}</span>
           </template>
         </el-table-column>
       </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogGrantTextBookVisible = false">知道了</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogGrantTextBookVisible = false"
+        >知道了</el-button>
       </div>
     </el-dialog>
     <!-- 授权列表对话框 -->
@@ -172,15 +324,15 @@ export default {
           selectOptions: [
             {
               label: '未激活',
-              value: 0
+              value: 2
             },
             {
               label: '已激活',
-              value: 1
+              value: 3
             },
             {
               label: '已到期',
-              value: 2
+              value: 4
             }
           ]
         },
@@ -229,7 +381,35 @@ export default {
       ],
       grantTextBookLoading: false,
       dialogGrantTextBookVisible: false,
-      grantTextBookTableData: []
+      grantTextBookTableData: [],
+      dialogEditVisible: false,
+      tempItem: {
+        studyCardId: 0,
+        status: 0,
+        endTime: ''
+      },
+      studyCardStatus: [
+        {
+          label: '未分配教材',
+          value: 0
+        },
+        {
+          label: '已分配教材',
+          value: 1
+        },
+        {
+          label: '未激活',
+          value: 2
+        },
+        {
+          label: '已激活',
+          value: 3
+        },
+        {
+          label: '已到期',
+          value: 4
+        }
+      ]
     }
   },
   mounted() {
@@ -251,8 +431,8 @@ export default {
       this.dialogFormVisible = true
     },
     downCards() {
-      if (this.canDownItems()) {
-        this.confirmDown('studyCardId', ids => {
+      if (this.canHandlerItems()) {
+        this.confirmHandlerMultiItems('确定要下载此记录吗？', 'studyCardId', ids => {
           this.$http({
             url: this.$urlPath.uploadStudyCardExcel,
             methods: this.HTTP_GET,
@@ -276,6 +456,29 @@ export default {
           this.$successMsg('生成成功')
           this.getData()
         })
+      })
+    },
+    /**
+     * 延长学习卡的到期时间
+     */
+    addEndTime(item) {
+      this.dialogEditVisible = true
+      this.tempItem.studyCardId = item.studyCardId
+      this.tempItem.status = item.status
+      this.endTime = item.endTime
+    },
+    handleEditDialogConfirm() {
+      if (!this.tempItem.endTime) {
+        this.$errorMsg('请输入到期时间')
+        return
+      }
+      this.$http({
+        url: this.$urlPath.editStudyCardInfo,
+        data: this.tempItem
+      }).then(res => {
+        this.dialogEditVisible = false
+        this.$successMsg('延期操作成功')
+        this.getData()
       })
     },
     textBookList(item) {

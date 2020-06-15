@@ -67,9 +67,9 @@ export default {
       this.page = currentPage
     },
     /**
-     * 判断是否可以下载
+     * 判断是否可以操作多个条目
      */
-    canDownItems() {
+    canHandlerItems() {
       if (this.multipleSelection.length === 0) {
         this.$errorMsg('还未选择任何条目')
         return false
@@ -77,12 +77,12 @@ export default {
       return true
     },
     /**
-     * 批量下载
+     * 批量操作多个条目
      * @idFieldName要删除的id
      * @callback回调函数
      */
-    confirmDown(idFieldName, callback) {
-      this.$warningConfirm('确定要下载此记录吗？', () => {
+    confirmHandlerMultiItems(msg = '确定要下载此记录吗？', idFieldName, callback) {
+      this.$warningConfirm(msg, () => {
         const recordIds = this.multipleSelection.map(it => it[idFieldName]).join(',')
         if (callback) {
           callback(recordIds)
