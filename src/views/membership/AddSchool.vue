@@ -121,7 +121,6 @@
               >删除</el-button>
             </el-col>
           </el-row>
-
         </el-form-item>
       </el-form>
     </el-card>
@@ -179,6 +178,7 @@
         <el-form-item label="备注说明">
           <el-col :span="10">
             <el-input
+              v-model="schoolModel.note"
               type="textarea"
               :rows="2"
               placeholder="请输入备注"
@@ -207,18 +207,13 @@
               type="primary"
               @click="addStudyCard"
             >添加</el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              @click="deleteStudyCard"
-            >删除</el-button>
           </el-col>
         </el-form-item>
         <el-form-item>
-          <div>
+          <div v-if="schoolModel.studyCardParams.length > 0">
             <el-row>
               <el-col
-                :span="8"
+                :span="6"
                 class="text-center"
               >
                 <el-link
@@ -227,7 +222,7 @@
                 >学习卡类型</el-link>
               </el-col>
               <el-col
-                :span="8"
+                :span="6"
                 class="text-center"
               >
                 <el-link
@@ -236,13 +231,22 @@
                 >学习卡数量</el-link>
               </el-col>
               <el-col
-                :span="8"
+                :span="6"
                 class="text-center"
               >
                 <el-link
                   :underline="false"
                   type="primary"
                 >学习卡教材</el-link>
+              </el-col>
+              <el-col
+                :span="6"
+                class="text-center"
+              >
+                <el-link
+                  :underline="false"
+                  type="primary"
+                >操作</el-link>
               </el-col>
             </el-row>
             <el-row
@@ -251,12 +255,12 @@
               style="margin-bottom: 10px"
             >
               <el-col
-                :span="8"
+                :span="6"
                 class="text-center"
               >
                 <el-select
                   v-model="item.cardType"
-                  placeholder="请选择学习卡类型（必填）"
+                  placeholder="请选择学习卡类型"
                   style="width: 70%"
                   filterable
                 >
@@ -269,7 +273,7 @@
                 </el-select>
               </el-col>
               <el-col
-                :span="8"
+                :span="6"
                 class="text-center"
               >
                 <el-input-number
@@ -278,13 +282,23 @@
                 />
               </el-col>
               <el-col
-                :span="8"
+                :span="6"
                 class="text-center text-cut"
               >
                 <el-link
                   :underline="false"
                   @click="selectTextBookList(item)"
                 >{{ item.textbookNames || '点击选择学习卡教材' }}</el-link>
+              </el-col>
+              <el-col
+                :span="6"
+                class="text-center text-cut"
+              >
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="deleteTextBookItem(item)"
+                >删除</el-button>
               </el-col>
             </el-row>
           </div>
@@ -359,20 +373,20 @@ export default {
       level: this.$privinceData,
       studyCardTypeList: [
         {
-          label: 'P',
-          value: '小学正式卡'
+          value: 'P',
+          label: '小学正式卡'
         },
         {
-          label: 'TP',
-          value: '小学体验卡'
+          value: 'TP',
+          label: '小学体验卡'
         },
         {
-          label: 'M',
-          value: '初中正式卡'
+          value: 'M',
+          label: '初中正式卡'
         },
         {
-          label: 'TM',
-          value: '初中体验卡'
+          value: 'TM',
+          label: '初中体验卡'
         }
       ],
       textbookList: [],
@@ -382,6 +396,7 @@ export default {
         schoolLeaderName: '', //  管理者姓名
         schoolTel: '', //         学校联系方式
         schoolType: 0, //        加盟校类型 0普通加盟校(集团发展) 1独家加盟(集团发展) 2 独家加盟校代理(独家加盟校自己发展)
+        tempProvince: [],
         province: '', //          省
         city: '', //             市
         area: '', //              区
@@ -399,16 +414,7 @@ export default {
         endTime: '', //           到期日期
         // 学习卡相关信息参数：(将list集合转成json，传到后台)，学习卡信息非必输项
         saveType: 0, // 增加学习卡的方式  0批量
-        studyCardParams: [
-          {
-            id: new Date().getTime(),
-            cardType: '', //          学习卡类型(P小学正式卡  TP小学体验卡 M初中正式卡 TM初中体验卡)
-            cardNum: 0, //			  学习卡数量(批量增加方式)
-            cardCode: '', //		  学习卡编码(查询学习卡编码方式,暂时不增加此字段)
-            textbookIds: '', //		  教材主键ID，多个用逗号隔开
-            textbookNames: ''
-          }
-        ]
+        studyCardParams: []
       },
       dialogTableVisible: false,
       tableLoading: false,
@@ -424,7 +430,94 @@ export default {
     changeTeacher(value) {
       this.schoolModel.schoolLeaderName = this.teacherList.filter(it => it.userId === value)[0].username
     },
-    addSchoolInfo() { },
+    addSchoolInfo() {
+      // const filterResult = this.schoolModel.studyCardParams.some(it => {
+      //   return it.cardType === '' || it.cardNum === 0 || it.tempTextbookIds.length === 0
+      // })
+      // if (filterResult) {
+      //   this.$errorMsg('请输入学习卡的具体信息')
+      //   return
+      // }
+      const postData = {}
+      if (!this.schoolModel.schoolName) {
+        this.$errorMsg('请输入学校名称')
+        return
+      }
+      postData.schoolName = this.schoolModel.schoolName
+      if (!this.schoolModel.schoolLeaderId) {
+        this.$errorMsg('请选择学校管理员')
+        return
+      }
+      postData.schoolLeaderId = this.schoolModel.schoolLeaderId
+      if (!this.schoolModel.schoolLeaderName) {
+        this.$errorMsg('请输入管理员姓名')
+        return
+      }
+      postData.schoolLeaderName = this.schoolModel.schoolLeaderName
+      if (!this.schoolModel.schoolTel) {
+        this.$errorMsg('请输入学校电话')
+        return
+      }
+      postData.schoolTel = this.schoolModel.schoolTel
+      if (this.schoolModel.tempProvince.length === 0) {
+        this.$errorMsg('请选择省市区')
+        return
+      }
+      postData.province = this.schoolModel.tempProvince[0]
+      postData.city = this.schoolModel.tempProvince[1]
+      postData.area = this.schoolModel.tempProvince.length === 3 ? this.schoolModel.tempProvince[2] : ''
+      if (this.schoolModel.addressDetailList === 0 || !this.schoolModel.addressDetailList[0].address) {
+        this.$errorMsg('请至少输入一个详细地址')
+        return
+      }
+      postData.addressDetailList = JSON.stringify(this.schoolModel.addressDetailList.map(it => {
+        return {
+          address: it.address
+        }
+      }))
+      if (!this.schoolModel.superviseId) {
+        this.$errorMsg('请选择一个督导老师')
+        return
+      }
+      postData.superviseId = this.schoolModel.superviseId
+      if (!this.schoolModel.salesId) {
+        this.$errorMsg('请选择一个销售人员')
+        return
+      }
+      postData.salesId = this.schoolModel.salesId
+      if (!this.schoolModel.endTime) {
+        this.$errorMsg('请选择到期时间')
+        return
+      }
+      postData.endTime = this.schoolModel.endTime
+
+      postData.note = this.schoolModel.note
+      postData.schoolType = this.schoolModel.schoolType
+      postData.saveType = this.schoolModel.saveType
+      if (this.schoolModel.studyCardParams && this.schoolModel.studyCardParams.length > 0) {
+        const filterResult = this.schoolModel.studyCardParams.some(it => {
+          return it.cardType === '' || it.cardNum === 0 || it.tempTextbookIds.length === 0
+        })
+        if (filterResult) {
+          this.$errorMsg('请输入学习卡的具体信息')
+          return
+        }
+        postData.studyCardParams = JSON.stringify(this.schoolModel.studyCardParams.map(it => {
+          return {
+            cardType: it.cardType,
+            cardNum: it.cardNum,
+            cardCode: it.cardCode,
+            textbookIds: it.tempTextbookIds.join(',')
+          }
+        }))
+      }
+      this.$http({
+        url: this.$urlPath.saveSchoolAndStudyCard,
+        data: postData
+      }).then(res => {
+        console.log(res)
+      })
+    },
     addAddress() {
       this.schoolModel.addressDetailList.push({
         id: new Date().getTime(),
@@ -442,19 +535,14 @@ export default {
     addStudyCard() {
       const item = {
         id: new Date().getTime(),
-        cardType: '', //          学习卡类型(P小学正式卡  TP小学体验卡 M初中正式卡 TM初中体验卡)
+        cardType: '',
         cardNum: 0, //			  学习卡数量(批量增加方式)
         cardCode: '', //		  学习卡编码(查询学习卡编码方式,暂时不增加此字段)
         textbookIds: '', //		  教材主键ID，多个用逗号隔开
-        textbookNames: ''
+        textbookNames: '',
+        tempTextbookIds: []
       }
       this.schoolModel.studyCardParams.push(item)
-    },
-    deleteStudyCard() {
-      if (this.schoolModel.studyCardParams.length === 0) {
-        return
-      }
-      this.schoolModel.studyCardParams.pop()
     },
     selectTextBookList(item) {
       this.tempStudyCardItem = item
@@ -478,27 +566,25 @@ export default {
           }
         })
       } else {
-        if (this.tempStudyCardItem.textbookIds === '') {
-          this.textbookList.forEach(it => {
-            it.selected = false
-          })
-        } else {
-          const ids = this.tempStudyCardItem.textbookIds.split(',')
-          this.textbookList.forEach(it => {
-            it.selected = ids.includes(it.textbookId.toString())
-          })
-        }
+        this.textbookList.forEach(it => {
+          it.selected = this.tempStudyCardItem.tempTextbookIds.includes(it.textbookId)
+        })
       }
       const selectedItems = this.textbookList.filter(it => it.selected)
       if (selectedItems.length > 0) {
         this.$nextTick(_ => {
-          this.$refs.multiTable.toggleRowSelection(selectedItems, true)
+          selectedItems.forEach(row => {
+            this.$refs.multiTable.toggleRowSelection(row, true)
+          })
         })
       } else {
         this.$nextTick(_ => {
           this.$refs.multiTable.clearSelection()
         })
       }
+    },
+    deleteTextBookItem(item) {
+      this.schoolModel.studyCardParams.splice(this.schoolModel.studyCardParams.indexOf(item), 1)
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -507,14 +593,14 @@ export default {
       this.dialogTableVisible = false
       if (this.multipleSelection.length === 0) {
         this.tempStudyCardItem.textbookNames = ''
-        this.tempStudyCardItem.textbookIds = ''
+        this.tempStudyCardItem.tempTextbookIds = []
         return
       }
       const tempList = this.multipleSelection.map(it => {
         return { name: it.textbookName, id: it.textbookId }
       })
       this.tempStudyCardItem.textbookNames = tempList.map(it => it.name).join(',')
-      this.tempStudyCardItem.textbookIds = tempList.map(it => it.id).join(',')
+      this.tempStudyCardItem.tempTextbookIds = tempList.map(it => it.id)
     }
   }
 }
