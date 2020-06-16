@@ -8,7 +8,7 @@
         slot="header"
         class="flex justify-between align-center"
       >
-        <span class="title text-bold">添加学校信息</span>
+        <span class="title text-bold">编辑学校信息</span>
         <el-button
           type="primary"
           size="small"
@@ -86,6 +86,7 @@
               :options="level"
               :props="{label: 'name', value: 'name'}"
               clearable
+              :placeholder="provincePlaceHolder"
             />
           </el-col>
         </el-form-item>
@@ -174,7 +175,6 @@
               type="date"
               placeholder="选择到期时间"
               format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
             />
           </el-col>
         </el-form-item>
@@ -190,179 +190,6 @@
         </el-form-item>
       </el-form>
     </el-card>
-
-    <el-card style="margin-top: 10px">
-      <div slot="header">
-        <span class="title text-bold">学习卡信息</span>
-      </div>
-      <el-form>
-        <el-form-item label="添加类型">
-          <el-col :span="10">
-            <el-radio-group v-model="schoolModel.saveType">
-              <el-radio :label="0">批量</el-radio>
-            </el-radio-group>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="学习卡信息：">
-          <el-col :span="8">
-            <el-button
-              size="mini"
-              type="primary"
-              @click="addStudyCard"
-            >添加</el-button>
-          </el-col>
-        </el-form-item>
-        <el-form-item>
-          <div v-if="schoolModel.studyCardParams.length > 0">
-            <el-row>
-              <el-col
-                :span="6"
-                class="text-center"
-              >
-                <el-link
-                  :underline="false"
-                  type="primary"
-                >学习卡类型</el-link>
-              </el-col>
-              <el-col
-                :span="6"
-                class="text-center"
-              >
-                <el-link
-                  :underline="false"
-                  type="primary"
-                >学习卡数量</el-link>
-              </el-col>
-              <el-col
-                :span="6"
-                class="text-center"
-              >
-                <el-link
-                  :underline="false"
-                  type="primary"
-                >学习卡教材</el-link>
-              </el-col>
-              <el-col
-                :span="6"
-                class="text-center"
-              >
-                <el-link
-                  :underline="false"
-                  type="primary"
-                >操作</el-link>
-              </el-col>
-            </el-row>
-            <el-row
-              v-for="item of schoolModel.studyCardParams"
-              :key="item.id"
-              style="margin-bottom: 10px"
-            >
-              <el-col
-                :span="6"
-                class="text-center"
-              >
-                <el-select
-                  v-model="item.cardType"
-                  placeholder="请选择学习卡类型"
-                  style="width: 70%"
-                  filterable
-                >
-                  <el-option
-                    v-for="cardTypeItem of studyCardTypeList"
-                    :key="cardTypeItem.value"
-                    :label="cardTypeItem.label"
-                    :value="cardTypeItem.value"
-                  />
-                </el-select>
-              </el-col>
-              <el-col
-                :span="6"
-                class="text-center"
-              >
-                <el-input-number
-                  v-model="item.cardNum"
-                  size="small"
-                />
-              </el-col>
-              <el-col
-                :span="6"
-                class="text-center text-cut"
-              >
-                <el-link
-                  :underline="false"
-                  @click="selectTextBookList(item)"
-                >{{ item.textbookNames || '点击选择学习卡教材' }}</el-link>
-              </el-col>
-              <el-col
-                :span="6"
-                class="text-center text-cut"
-              >
-                <el-button
-                  size="mini"
-                  type="danger"
-                  @click="deleteTextBookItem(item)"
-                >删除</el-button>
-              </el-col>
-            </el-row>
-          </div>
-        </el-form-item>
-      </el-form>
-    </el-card>
-    <el-card
-      body-style="padding: 0"
-      style="margin-top: 10px"
-    >
-      <div
-        slot="header"
-        class="flex justify-end align-center"
-      >
-        <el-button
-          type="primary"
-          size="small"
-          @click="addSchoolInfo"
-        >保存</el-button>
-      </div>
-    </el-card>
-    <el-dialog
-      title="教材列表"
-      :visible.sync="dialogTableVisible"
-    >
-      <el-table
-        ref="multiTable"
-        v-loading="tableLoading"
-        :data="textbookList"
-        max-height="800px"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-          type="selection"
-          width="55"
-        />
-        <el-table-column
-          property="textbookId"
-          label="ID"
-        />
-        <el-table-column
-          property="textbookName"
-          label="教材名称"
-        />
-      </el-table>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          :size="$style.dialogButtonSize"
-          @click="dialogTableVisible = false"
-        >取消</el-button>
-        <el-button
-          :size="$style.dialogButtonSize"
-          type="primary"
-          @click="handleTextBookConfirm"
-        >确定</el-button>
-      </div>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -370,31 +197,14 @@
 import schoolMixins from '../../mixins/school-mixins'
 import { Loading } from 'element-ui'
 export default {
-  name: 'AddSchool',
+  name: 'EditSchool',
   mixins: [schoolMixins],
   data() {
     return {
       level: this.$privinceData,
-      studyCardTypeList: [
-        {
-          value: 'P',
-          label: '小学正式卡'
-        },
-        {
-          value: 'TP',
-          label: '小学体验卡'
-        },
-        {
-          value: 'M',
-          label: '初中正式卡'
-        },
-        {
-          value: 'TM',
-          label: '初中体验卡'
-        }
-      ],
-      textbookList: [],
+      provincePlaceHolder: '请选择地区',
       schoolModel: {
+        schoolId: '', // 学校ID
         schoolName: '', //        学校名称
         schoolLeaderId: '', //    学校管理者ID
         schoolLeaderName: '', //  管理者姓名
@@ -415,22 +225,48 @@ export default {
         superviseId: '', //       督导老师ID
         salesId: '', //           销售顾问ID
         note: '', //             备注
-        endTime: '', //           到期日期
-        // 学习卡相关信息参数：(将list集合转成json，传到后台)，学习卡信息非必输项
-        saveType: 0, // 增加学习卡的方式  0批量
-        studyCardParams: []
-      },
-      dialogTableVisible: false,
-      tableLoading: false,
-      tempStudyCardItem: null,
-      multipleSelection: []
+        endTime: '' //           到期日期
+      }
     }
   },
   mounted() {
+    this.getData()
     this.getTeacherList()
     this.getYouXingList()
   },
   methods: {
+    getData() {
+      this.$http({
+        url: this.$urlPath.querySchoolBySchoolId,
+        methods: this.HTTP_GET,
+        data: {
+          schoolId: this.$route.params.schoolId
+        }
+      }).then(res => {
+        this.schoolModel.schoolId = res.obj.schoolId
+        this.schoolModel.schoolName = res.obj.schoolName
+        this.schoolModel.schoolLeaderId = res.obj.schoolLeaderId
+        this.schoolModel.schoolLeaderName = res.obj.schoolLeaderName
+        this.schoolModel.schoolTel = res.obj.schoolTel
+        this.schoolModel.schoolType = res.obj.schoolType
+        this.schoolModel.tempProvince[0] = res.obj.province
+        this.schoolModel.tempProvince[1] = res.obj.city
+        this.schoolModel.tempProvince[2] = res.obj.area
+        this.schoolModel.superviseId = res.obj.superviseId
+        this.schoolModel.salesId = res.obj.salesId
+        this.schoolModel.note = res.obj.note
+        this.schoolModel.endTime = res.obj.endTime
+        this.schoolModel.addressDetailList = res.obj.addressDetailList.map((it, index) => {
+          return {
+            id: it.id,
+            address: it.address,
+            canAdd: true,
+            canDelete: index !== 0
+          }
+        })
+        this.provincePlaceHolder = this.schoolModel.tempProvince.join('/')
+      })
+    },
     changeTeacher(value) {
       this.schoolModel.schoolLeaderName = this.teacherList.filter(it => it.userId === value)[0].username
     },
@@ -487,36 +323,18 @@ export default {
         return
       }
       postData.endTime = this.schoolModel.endTime
-
+      postData.schoolId = this.schoolModel.schoolId
       postData.note = this.schoolModel.note
       postData.schoolType = this.schoolModel.schoolType
-      if (this.schoolModel.studyCardParams && this.schoolModel.studyCardParams.length > 0) {
-        postData.saveType = this.schoolModel.saveType
-        const filterResult = this.schoolModel.studyCardParams.some(it => {
-          return it.cardType === '' || it.cardNum === 0 || it.tempTextbookIds.length === 0
-        })
-        if (filterResult) {
-          this.$errorMsg('请输入学习卡的具体信息')
-          return
-        }
-        postData.studyCardParams = this.schoolModel.studyCardParams.map(it => {
-          return {
-            cardType: it.cardType,
-            cardNum: it.cardNum,
-            cardCode: it.cardCode,
-            textbookIds: it.tempTextbookIds.join(',')
-          }
-        })
-      }
       const loadingInstance = Loading.service({
         target: document.getElementById('content-wrapper')
       })
       this.$http({
-        url: this.$urlPath.saveSchoolAndStudyCard,
+        url: this.$urlPath.updateSchool,
         data: postData,
         contentType: 'application/json; charset=UTF-8'
       }).then(res => {
-        this.$successMsg('学校添加成功')
+        this.$successMsg('学校信息修改成功')
         this.$nextTick(_ => {
           loadingInstance.close()
         })
@@ -540,76 +358,6 @@ export default {
         return
       }
       this.schoolModel.addressDetailList.splice(this.schoolModel.addressDetailList.indexOf(addressItem), 1)
-    },
-    addStudyCard() {
-      const item = {
-        id: new Date().getTime(),
-        cardType: '',
-        cardNum: 0, //			  学习卡数量(批量增加方式)
-        cardCode: '', //		  学习卡编码(查询学习卡编码方式,暂时不增加此字段)
-        textbookIds: '', //		  教材主键ID，多个用逗号隔开
-        textbookNames: '',
-        tempTextbookIds: []
-      }
-      this.schoolModel.studyCardParams.push(item)
-    },
-    selectTextBookList(item) {
-      this.tempStudyCardItem = item
-      this.dialogTableVisible = true
-      if (this.textbookList.length === 0) {
-        this.tableLoading = true
-        this.$http({
-          url: this.$urlPath.queryTextBookList,
-          methods: this.HTTP_GET,
-          data: {
-            pageNum: 0,
-            pageSize: 1000
-          }
-        }).then(res => {
-          this.tableLoading = false
-          this.textbookList = res.obj.list
-          if (this.textbookList && this.textbookList.length > 0) {
-            this.textbookList.forEach(it => {
-              this.$set(it, 'selected', false)
-            })
-          }
-        })
-      } else {
-        this.textbookList.forEach(it => {
-          it.selected = this.tempStudyCardItem.tempTextbookIds.includes(it.textbookId)
-        })
-      }
-      const selectedItems = this.textbookList.filter(it => it.selected)
-      if (selectedItems.length > 0) {
-        this.$nextTick(_ => {
-          selectedItems.forEach(row => {
-            this.$refs.multiTable.toggleRowSelection(row, true)
-          })
-        })
-      } else {
-        this.$nextTick(_ => {
-          this.$refs.multiTable.clearSelection()
-        })
-      }
-    },
-    deleteTextBookItem(item) {
-      this.schoolModel.studyCardParams.splice(this.schoolModel.studyCardParams.indexOf(item), 1)
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    handleTextBookConfirm() {
-      this.dialogTableVisible = false
-      if (this.multipleSelection.length === 0) {
-        this.tempStudyCardItem.textbookNames = ''
-        this.tempStudyCardItem.tempTextbookIds = []
-        return
-      }
-      const tempList = this.multipleSelection.map(it => {
-        return { name: it.textbookName, id: it.textbookId }
-      })
-      this.tempStudyCardItem.textbookNames = tempList.map(it => it.name).join(',')
-      this.tempStudyCardItem.tempTextbookIds = tempList.map(it => it.id)
     }
   }
 }

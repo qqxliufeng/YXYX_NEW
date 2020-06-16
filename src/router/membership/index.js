@@ -14,6 +14,14 @@ export default [
         }
       },
       {
+        path: '/editschool/:schoolId',
+        component: () => import('@/views/membership/EditSchool.vue'),
+        name: 'EditSchool',
+        meta: {
+          title: '编辑学校'
+        }
+      },
+      {
         path: '/vipshcoolinfo/:schoolId',
         component: () => import('@/views/membership/VipSchoolInfo.vue'),
         name: 'VipSchoolInfo',

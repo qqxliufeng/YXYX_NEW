@@ -34,11 +34,14 @@
           align="center"
           label="学校名称"
           prop="schoolName"
+          fixed="left"
         />
         <el-table-column
           align="center"
           label="账号"
           prop="schoolTel"
+          min-width="120"
+          fixed="left"
         />
         <el-table-column
           align="center"
@@ -50,10 +53,12 @@
           align="center"
           label="联系方式"
           prop="schoolTel"
+          min-width="120"
         />
         <el-table-column
           align="center"
           label="地区"
+          min-width="150"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
@@ -63,25 +68,36 @@
         <el-table-column
           align="center"
           label="详细地址"
+          width="200"
           prop="addressDetail"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <span class="text-cut">{{ scope.row.addressDetail }}</span>
+            <span class="text-cut">{{ getAddressInfo(scope.row) }}</span>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           label="创建时间"
           prop="createTime"
+          min-width="180"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">{{ scope.row.createTime | parseTime }}</template>
+          <template slot-scope="scope">
+            <div class="text-cut">
+              {{ scope.row.createTime | parseTime }}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
           label="到期时间"
+          min-width="180"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">{{ scope.row.endTime | parseTime }}</template>
+          <template slot-scope="scope">
+            <div class="text-cut">{{ scope.row.endTime | parseTime }}</div>
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -93,7 +109,7 @@
           align="center"
           label="操作"
           fixed="right"
-          min-width="200"
+          min-width="250"
         >
           <template slot-scope="scope">
             <el-button
@@ -113,13 +129,12 @@
               split-button
               @command="handleSchoolCommand"
             >
-              更多操作
+              更多
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{tag: 1, item: scope.row}">已分配的学习卡</el-dropdown-item>
                 <el-dropdown-item :command="{tag: 2, item: scope.row}">未分配的学习卡</el-dropdown-item>
                 <el-dropdown-item :command="{tag: 3, item: scope.row}">查询服务记录</el-dropdown-item>
                 <el-dropdown-item :command="{tag: 4, item: scope.row}">增加服务记录</el-dropdown-item>
-                <el-dropdown-item :command="{tag: 5, item: scope.row}">查看学校详情</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -233,6 +248,12 @@ export default {
     this.getData()
   },
   methods: {
+    getAddressInfo(item) {
+      if (item.addressDetailList && item.addressDetailList.length > 0) {
+        return item.addressDetailList.map(it => it.address).join(',')
+      }
+      return '暂无详细地址'
+    },
     statusFormat(item) {
       if (parseInt(item.status) === 0) {
         return '正常'
@@ -259,7 +280,7 @@ export default {
     },
     editAccountInfo(item) {
       this.$router.push({
-        name: 'VipSchoolInfo',
+        name: 'EditSchool',
         params: { schoolId: item.schoolId }
       })
     },
@@ -301,17 +322,6 @@ export default {
         case 4:
           this.recordModel.schoolId = item.schoolId
           this.dialogAddRecordVisible = true
-          break
-        case 5:
-          this.$http({
-            url: this.$urlPath.querySchoolBySchoolId,
-            methods: this.HTTP_GET,
-            data: {
-              schoolId: item.schoolId
-            }
-          }).then(res => {
-            console.log(res)
-          })
           break
       }
     },

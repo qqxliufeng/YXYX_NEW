@@ -12,25 +12,31 @@ export const HTTP_GET = 'GET'
 
 export const HTTP_POST = 'POST'
 
-export function http({ url, methods = HTTP_POST, data = {}, withRoleId = true, withUserId = true, responseType = '' }) {
-  if (withRoleId && !data.hasOwnProperty('roleId')) {
+export function http({ url, methods = HTTP_POST, data = {}, withRoleId = true, withUserId = true, contentType = 'application/x-www-form-urlencoded;charset=UTF-8', responseType = '' }) {
+  if (withRoleId && typeof data === 'object' && !data.hasOwnProperty('roleId')) {
     data.roleId = localStorage.getItem('roleId')
   }
-  if (withUserId && !data.hasOwnProperty('userId')) {
+  if (withUserId && typeof data === 'object' && !data.hasOwnProperty('userId')) {
     data.userId = localStorage.getItem('userId')
   }
   if (methods === HTTP_POST) {
     return request({
       url,
       method: HTTP_POST,
-      data
+      data,
+      headers: {
+        'Content-Type': contentType
+      }
     })
   } else {
     return request({
       url,
       method: HTTP_GET,
       params: data,
-      responseType
+      responseType,
+      headers: {
+        'Content-Type': contentType
+      }
     })
   }
 }

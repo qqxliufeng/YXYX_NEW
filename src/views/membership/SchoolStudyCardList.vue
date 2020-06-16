@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <table-header
-      :title="$route.params.schoolName + ' 下'+ ($route.params.type === 1 ? '已分配' : '未分配') +'的学习卡信息'"
+      :title="$route.params.schoolName + ' 下'+ (Number($route.params.type) === 1 ? '已分配' : '未分配') +'的学习卡信息'"
       :show-add="false"
       :show-delete="false"
       :show-search="false"
@@ -97,7 +97,7 @@ export default {
     getData() {
       this.$http({
         url:
-          this.$route.params.type === 1
+          Number(this.$route.params.type) === 1
             ? this.$urlPath.queryStudyCardBySchoolId
             : this.$urlPath.queryStudyCardNotBind,
         methods: this.HTTP_GET,

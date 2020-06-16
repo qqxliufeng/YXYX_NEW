@@ -5,8 +5,9 @@ import { getToken } from '@/utils/auth'
 import qs from 'qs'
 
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 5000,
+  // baseURL: process.env.VUE_APP_BASE_API,
+  baseURL: 'http://192.168.0.123:8880',
+  timeout: 15000,
   withCredentials: true // 跨域请求时发送cookie
 })
 axios.defaults.withCredentials = true
@@ -16,7 +17,9 @@ service.interceptors.request.use(
     if (store.getters.token) {
       config.headers['Authorization'] = `Bearer ${getToken()}`
     }
-    config.data = qs.stringify(config.data)
+    if (!config.headers['Content-Type'] || config.headers['Content-Type'] === 'application/x-www-form-urlencoded;charset=UTF-8') {
+      config.data = qs.stringify(config.data)
+    }
     return config
   },
   error => {
@@ -59,9 +62,9 @@ service.interceptors.response.use(
     }
   },
   error => {
-    const { msg } = error.response.data
+    console.log(error)
     Message({
-      message: msg || '请求失败',
+      message: '请求失败',
       type: 'error',
       duration: 5 * 1000
     })
