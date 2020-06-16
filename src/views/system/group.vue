@@ -1,5 +1,8 @@
 <template>
-  <div class="container" style="padding: 2px">
+  <div
+    class="container"
+    style="padding: 2px"
+  >
     <table-header
       :form-model-array="formModelArray"
       :show-search="buttonShowConfig.showSearch"
@@ -21,30 +24,70 @@
         :style="tableConfig.style"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column align="center" type="selection" width="55" />
-        <el-table-column align="center" label="序号" prop="userId" width="120" />
-        <el-table-column align="center" prop="phone" label="手机号码" width />
-        <el-table-column align="center" prop="username" label="用户名" width />
-        <el-table-column align="center" prop="dept.deptName" label="部门名称" show-overflow-tooltip />
+        <el-table-column
+          align="center"
+          type="selection"
+          width="55"
+        />
+        <el-table-column
+          align="center"
+          label="序号"
+          prop="userId"
+          width="80"
+        />
+        <el-table-column
+          align="center"
+          prop="phone"
+          label="手机号码"
+          width="120"
+        />
+        <el-table-column
+          align="center"
+          prop="username"
+          label="用户名"
+          width
+        />
+        <el-table-column
+          align="center"
+          prop="dept.deptName"
+          label="所属部门"
+          show-overflow-tooltip
+        />
         <el-table-column
           align="center"
           prop="roles[0].roleName"
           label="用户角色"
           show-overflow-tooltip
         />
-        <el-table-column align="center" prop="isSchoolLeader" label="是否校长" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          prop="isSchoolLeader"
+          label="是否校长"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">{{ scope.row.isSchoolLeader === 1 ? '是' : '否' }}</template>
         </el-table-column>
-        <el-table-column align="center" prop="isSalesLeader" label="是否主管" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          prop="isSalesLeader"
+          label="是否主管"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">{{ scope.row.isSalesLeader===1?'是':'否' }}</template>
         </el-table-column>
-        <el-table-column align="center" prop="accountNonLocked" label="状态" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          prop="accountNonLocked"
+          label="状态"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">{{ !!(scope.row.accountNonLocked)?'正常':'禁用' }}</template>
         </el-table-column>
         <el-table-column
           align="center"
           label="操作"
-          width="250"
+          width="200"
+          fixed="right"
         >
           <template slot-scope="scope">
             <el-button
@@ -69,7 +112,10 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
-    <el-dialog title="编辑信息" :visible.sync="dialogFormVisible">
+    <el-dialog
+      title="编辑信息"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form>
         <el-form-item label="所属部门">
           <el-col :span="10">
@@ -90,7 +136,11 @@
         </el-form-item>
         <el-form-item label="用户角色">
           <el-col :span="10">
-            <el-select v-model="tempItem.roleId" placeholder="请选择用户角色" style="width: 100%">
+            <el-select
+              v-model="tempItem.roleId"
+              placeholder="请选择用户角色"
+              style="width: 100%"
+            >
               <el-option
                 v-for="item of roleList"
                 :key="item.roleId"
@@ -118,12 +168,20 @@
         </el-form-item>
         <el-form-item label="真实姓名">
           <el-col :span="10">
-            <el-input v-model="tempItem.userName" placeholder="请输入真实姓名（必填）" maxlength="10" />
+            <el-input
+              v-model="tempItem.userName"
+              placeholder="请输入真实姓名（必填）"
+              maxlength="10"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="用户昵称">
           <el-col :span="10">
-            <el-input v-model="tempItem.userNickName" placeholder="请输入用户昵称（必填）" maxlength="10" />
+            <el-input
+              v-model="tempItem.userNickName"
+              placeholder="请输入用户昵称（必填）"
+              maxlength="10"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="用户性别">
@@ -145,8 +203,15 @@
         </el-form-item>
         <el-form-item label="登录密码">
           <el-col :span="10">
-            <el-link :underline="false" type="success">默认密码为手机号码的后六位</el-link>
-            <el-link :underline="false" type="danger" @click="resetPassword">重置密码？</el-link>
+            <el-link
+              :underline="false"
+              type="success"
+            >默认密码为手机号码的后六位</el-link>
+            <el-link
+              :underline="false"
+              type="danger"
+              @click="resetPassword"
+            >重置密码？</el-link>
           </el-col>
         </el-form-item>
         <el-form-item label="详细地址">
@@ -161,7 +226,12 @@
         </el-form-item>
         <el-form-item label="备注说明">
           <el-col :span="10">
-            <el-input v-model="tempItem.note" type="textarea" :rows="2" placeholder="请输入备注" />
+            <el-input
+              v-model="tempItem.note"
+              type="textarea"
+              :rows="2"
+              placeholder="请输入备注"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="用户状态">
@@ -181,12 +251,25 @@
           </el-col>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogFormVisible = false">取消</el-button>
-        <el-button :size="$style.dialogButtonSize" type="primary" @click="handleDialogConfirm">确定</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handleDialogConfirm"
+        >确定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="修改密码" :visible.sync="dialogResetPasswordVisible">
+    <el-dialog
+      title="修改密码"
+      :visible.sync="dialogResetPasswordVisible"
+    >
       <el-form>
         <el-form-item label="新的密码">
           <el-col :span="10">
@@ -207,9 +290,19 @@
           </el-col>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogResetPasswordVisible = false">取消</el-button>
-        <el-button :size="$style.dialogButtonSize" type="primary" @click="handlePasswordConfirm">确定</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogResetPasswordVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handlePasswordConfirm"
+        >确定</el-button>
       </div>
     </el-dialog>
   </div>

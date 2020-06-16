@@ -34,6 +34,7 @@
           align="center"
           label="学校名称"
           prop="schoolName"
+          width="120"
           fixed="left"
         />
         <el-table-column

@@ -28,76 +28,120 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
+        <!-- accountNonExpired: true
+accountNonLocked: true
+address: null
+authorities: [{authority: "ROLE_jyzg"}]
+createId: 1
+createTime: "2020-03-27 16:31:06"
+credentialsNonExpired: true
+dept: {createId: 1, createTime: "2020-03-13 21:31:35", deptCode: null, deptId: 4, deptName: "教研部", dr: 0,…}
+deptId: 4
+dr: 0
+enabled: true
+isLock: 0
+isSalesLeader: 0
+isSchoolLeader: 0
+isyxuser: 0
+note: null
+phone: "12345678900"
+photo: null
+roleId: 2
+roles: [,…]
+schoolId: 1
+sex: 1-->
         <el-table-column
           align="center"
-          label="学校名称"
-          prop="schoolName"
+          label="ID"
+          prop="userId"
+          fixed="left"
         />
         <el-table-column
           align="center"
-          label="账号"
-          prop="schoolTel"
+          label="用户名称"
+          prop="username"
+          fixed="left"
         />
         <el-table-column
           align="center"
-          label="管理员"
+          label="用户昵称"
+          prop="userNickName"
+        />
+        <el-table-column
+          align="center"
+          label="手机号码"
+          prop="phone"
+          width="120"
+        />
+        <el-table-column
+          align="center"
+          prop="dept.deptName"
+          label="所属部门"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          label="性别"
         >
-          <template slot-scope="scope">{{ scope.row.schoolLeaderName | emptyFormat }}</template>
+          <template slot-scope="scope">{{ scope.row.sex === 1 ? '男' : '女' }}</template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="联系方式"
-          prop="schoolTel"
-        />
+          prop="isSchoolLeader"
+          label="是否校长"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">{{ scope.row.isSchoolLeader === 1 ? '是' : '否' }}</template>
+        </el-table-column>
         <el-table-column
           align="center"
-          label="地区"
+          prop="isSalesLeader"
+          label="是否主管"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">{{ scope.row.isSalesLeader===1?'是':'否' }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="address"
+          label="家庭地址"
+          width="150"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <span class="text-cut">{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+            <div class="text-cut">
+              {{ scope.row.address ? scope.row.address : '暂无' }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="详细地址"
-          prop="addressDetail"
+          prop="isLock"
+          label="状态"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">
-            <span class="text-cut">{{ scope.row.addressDetail }}</span>
-          </template>
+          <template slot-scope="scope">{{ scope.row.isLock === 0 ? '正常' : '禁用' }}</template>
         </el-table-column>
         <el-table-column
           align="center"
           label="创建时间"
           prop="createTime"
+          width="170"
         >
           <template slot-scope="scope">{{ scope.row.createTime | parseTime }}</template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="到期时间"
-        >
-          <template slot-scope="scope">{{ scope.row.endTime | parseTime }}</template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="状态"
-          prop="status"
-        />
-        <el-table-column
-          align="center"
           label="操作"
           fixed="right"
-          min-width="150"
+          min-width="200"
         >
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
-              :type="scope.row.status === 0 ? 'danger' : 'warning'"
-              @click="changeLockStatus(scope.row)"
-            >{{ scope.row.status === 0 ? '禁用' : '正常' }}</el-button>
+              :type="scope.row.isLock === 0 ? 'danger' : 'warning'"
+              @click="changeLockStatus({item: scope.row, statusField: 'isLock', data: { userId: scope.row.userId }, lockUrl: $urlPath.lockTeacher, unLockUrl: $urlPath.unLockTeacher})"
+            >{{ scope.row.isLock === 0 ? '禁用' : '解锁' }}</el-button>
             <el-button
               :size="$style.tableButtonSize"
               type="primary"
@@ -278,7 +322,7 @@ export default {
         {
           id: 4,
           value: '',
-          label: '手机号',
+          label: '手机号码',
           name: 'phone',
           span: 5,
           type: 'input'
