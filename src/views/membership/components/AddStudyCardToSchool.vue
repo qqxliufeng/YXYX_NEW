@@ -64,7 +64,7 @@
             <el-row
               v-for="item of studyCardParams"
               :key="item.id"
-              style="margin-bottom: 10px"
+              style="margin-bottom: 10px; border-bottom: 1px solid #f5f5f5; padding-bottom: 5px"
             >
               <el-col
                 :span="6"

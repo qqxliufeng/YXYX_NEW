@@ -57,6 +57,7 @@
           align="center"
           prop="createTime"
           label="创建时间"
+          width="180"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
@@ -66,7 +67,7 @@
         <el-table-column
           align="center"
           label="操作"
-          width="200"
+          width="120"
         >
           <template slot-scope="scope">
             <el-button

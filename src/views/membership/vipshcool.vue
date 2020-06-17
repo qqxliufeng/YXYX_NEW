@@ -163,7 +163,7 @@
         <el-form-item label="服务内容">
           <el-col :span="24">
             <el-input
-              v-model="recordModel.content"
+              v-model="recordModel.record"
               style="width: 100%"
               type="textarea"
               :rows="5"
@@ -241,7 +241,7 @@ export default {
       dialogAddRecordVisible: false,
       recordModel: {
         schoolId: '',
-        content: ''
+        record: ''
       }
     }
   },
@@ -327,7 +327,7 @@ export default {
       }
     },
     addRecordItem() {
-      if (!this.recordModel.content) {
+      if (!this.recordModel.record) {
         this.$errorMsg('请输入服务内容')
         return
       }

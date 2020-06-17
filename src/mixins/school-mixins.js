@@ -12,7 +12,8 @@ export default {
     return {
       schoolList: [],
       teacherList: [],
-      youXingUserList: []
+      youXingUserList: [],
+      roleList: []
     }
   },
   methods: {
@@ -96,6 +97,21 @@ export default {
           callback()
         }
       }
+    },
+    /**
+     * 获取所有的角色
+     */
+    getRoleList() {
+      this.$http({
+        url: this.$urlPath.queryRoles,
+        methods: this.HTTP_GET,
+        data: {
+          pageNum: 0,
+          pageSize: 100
+        }
+      }).then(res => {
+        console.log(res)
+      })
     }
   }
 }

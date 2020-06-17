@@ -313,6 +313,8 @@ export default {
         address: '', // 家庭住址
         sex: 1, // 性别，1男 0女
         isLock: 0, // 状态，0正常 1禁用
+        isSchoolLeader: 0, // 是否校长 0否 1是
+        roleId: '', // 角色id
         note: ''
       },
       dialogFormVisible: false,
@@ -331,6 +333,7 @@ export default {
         })
       }
     })
+    this.getRoleList()
   },
   methods: {
     getData() {
@@ -397,7 +400,9 @@ export default {
       if (this.mode === 'add') {
         this.$http({
           url: this.$urlPath.saveTeacher,
-          data: this.teacherModel
+          data: this.teacherModel,
+          withRoleId: false,
+          withUserId: false
         }).then(res => {
           this.$successMsg('添加成功')
           this.getData()

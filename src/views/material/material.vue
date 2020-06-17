@@ -519,7 +519,17 @@ export default {
       }
     },
     handlerFormConfirm() {
+      if (!this.materialModel.textbookName) {
+        this.$errorMsg('请输入教材名称')
+        return
+      }
       this.dialogFormVisible = false
+      this.$http({
+        url: this.$urlPath.saveTextBook,
+        data: this.materialModel
+      }).then(res => {
+        console.log(res)
+      })
     },
     handlerUpdate(item) {
       this.dialogFormVisible = true

@@ -92,12 +92,13 @@
           align="center"
           prop="status"
           label="状态"
+          width="100"
           :formatter="statusFormatter"
         />
         <el-table-column
           align="center"
           label="操作"
-          min-width="180"
+          min-width="200"
           fixed="right"
         >
           <template slot-scope="scope">
@@ -107,7 +108,7 @@
               type="primary"
               :size="$style.tableButtonSize"
               @click="addEndTime(scope.row)"
-            >延期</el-button>
+            >延期时间</el-button>
             <!-- 只有在未激活的情况下才能编辑分配教材的 -->
             <el-button
               v-if="scope.row.status <= 2"
@@ -119,7 +120,7 @@
               type="warning"
               :size="$style.tableButtonSize"
               @click="grantTextBookList(scope.row)"
-            >授权列表</el-button>
+            >查看教材</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -367,56 +368,7 @@ export default {
         studyCardNum: 1,
         validityMonth: 1
       },
-      dialogFormVisible: false,
-      cardTypes: [
-        {
-          label: '小学正式卡',
-          value: 'P'
-        },
-        {
-          label: '小学体验卡',
-          value: 'TP'
-        },
-        {
-          label: '初中正式卡',
-          value: 'M'
-        },
-        {
-          label: '初中体验卡',
-          value: 'TM'
-        }
-      ],
-      grantTextBookLoading: false,
-      dialogGrantTextBookVisible: false,
-      grantTextBookTableData: [],
-      dialogEditVisible: false,
-      tempItem: {
-        studyCardId: 0,
-        status: 0,
-        endTime: ''
-      },
-      studyCardStatus: [
-        {
-          label: '未分配教材',
-          value: 0
-        },
-        {
-          label: '已分配教材',
-          value: 1
-        },
-        {
-          label: '未激活',
-          value: 2
-        },
-        {
-          label: '已激活',
-          value: 3
-        },
-        {
-          label: '已到期',
-          value: 4
-        }
-      ]
+      dialogFormVisible: false
     }
   },
   mounted() {
@@ -463,53 +415,6 @@ export default {
           this.$successMsg('生成成功')
           this.getData()
         })
-      })
-    },
-    /**
-     * 延长学习卡的到期时间
-     */
-    addEndTime(item) {
-      this.dialogEditVisible = true
-      this.tempItem.studyCardId = item.studyCardId
-      this.tempItem.status = item.status
-      this.endTime = item.endTime
-    },
-    handleEditDialogConfirm() {
-      if (!this.tempItem.endTime) {
-        this.$errorMsg('请输入到期时间')
-        return
-      }
-      this.$http({
-        url: this.$urlPath.editStudyCardInfo,
-        data: this.tempItem
-      }).then(res => {
-        this.dialogEditVisible = false
-        this.$successMsg('延期操作成功')
-        this.getData()
-      })
-    },
-    textBookList(item) {
-      this.$router.push({
-        name: 'TextBookList',
-        params: {
-          studyCardId: item.studyCardId,
-          studyCardCode: item.cardCode,
-          studyCardErcode: item.cardErcode
-        }
-      })
-    },
-    grantTextBookList(item) {
-      this.dialogGrantTextBookVisible = true
-      this.grantTextBookLoading = true
-      this.$http({
-        url: this.$urlPath.queryTextBookByStudyCardId,
-        methods: this.HTTP_GET,
-        data: {
-          studyCardId: item.studyCardId
-        }
-      }).then(res => {
-        this.grantTextBookLoading = false
-        this.grantTextBookTableData = res.obj
       })
     },
     getData() {
