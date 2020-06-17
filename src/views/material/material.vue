@@ -1,0 +1,554 @@
+<template>
+  <div class="container">
+    <table-header
+      title="基本操作"
+      :form-model-array="formModelArray"
+      :show-delete="false"
+      :show-add="true"
+      :show-search="true"
+      @onsearch="onSearch"
+      @onadd="onAdd"
+    >
+      <template slot="other">
+        <el-button
+          type="danger"
+          size="mini"
+          @click="downExcel"
+        >下载Excel模板</el-button>
+      </template>
+    </table-header>
+    <el-card :body-style="{padding: 0}">
+      <el-table
+        v-loading="loading"
+        :stripe="tableConfig.stripe"
+        :header-cell-style="tableConfig.headerCellStyle"
+        :data="tableData"
+        :border="tableConfig.border"
+        :size="tableConfig.size"
+        :default-sort="tableConfig.defalutSort"
+        :style="tableConfig.style"
+      >
+        <el-table-column
+          align="center"
+          prop="textbookId"
+          label="ID"
+          fixed="left"
+        />
+        <el-table-column
+          align="center"
+          prop="textbookName"
+          label="教材名称"
+          fixed="left"
+          width="90"
+        />
+        <el-table-column
+          align="center"
+          label="教材类型"
+          :formatter="typeFormatter"
+        />
+        <el-table-column
+          align="center"
+          label="教材类别"
+          :formatter="categoryFormatter"
+        />
+        <el-table-column
+          align="center"
+          prop="textbookVersionId"
+          label="教材版本"
+        />
+        <el-table-column
+          align="center"
+          prop="unLockCoins"
+          label="解锁优钻"
+        />
+        <el-table-column
+          align="center"
+          label="包含视频"
+          :formatter="videoFormatter"
+        />
+        <el-table-column
+          align="center"
+          label="配对练习"
+          :formatter="exercisesFormatter"
+        />
+        <el-table-column
+          align="center"
+          label="开放状态"
+          :formatter="openFormatter"
+        />
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+          width="160"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <div>{{ scope.row.createTime | parseTime }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="status"
+          label="状态"
+          :formatter="statusFormatter"
+        />
+        <el-table-column
+          align="center"
+          prop="resourceFileUrl"
+          label="资源地址"
+          width="200"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          label="操作"
+          min-width="250"
+          fixed="right"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              :size="$style.tableButtonSize"
+              @click="handlerUpdate(scope.row)"
+            >编辑</el-button>
+            <el-button
+              type="danger"
+              :size="$style.tableButtonSize"
+              @click="deleteItem(scope.row)"
+            >删除</el-button>
+            <el-dropdown
+              style="display: inline-block; margin-left: 10px"
+              :size="$style.tableButtonSize"
+              type="success"
+              split-button
+              @command="handleMaterialCommand"
+            >
+              更多
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{tag: 1, item: scope.row}">查看已授权的学校</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 2, item: scope.row}">授权到学校</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 3, item: scope.row}">生成教材</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 4, item: scope.row}">生成资源包</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+    <table-foot
+      :total="total"
+      :page-size="pageSize"
+      @prev-click="prevClick"
+      @next-click="nextClick"
+      @current-change="currentChange"
+      @refresh="reloadData"
+    />
+    <!-- 增加教材对话框 -->
+    <el-dialog
+      :title="mode === 'add' ? '添加教材' : '编辑教材信息'"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        label-position="right"
+        label-width="120px"
+        style="width: 90%; "
+      >
+        <el-form-item label="教材名称">
+          <el-col :span="24">
+            <el-input
+              v-model="materialModel.textbookName"
+              placeholder="请输入教材名称"
+            />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="解锁所需优钻">
+          <el-col :span="24">
+            <el-input-number
+              v-model="materialModel.unLockCoins"
+              :min="1"
+              size="small"
+              style="width: 100%"
+            />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="教材类型">
+          <el-col :span="24">
+            <el-select
+              v-model="materialModel.textbookType"
+              style="width: 100%"
+              placeholder="请选择教材类型"
+            >
+              <el-option
+                v-for="item of textbookTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="教材类别">
+          <el-col :span="24">
+            <el-select
+              v-model="materialModel.textbookCategory"
+              style="width: 100%"
+              placeholder="请选择教材类型"
+            >
+              <el-option
+                v-for="item of textbookCategorys"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="教材版本">
+          <el-col :span="24">
+            <el-input
+              v-model="materialModel.textbookVersionId"
+              type="textarea"
+              :rows="3"
+              maxlength="100"
+              placeholder="请输入教材家庭住址（必填）"
+            />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="是否对用户开放">
+          <el-col :span="24">
+            <el-radio-group v-model="materialModel.isOpenUser">
+              <el-radio :label="0">是</el-radio>
+              <el-radio :label="1">否</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="是否有视频">
+          <el-col :span="24">
+            <el-radio-group v-model="materialModel.isHasVideo">
+              <el-radio :label="0">有</el-radio>
+              <el-radio :label="1">没有</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="是否有配对练习">
+          <el-col :span="24">
+            <el-radio-group v-model="materialModel.isHasExercises">
+              <el-radio :label="0">有</el-radio>
+              <el-radio :label="1">没有</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="用户状态">
+          <el-col :span="24">
+            <el-radio-group v-model="materialModel.status">
+              <el-radio :label="0">正常</el-radio>
+              <el-radio :label="1">禁用</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handlerFormConfirm"
+        >确定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 增加教材对话框 -->
+    <!-- 查看教材授权的学校对话框 -->
+    <el-dialog
+      title="授权教材列表"
+      :visible.sync="dialogGrantTextBookVisible"
+    >
+      <el-table
+        v-loading="grantTextBookLoading"
+        :stripe="tableConfig.stripe"
+        :header-cell-style="tableConfig.headerCellStyle"
+        :data="grantTextBookTableData"
+        :border="tableConfig.border"
+        :size="tableConfig.size"
+        :default-sort="tableConfig.defalutSort"
+        :style="tableConfig.style"
+      >
+        <el-table-column
+          align="center"
+          prop="textbookId"
+          label="ID"
+        />
+        <el-table-column
+          align="center"
+          prop="textbookName"
+          label="教材名称"
+        />
+        <el-table-column
+          align="center"
+          prop="textbookVersionId"
+          label="教材版本"
+        />
+        <el-table-column
+          align="center"
+          prop="resourceFileUrl"
+          label="资源地址"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <span>{{ scope.row.createTime | parseTime }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogGrantTextBookVisible = false"
+        >知道了</el-button>
+      </div>
+    </el-dialog>
+    <!-- 查看教材授权的学校对话框 -->
+  </div>
+</template>
+
+<script>
+import tableMixins from '../../mixins/table-mixins'
+import { blobToExecl } from '../../api/common'
+const textbookTypes = [
+  {
+    label: '词汇',
+    value: 0
+  },
+  {
+    label: '语法',
+    value: 1
+  },
+  {
+    label: '体验',
+    value: 2
+  },
+  {
+    label: '自然拼读',
+    value: 3
+  }
+]
+const textbookCategorys = [
+  {
+    label: 'YouCan',
+    value: 0
+  },
+  {
+    label: '拳心同步',
+    value: 1
+  },
+  {
+    label: '智能英语',
+    value: 2
+  }
+]
+export default {
+  name: 'Material',
+  mixins: [tableMixins],
+  data() {
+    return {
+      textbookTypes,
+      textbookCategorys,
+      formModelArray: [
+        {
+          id: 1,
+          value: '',
+          label: '教材名称',
+          name: 'textbookName',
+          span: 5,
+          type: 'input'
+        },
+        {
+          id: 2,
+          value: '',
+          label: '教材类型',
+          name: 'textbookType',
+          span: 5,
+          type: 'select',
+          selectOptions: textbookTypes
+        },
+        {
+          id: 3,
+          value: '',
+          label: '教材类别',
+          name: 'textbookCategory',
+          span: 5,
+          type: 'select',
+          selectOptions: textbookCategorys
+        },
+        {
+          id: 4,
+          value: '',
+          label: '教材版本',
+          name: 'textbookVersionId',
+          span: 5,
+          type: 'input'
+        }
+      ],
+      materialModel: {
+        textbookName: '', // 教材名称
+        unLockCoins: 0, // 解锁所需优钻
+        textbookType: 0, // 教材类型 0词汇 1语法 2体验 3自然拼读
+        textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
+        textbookVersionId: 1, // 教材版本主键ID
+        isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
+        schoolIds: '', // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
+        isHasVideo: 0, // 是否有视频 0是 1否
+        isHasExercises: 0, // 是否有配对练习 0是 1否
+        status: 0// 教材状态 0正常 1禁用
+      },
+      mode: 'add',
+      dialogFormVisible: false
+    }
+  },
+  mounted() {
+    this.getData()
+  },
+  methods: {
+    typeFormatter(item) {
+      switch (item.textbookType) {
+        case 0:
+          return '词汇'
+        case 1:
+          return '语法'
+        case 2:
+          return '体验'
+        case 3:
+          return '自然拼读'
+      }
+    },
+    categoryFormatter(item) {
+      switch (item.textbookCategory) {
+        case 0:
+          return 'YouCan'
+        case 1:
+          return '拳心同步'
+        case 2:
+          return '智能英语'
+      }
+    },
+    videoFormatter(item) {
+      return item.isHasVideo === 0 ? '是' : '否'
+    },
+    exercisesFormatter(item) {
+      return item.isHasExercises === 0 ? '是' : '否'
+    },
+    openFormatter(item) {
+      return item.isOpenUser === 0 ? '是' : '否'
+    },
+    statusFormatter(item) {
+      return item.status === 0 ? '正常' : '禁用'
+    },
+    onAdd() {
+      this.dialogFormVisible = true
+      this.mode = 'add'
+      this.materialModel = {
+        textbookName: '', // 教材名称
+        unLockCoins: 0, // 解锁所需优钻
+        textbookType: 0, // 教材类型 0词汇 1语法 2体验 3自然拼读
+        textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
+        textbookVersionId: 1, // 教材版本主键ID
+        isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
+        schoolIds: '', // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
+        isHasVideo: 0, // 是否有视频 0是 1否
+        isHasExercises: 0, // 是否有配对练习 0是 1否
+        status: 0// 教材状态 0正常 1禁用
+      }
+    },
+    onSearch() {
+      this.$http({
+        url: this.$urlPath.queryTextBookListLike,
+        methods: this.HTTP_GET,
+        data: this.generatorFormObj()
+      }).then(res => {
+        this.onSuccess(res.obj)
+      })
+    },
+    getData() {
+      this.$http({
+        url: this.$urlPath.queryTextBookList,
+        methods: this.HTTP_GET,
+        data: {
+          pageNum: this.page,
+          pageSize: this.pageSize
+        }
+      }).then(res => {
+        this.onSuccess(res.obj)
+      })
+    },
+    handleMaterialCommand({ tag, item }) {
+      switch (tag) {
+        case 1: // 查看授权的学校
+          this.$http({
+            url: this.$urlPath.querySchoolByTextBookId,
+            methods: this.HTTP_GET,
+            data: {
+              textbookId: item.textbookId
+            }
+          }).then(res => {
+            console.log(res)
+          })
+          break
+        case 2: // 授权到某一个学校
+          console.log(tag)
+          break
+        case 3: // 生成教材
+          console.log(tag)
+          break
+        case 4: // 生成资源包
+          console.log(tag)
+          break
+      }
+    },
+    handlerFormConfirm() {
+      this.dialogFormVisible = false
+    },
+    handlerUpdate(item) {
+      this.dialogFormVisible = true
+      this.mode = 'edit'
+      this.materialModel.textbookId = item.textbookId
+      this.materialModel.textbookName = item.textbookName
+      this.materialModel.unLockCoins = item.unLockCoins // 解锁所需优钻
+      this.materialModel.textbookType = item.textbookType // 教材类型 0词汇 1语法 2体验 3自然拼读
+      this.materialModel.textbookCategory = item.textbookCategory // 教材类别 0YouCan 1拳心同步 2智能英语
+      this.materialModel.textbookVersionId = item.textbookVersionId // 教材版本主键ID
+      this.materialModel.isOpenUser = item.isOpenUser // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
+      this.materialModel.schoolIds = item.schoolIds // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
+      this.materialModel.isHasVideo = item.isHasVideo // 是否有视频 0是 1否
+      this.materialModel.isHasExercises = item.isHasExercises // 是否有配对练习 0是 1否
+      this.materialModel.status = item.status// 教材状态 0正常 1禁用
+    },
+    downExcel() {
+      this.$http({
+        url: this.$urlPath.uploadTextBookExcelTemplate,
+        methods: this.HTTP_GET,
+        data: {},
+        responseType: `blob`
+      }).then(res => {
+        blobToExecl(res)
+      })
+    }
+  },
+  deleteItem(item) {
+    this.$warningConfirm('确定要删除此教材信息吗，删除后不可恢复。', _ => { })
+  }
+}
+</script>

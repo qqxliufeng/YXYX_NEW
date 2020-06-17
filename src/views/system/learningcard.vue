@@ -36,23 +36,27 @@
           align="center"
           type="selection"
           width="55"
+          fixed="left"
         />
         <el-table-column
           align="center"
           prop="cardCode"
           label="学习卡编码"
-          width
+          fixed="left"
+          width="90"
         />
         <el-table-column
           align="center"
           prop="cardErcode"
           label="二维码"
+          width="150"
           show-overflow-tooltip
         />
         <el-table-column
           align="center"
           prop="cardType"
           label="学习卡类型"
+          width="100"
           :formatter="cardTypeFormatter"
         />
         <el-table-column
@@ -68,12 +72,14 @@
           align="center"
           prop="createTime"
           label="创建时间"
+          width="160"
           show-overflow-tooltip
         />
         <el-table-column
           align="center"
           prop="endTime"
           label="到期时间"
+          width="100"
           :formatter="endTimeFormatter"
         />
         <el-table-column
@@ -91,7 +97,8 @@
         <el-table-column
           align="center"
           label="操作"
-          width="280"
+          min-width="180"
+          fixed="right"
         >
           <template slot-scope="scope">
             <!-- 只有在已激活或者已过期的情况下才能修改到期时间 -->

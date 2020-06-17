@@ -190,14 +190,34 @@
         </el-form-item>
       </el-form>
     </el-card>
+    <add-study-card-to-school ref="studyCardParams" />
+    <el-card
+      body-style="padding: 0"
+      style="margin-top: 10px"
+    >
+      <div
+        slot="header"
+        class="flex justify-end align-center"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="addSchoolInfo"
+        >保存</el-button>
+      </div>
+    </el-card>
   </div>
 </template>
 
 <script>
 import schoolMixins from '../../mixins/school-mixins'
+import AddStudyCardToSchool from './components/AddStudyCardToSchool'
 import { Loading } from 'element-ui'
 export default {
   name: 'EditSchool',
+  components: {
+    AddStudyCardToSchool
+  },
   mixins: [schoolMixins],
   data() {
     return {
@@ -326,6 +346,25 @@ export default {
       postData.schoolId = this.schoolModel.schoolId
       postData.note = this.schoolModel.note
       postData.schoolType = this.schoolModel.schoolType
+      const { saveType, studyCardParams } = this.$refs.studyCardParams.getStudyCardInfo()
+      if (studyCardParams && studyCardParams.length > 0) {
+        postData.saveType = saveType
+        const filterResult = studyCardParams.some(it => {
+          return it.cardType === '' || it.cardNum === 0 || it.tempTextbookIds.length === 0
+        })
+        if (filterResult) {
+          this.$errorMsg('请输入学习卡的具体信息')
+          return
+        }
+        postData.studyCardParams = studyCardParams.map(it => {
+          return {
+            cardType: it.cardType,
+            cardNum: it.cardNum,
+            cardCode: it.cardCode,
+            textbookIds: it.tempTextbookIds.join(',')
+          }
+        })
+      }
       const loadingInstance = Loading.service({
         target: document.getElementById('content-wrapper')
       })

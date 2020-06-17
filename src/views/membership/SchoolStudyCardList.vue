@@ -54,6 +54,7 @@
           align="center"
           prop="createTime"
           label="创建时间"
+          width="160"
           show-overflow-tooltip
         />
         <el-table-column

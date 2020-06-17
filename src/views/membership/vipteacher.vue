@@ -28,28 +28,6 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <!-- accountNonExpired: true
-accountNonLocked: true
-address: null
-authorities: [{authority: "ROLE_jyzg"}]
-createId: 1
-createTime: "2020-03-27 16:31:06"
-credentialsNonExpired: true
-dept: {createId: 1, createTime: "2020-03-13 21:31:35", deptCode: null, deptId: 4, deptName: "教研部", dr: 0,…}
-deptId: 4
-dr: 0
-enabled: true
-isLock: 0
-isSalesLeader: 0
-isSchoolLeader: 0
-isyxuser: 0
-note: null
-phone: "12345678900"
-photo: null
-roleId: 2
-roles: [,…]
-schoolId: 1
-sex: 1-->
         <el-table-column
           align="center"
           label="ID"

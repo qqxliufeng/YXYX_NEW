@@ -190,8 +190,45 @@ export const studentAssignedTextBook = baseModuleUrl + 'studentAssignedTextBook'
 
 // ****************会员管理 --- 学生管理 **************** //
 
-// ****************教材信息列表**************** //
+// ****************教材信息**************** //
 
 export const queryTextBookList = baseModuleUrl + 'queryTextBookList'
 
-// ****************教材信息列表**************** //
+export const queryTextBookListLike = baseModuleUrl + 'queryTextBookListLike'
+
+export const saveTextBook = baseModuleUrl + 'saveTextBook'
+
+export const updateTextBook = baseModuleUrl + 'updateTextBook'
+
+export const deleteTextBook = baseModuleUrl + 'deleteTextBook'
+
+export const querySchoolByTextBookId = baseModuleUrl + 'querySchoolByTextBookId'
+
+export const uploadTextBookExcelTemplate = baseModuleUrl + 'uploadTextBookExcelTemplate'
+
+export const importTextBook = baseModuleUrl + 'importTextBook'
+
+export const uploadTextBookWordTxt = baseModuleUrl + 'uploadTextBookWordTxt'
+
+export const uploadTextBookEgsTxt = baseModuleUrl + 'uploadTextBookEgsTxt'
+
+export const importAudioAndImage = baseModuleUrl + 'importAudioAndImage'
+
+export const generateSubjectFromWord = baseModuleUrl + 'generateSubjectFromWord'
+
+export const grantTextBookToSchool = baseModuleUrl + 'grantTextBookToSchool'
+
+export const cancelGrantTextBookToSchool = baseModuleUrl + 'cancelGrantTextBookToSchool'
+
+// ****************教材信息**************** //
+
+// ****************课程信息**************** //
+
+export const queryCourseByTextBook = baseModuleUrl + 'queryCourseByTextBook'
+
+export const queryCourseLevel = baseModuleUrl + 'queryCourseLevel'
+
+export const queryCourseLevelGroup = baseModuleUrl + 'queryCourseLevelGroup'
+
+// ****************课程信息**************** //
+

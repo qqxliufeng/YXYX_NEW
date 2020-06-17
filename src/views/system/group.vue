@@ -57,6 +57,7 @@
           align="center"
           prop="roles[0].roleName"
           label="用户角色"
+          width="100"
           show-overflow-tooltip
         />
         <el-table-column
