@@ -17,7 +17,7 @@
       @onadd="onAdd"
       @onsearch="onSearch($urlPath.queryStudentListLike)"
     />
-    <el-card :body-style="{padding: '2px'}">
+    <el-card :body-style="{ padding: '2px' }">
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -42,7 +42,9 @@
           align="center"
           label="管理员"
         >
-          <template slot-scope="scope">{{ scope.row.schoolLeaderName | emptyFormat }}</template>
+          <template slot-scope="scope">{{
+            scope.row.schoolLeaderName | emptyFormat
+          }}</template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -55,7 +57,9 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <span class="text-cut">{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+            <span class="text-cut">{{
+              scope.row.province + "/" + scope.row.city + "/" + scope.row.area
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -73,13 +77,17 @@
           label="创建时间"
           prop="createTime"
         >
-          <template slot-scope="scope">{{ scope.row.createTime | parseTime }}</template>
+          <template slot-scope="scope">{{
+            scope.row.createTime | parseTime
+          }}</template>
         </el-table-column>
         <el-table-column
           align="center"
           label="到期时间"
         >
-          <template slot-scope="scope">{{ scope.row.endTime | parseTime }}</template>
+          <template slot-scope="scope">{{
+            scope.row.endTime | parseTime
+          }}</template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -97,7 +105,7 @@
               :size="$style.tableButtonSize"
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
               @click="changeLockStatus(scope.row)"
-            >{{ scope.row.status === 0 ? '禁用' : '正常' }}</el-button>
+            >{{ scope.row.status === 0 ? "禁用" : "正常" }}</el-button>
             <el-button
               :size="$style.tableButtonSize"
               type="primary"
@@ -252,7 +260,7 @@
 import tableMixins from '../../mixins/table-mixins'
 import schoolMixins from '../../mixins/school-mixins'
 export default {
-  name: 'VipClass',
+  name: 'VIPClass',
   mixins: [tableMixins, schoolMixins],
   data() {
     return {
@@ -366,11 +374,13 @@ export default {
         },
         withRoleId: true,
         withUserId: false
-      }).then(res => {
-        this.onSuccess(res.obj)
-      }).catch(error => {
-        this.onError(error)
       })
+        .then(res => {
+          this.onSuccess(res.obj)
+        })
+        .catch(error => {
+          this.onError(error)
+        })
     },
     onAdd() {
       this.dialogFormVisible = true
@@ -442,4 +452,3 @@ export default {
   }
 }
 </script>
-

@@ -12,6 +12,55 @@ const affixMenuList = [
   '/system/group'
 ]
 
+// /system
+// permission.js:121 /system/group
+// permission.js:121 /system/department
+// permission.js:121 /system/roles
+// permission.js:121 /system/menu
+// permission.js:121 /system/menuButton
+// permission.js:121 /system/learningcard
+// permission.js:121 /system/feedback
+// permission.js:121 /system/logmanagement
+// permission.js:121 /message
+// permission.js:121 /message/group
+// permission.js:121 /message/school
+// permission.js:121 /membership
+// permission.js:121 /membership/vipshcool
+// permission.js:121 /membership/vipteacher
+// permission.js:121 /membership/vipclass
+// permission.js:121 /membership/vipstudent
+// permission.js:121 /material
+// permission.js:121 /material/material
+// permission.js:121 /material/distribution
+// permission.js:121 /material/course
+// permission.js:121 /material/video
+// permission.js:121 /material/question
+// permission.js:121 /material/words
+// permission.js:121 /arena
+// permission.js:121 /arena/online
+// permission.js:121 /arena/testpaper
+// permission.js:121 /integral
+// permission.js:121 /integral/set
+// permission.js:121 /integral/order
+// permission.js:121 /luckdraw
+// permission.js:121 /luckdraw/prize
+// permission.js:121 /luckdraw/lucklist
+const pathMapName = new Map()
+pathMapName.set('group', 'Group')
+pathMapName.set('department', 'Department')
+pathMapName.set('roles', 'Roles')
+pathMapName.set('menu', 'Menu')
+pathMapName.set('menuButton', 'MenuButton')
+pathMapName.set('learningcard', 'StudyCard')
+pathMapName.set('feedback', 'feedback')
+pathMapName.set('logmanagement', 'logmanagement')
+pathMapName.set('vipshcool', 'VIPShcool')
+pathMapName.set('vipteacher', 'VIPTeacher')
+pathMapName.set('vipclass', 'VIPClass')
+pathMapName.set('vipstudent', 'VIPStudent')
+pathMapName.set('material', 'Material')
+pathMapName.set('distribution', 'Distribution')
+
 /**
  * Use meta.role to determine if the current user has permission
  * @param roles
@@ -56,19 +105,38 @@ function getViews(path) {
   }
 }
 
+function getCharCount(str, char) {
+  var regex = new RegExp(char, 'g') // 使用g表示整个字符串都要匹配
+  var result = str.match(regex) // match方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
+  var count = !result ? 0 : result.length
+  return count
+}
+
 export function generaMenu(routes, data) {
   data.forEach(item => {
-    const isMenu = (item.menuUrl.split('/')).length - 1
+    const isMenu = getCharCount(item.menuUrl, '/') === 1
+    let pathName = ''
+    if (isMenu) {
+      pathName = item.menuUrl
+    } else {
+      const tempPath = item.menuUrl.split('/')[2]
+      if (pathMapName.has(tempPath)) {
+        pathName = pathMapName.get(tempPath)
+      } else {
+        pathName = tempPath
+      }
+    }
+    console.log(item.menuUrl)
     const menu = {
       path: item.menuUrl === '#' ? item.menuUrl + '_key' : item.menuUrl,
-      component: isMenu === 1 ? Layout : getViews(item.menuUrl),
+      component: isMenu ? Layout : getViews(item.menuUrl),
       children: [],
       hidden: hiddenMenuList.includes(item.menuUrl),
-      name: item.menuUrl,
-      meta: { title: item.menuName, id: item.menuId, roles: ['admin'], icon: 'people', affix: affixMenuList.includes(item.menuUrl) }
+      name: pathName,
+      meta: { title: item.menuName, noCache: false, id: item.menuId, roles: ['admin'], icon: 'people', affix: affixMenuList.includes(item.menuUrl) }
     }
     menuButtonModel[menu.name] = item.menuButtons
-    if (isMenu === 1) {
+    if (isMenu) {
       menu.redirect = 'noRedirect'
     }
     if (item.children) {

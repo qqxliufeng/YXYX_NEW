@@ -17,7 +17,7 @@
       @onadd="onAdd"
       @onsearch="onSearch($urlPath.queryTeacherListLike)"
     />
-    <el-card :body-style="{padding: '2px'}">
+    <el-card :body-style="{ padding: '2px' }">
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -61,7 +61,9 @@
           align="center"
           label="性别"
         >
-          <template slot-scope="scope">{{ scope.row.sex === 1 ? '男' : '女' }}</template>
+          <template slot-scope="scope">{{
+            scope.row.sex === 1 ? "男" : "女"
+          }}</template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -69,7 +71,9 @@
           label="是否校长"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">{{ scope.row.isSchoolLeader === 1 ? '是' : '否' }}</template>
+          <template slot-scope="scope">{{
+            scope.row.isSchoolLeader === 1 ? "是" : "否"
+          }}</template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -77,7 +81,9 @@
           label="是否主管"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">{{ scope.row.isSalesLeader===1?'是':'否' }}</template>
+          <template slot-scope="scope">{{
+            scope.row.isSalesLeader === 1 ? "是" : "否"
+          }}</template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -88,7 +94,7 @@
         >
           <template slot-scope="scope">
             <div class="text-cut">
-              {{ scope.row.address ? scope.row.address : '暂无' }}
+              {{ scope.row.address ? scope.row.address : "暂无" }}
             </div>
           </template>
         </el-table-column>
@@ -98,7 +104,9 @@
           label="状态"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">{{ scope.row.isLock === 0 ? '正常' : '禁用' }}</template>
+          <template slot-scope="scope">{{
+            scope.row.isLock === 0 ? "正常" : "禁用"
+          }}</template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -106,23 +114,38 @@
           prop="createTime"
           width="170"
         >
-          <template slot-scope="scope">{{ scope.row.createTime | parseTime }}</template>
+          <template slot-scope="scope">{{
+            scope.row.createTime | parseTime
+          }}</template>
         </el-table-column>
         <el-table-column
           align="center"
           label="操作"
           fixed="right"
-          min-width="200"
+          min-width="250"
         >
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
-              :type="scope.row.isLock === 0 ? 'danger' : 'warning'"
-              @click="changeLockStatus({item: scope.row, statusField: 'isLock', data: { userId: scope.row.userId }, lockUrl: $urlPath.lockTeacher, unLockUrl: $urlPath.unLockTeacher})"
-            >{{ scope.row.isLock === 0 ? '禁用' : '解锁' }}</el-button>
+              type="primary"
+              @click="hanlderUpdate(scope.row)"
+            >编辑</el-button>
             <el-button
               :size="$style.tableButtonSize"
-              type="primary"
+              :type="scope.row.isLock === 0 ? 'danger' : 'warning'"
+              @click="
+                changeLockStatus({
+                  item: scope.row,
+                  statusField: 'isLock',
+                  data: { userId: scope.row.userId },
+                  lockUrl: $urlPath.lockTeacher,
+                  unLockUrl: $urlPath.unLockTeacher
+                })
+              "
+            >{{ scope.row.isLock === 0 ? "禁用" : "解锁" }}</el-button>
+            <el-button
+              :size="$style.tableButtonSize"
+              type="success"
               @click="initPassword(scope.row)"
             >重置密码</el-button>
           </template>
@@ -164,6 +187,23 @@
             </el-select>
           </el-col>
         </el-form-item>
+        <el-form-item label="老师角色">
+          <el-col :span="24">
+            <el-select
+              v-model="teacherModel.roleId"
+              style="width: 100%"
+              class="filter-item"
+              placeholder="请选择老师角色"
+            >
+              <el-option
+                v-for="item of roleList"
+                :key="item.roleId"
+                :label="item.roleName"
+                :value="item.roleId"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
         <el-form-item label="老师名称">
           <el-col :span="24">
             <el-input
@@ -199,6 +239,14 @@
               maxlength="100"
               placeholder="请输入老师家庭住址（必填）"
             />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="是否校长">
+          <el-col :span="24">
+            <el-radio-group v-model="teacherModel.isSchoolLeader">
+              <el-radio :label="0">否</el-radio>
+              <el-radio :label="1">是</el-radio>
+            </el-radio-group>
           </el-col>
         </el-form-item>
         <el-form-item label="老师性别">
@@ -256,7 +304,7 @@ import tableMixins from '../../mixins/table-mixins'
 import { isvalidPhone } from '../../utils/validate'
 import schoolMixins from '../../mixins/school-mixins'
 export default {
-  name: 'VipTeacher',
+  name: 'VIPTeacher',
   mixins: [tableMixins, schoolMixins],
   data() {
     return {
@@ -346,20 +394,24 @@ export default {
         },
         withRoleId: false,
         withUserId: false
-      }).then(res => {
-        this.onSuccess(res.obj)
-      }).catch(error => {
-        this.onError(error)
       })
+        .then(res => {
+          this.onSuccess(res.obj)
+        })
+        .catch(error => {
+          this.onError(error)
+        })
     },
     onAdd() {
       this.dialogFormVisible = true
       this.mode = 'add'
       this.teacherModel = {
         schoolId: '',
+        roleId: '',
         userName: '',
         phone: '',
         address: '',
+        isSchoolLeader: 0,
         sex: 1,
         isLock: 0
       }
@@ -368,10 +420,12 @@ export default {
       this.dialogFormVisible = true
       this.mode = 'edit'
       this.teacherModel.schoolId = item.schoolId
-      this.teacherModel.userName = item.userName
+      this.teacherModel.roleId = item.roleId
+      this.teacherModel.userName = item.username
       this.teacherModel.phone = item.phone
       this.teacherModel.address = item.address
       this.teacherModel.sex = item.sex
+      this.teacherModel.isSchoolLeader = item.isSchoolLeader
       this.teacherModel.isLock = item.isLock
       this.teacherModel.note = item.note
     },

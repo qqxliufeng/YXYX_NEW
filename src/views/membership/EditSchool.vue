@@ -376,6 +376,7 @@ export default {
         this.$successMsg('学校信息修改成功')
         this.$nextTick(_ => {
           loadingInstance.close()
+          this.$closeView(this.$route.path)
         })
       }).catch(error => {
         console.log(error)

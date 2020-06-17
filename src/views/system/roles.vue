@@ -1,6 +1,10 @@
 <template>
   <div class="container">
-    <table-header title="基本操作" :show-delete="false" @onadd="onAdd" />
+    <table-header
+      title="基本操作"
+      :show-delete="false"
+      @onadd="onAdd"
+    />
     <el-card :body-style="{padding: 0}">
       <el-table
         v-loading="loading"
@@ -13,16 +17,40 @@
         :style="tableConfig.style"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column align="center" label="ID" prop="roleId" />
-        <el-table-column align="center" prop="roleName" label="角色名称" />
-        <el-table-column align="center" prop="roleCode" label="角色编码" />
-        <el-table-column align="center" label="所属部门">
+        <el-table-column
+          align="center"
+          label="ID"
+          prop="roleId"
+        />
+        <el-table-column
+          align="center"
+          prop="roleName"
+          label="角色名称"
+        />
+        <el-table-column
+          align="center"
+          prop="roleCode"
+          label="角色编码"
+        />
+        <el-table-column
+          align="center"
+          label="所属部门"
+        >
           <template slot-scope="scope">
             <el-link>{{ scope.row.dept.deptName | emptyFormat }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="createTime" label="创建时间" />
-        <el-table-column align="center" prop="dr" label="删除状态" :formatter="statusFormatter" />
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+        />
+        <el-table-column
+          align="center"
+          prop="dr"
+          label="删除状态"
+          :formatter="statusFormatter"
+        />
         <el-table-column
           align="center"
           label="操作"
@@ -58,7 +86,10 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
-    <el-dialog :visible.sync="dialogMenuVisible" title="角色菜单权限">
+    <el-dialog
+      :visible.sync="dialogMenuVisible"
+      title="角色菜单权限"
+    >
       <el-tree
         ref="menuTree"
         :data="menuObj.roleMenus"
@@ -68,12 +99,25 @@
         :default-checked-keys="menuObj.defalutCheckedKeys"
         :props="menuObj.defaultProps"
       />
-      <span slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogMenuVisible = false">取消</el-button>
-        <el-button :size="$style.dialogButtonSize" type="primary" @click="roleMenusConfirm">确认</el-button>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogMenuVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="roleMenusConfirm"
+        >确认</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="modeObj.mode === 'add' ? '添加角色' : '编辑角色'" :visible.sync="dialogFormVisible">
+    <el-dialog
+      :title="modeObj.mode === 'add' ? '添加角色' : '编辑角色'"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form
         ref="dataForm"
         :model="modeObj.temp"
@@ -81,19 +125,39 @@
         label-width="120px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="角色名称" prop="roleName">
+        <el-form-item
+          label="角色名称"
+          prop="roleName"
+        >
           <el-col :span="20">
-            <el-input v-model="modeObj.temp.roleName" placeholder="请输入角色名称" />
+            <el-input
+              v-model="modeObj.temp.roleName"
+              placeholder="请输入角色名称"
+            />
           </el-col>
         </el-form-item>
-        <el-form-item label="角色编码" prop="roleCode">
+        <el-form-item
+          label="角色编码"
+          prop="roleCode"
+        >
           <el-col :span="20">
-            <el-input v-model="modeObj.temp.roleCode" placeholder="请输入角色编码" />
+            <el-input
+              v-model="modeObj.temp.roleCode"
+              placeholder="请输入角色编码"
+            />
           </el-col>
         </el-form-item>
-        <el-form-item label="所属部门" prop="deptId">
+        <el-form-item
+          label="所属部门"
+          prop="deptId"
+        >
           <el-col :span="20">
-            <el-select v-model="modeObj.temp.deptId" class="filter-item" style="width: 100%" placeholder="请选择部门">
+            <el-select
+              v-model="modeObj.temp.deptId"
+              class="filter-item"
+              style="width: 100%"
+              placeholder="请选择部门"
+            >
               <el-option
                 v-for="item of allDepts"
                 :key="item.deptId"
@@ -104,9 +168,19 @@
           </el-col>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogFormVisible = false">取消</el-button>
-        <el-button :size="$style.dialogButtonSize" type="primary" @click="handleDialogConfirm">确定</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handleDialogConfirm"
+        >确定</el-button>
       </div>
     </el-dialog>
   </div>

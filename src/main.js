@@ -75,6 +75,15 @@ Vue.prototype.$errorMsg = function (message = '') {
   this.$message.error(message)
 }
 
+Vue.prototype.$closeView = function (path) {
+  if (!path) {
+    return
+  }
+  this.$store.dispatch('tagsView/delView', { path }).then(_ => {
+    this.$router.go(-1)
+  })
+}
+
 Vue.prototype.$warningConfirm = function (message = '', handlerFunction = null) {
   this.$confirm(message, '提示', {
     confirmButtonText: '确定',

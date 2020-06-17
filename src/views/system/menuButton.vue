@@ -18,18 +18,48 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <el-table-column align="center" prop="buttonId" label="ID" />
-        <el-table-column align="center" prop="buttonSequence" label="序号" show-overflow-tooltip />
-        <el-table-column align="center" prop="buttonName" label="菜单名称" />
-        <el-table-column align="center" prop="buttonCode" label="菜单编码" />
-        <el-table-column align="center" prop="createTime" label="创建时间" show-overflow-tooltip />
+        <el-table-column
+          align="center"
+          prop="buttonId"
+          label="ID"
+        />
+        <el-table-column
+          align="center"
+          prop="buttonSequence"
+          label="序号"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          prop="buttonName"
+          label="菜单名称"
+        />
+        <el-table-column
+          align="center"
+          prop="buttonCode"
+          label="菜单编码"
+        />
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+        />
         <el-table-column
           align="center"
           label="操作"
         >
           <template slot-scope="scope">
-            <el-button type="primary" :size="$style.tableButtonSize" @click="handleUpdate(scope.row)">编辑</el-button>
-            <el-button type="danger" :size="$style.tableButtonSize" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button
+              type="primary"
+              :size="$style.tableButtonSize"
+              @click="handleUpdate(scope.row)"
+            >编辑</el-button>
+            <el-button
+              type="danger"
+              :size="$style.tableButtonSize"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -46,7 +76,7 @@ export default {
     this.getData()
   },
   methods: {
-    onAdd() {},
+    onAdd() { },
     handleDelete(item) {
       this.$warningConfirm('是否要删除此按钮？', _ => {
         this.$http({
@@ -60,7 +90,7 @@ export default {
         })
       })
     },
-    handleUpdate() {},
+    handleUpdate() { },
     getData() {
       this.$http({
         url: this.$urlPath.queryAllButtonInMenu,

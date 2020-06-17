@@ -20,7 +20,7 @@
         >批量下载学习卡</el-button>
       </template>
     </table-header>
-    <el-card :body-style="{padding: 0}">
+    <el-card :body-style="{ padding: 0 }">
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -65,7 +65,7 @@
           label="有效期"
         >
           <template slot-scope="scope">
-            <span>{{ scope.row.validityMonth + '个月' }}</span>
+            <span>{{ scope.row.validityMonth + "个月" }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -309,7 +309,7 @@ import tableMixins from '../../mixins/table-mixins'
 import studyCardMixins from '../../mixins/study-card-mixins'
 import { blobToExecl } from '../../api/common'
 export default {
-  name: 'MenuButton',
+  name: 'StudyCard',
   mixins: [tableMixins, studyCardMixins],
   data() {
     return {
@@ -391,18 +391,22 @@ export default {
     },
     downCards() {
       if (this.canHandlerItems()) {
-        this.confirmHandlerMultiItems('确定要下载此记录吗？', 'studyCardId', ids => {
-          this.$http({
-            url: this.$urlPath.uploadStudyCardExcel,
-            methods: this.HTTP_GET,
-            data: {
-              studyCardIds: ids
-            },
-            responseType: `blob`
-          }).then(res => {
-            blobToExecl(res)
-          })
-        })
+        this.confirmHandlerMultiItems(
+          '确定要下载此记录吗？',
+          'studyCardId',
+          ids => {
+            this.$http({
+              url: this.$urlPath.uploadStudyCardExcel,
+              methods: this.HTTP_GET,
+              data: {
+                studyCardIds: ids
+              },
+              responseType: `blob`
+            }).then(res => {
+              blobToExecl(res)
+            })
+          }
+        )
       }
     },
     handleDialogConfirm() {

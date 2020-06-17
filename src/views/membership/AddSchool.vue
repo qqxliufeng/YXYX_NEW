@@ -342,6 +342,7 @@ export default {
         this.$successMsg('学校添加成功')
         this.$nextTick(_ => {
           loadingInstance.close()
+          this.$closeView(this.$route.path)
         })
       }).catch(error => {
         console.log(error)

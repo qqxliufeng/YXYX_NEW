@@ -13,7 +13,10 @@
         <span class="title text-bold">提示：请选择指定的菜单后选择对应的按钮</span>
       </div>
     </el-card>
-    <el-card style="margin-top: 10px" :body-style="{padding: 0}">
+    <el-card
+      style="margin-top: 10px"
+      :body-style="{padding: 0}"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -24,7 +27,11 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <el-table-column type="expand" label="点击展开" width="100">
+        <el-table-column
+          type="expand"
+          label="点击展开"
+          width="100"
+        >
           <template slot-scope="scope">
             <div v-if="scope.row.menuButtons.length > 0">
               <el-checkbox
@@ -39,15 +46,37 @@
                 @click="confirmGrantButton(scope.row)"
               >确定分配</el-button>
             </div>
-            <div v-else class="text-center">
+            <div
+              v-else
+              class="text-center"
+            >
               <span>该菜单下暂无按钮选项</span>
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="菜单ID" prop="menuId" />
-        <el-table-column align="center" prop="menuSequence" label="序号" show-overflow-tooltip />
-        <el-table-column align="center" prop="menuName" label="菜单名称" width />
-        <el-table-column align="center" prop="createTime" label="创建时间" width />
+        <el-table-column
+          align="center"
+          label="菜单ID"
+          prop="menuId"
+        />
+        <el-table-column
+          align="center"
+          prop="menuSequence"
+          label="序号"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          prop="menuName"
+          label="菜单名称"
+          width
+        />
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+          width
+        />
       </el-table>
     </el-card>
   </div>

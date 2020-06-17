@@ -1,9 +1,16 @@
 <template>
   <div class="container">
     <el-card body-style="padding: 0">
-      <div slot="header" class="flex justify-between align-center">
+      <div
+        slot="header"
+        class="flex justify-between align-center"
+      >
         <span class="title text-bold">添加用户信息</span>
-        <el-button type="primary" size="small" @click="saveInfo">保存</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="saveInfo"
+        >保存</el-button>
       </div>
     </el-card>
     <el-card style="margin-top: 10px">
@@ -30,7 +37,11 @@
         </el-form-item>
         <el-form-item label="用户角色">
           <el-col :span="10">
-            <el-select v-model="baseInfo.roleId" placeholder="请选择用户角色" style="width: 100%">
+            <el-select
+              v-model="baseInfo.roleId"
+              placeholder="请选择用户角色"
+              style="width: 100%"
+            >
               <el-option
                 v-for="item of roleList"
                 :key="item.roleId"
@@ -65,12 +76,20 @@
       <el-form>
         <el-form-item label="真实姓名">
           <el-col :span="10">
-            <el-input v-model="baseInfo.userName" placeholder="请输入真实姓名（必填）" maxlength="10" />
+            <el-input
+              v-model="baseInfo.userName"
+              placeholder="请输入真实姓名（必填）"
+              maxlength="10"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="用户昵称">
           <el-col :span="10">
-            <el-input v-model="baseInfo.userNickName" placeholder="请输入用户昵称（必填）" maxlength="10" />
+            <el-input
+              v-model="baseInfo.userNickName"
+              placeholder="请输入用户昵称（必填）"
+              maxlength="10"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="用户性别">
@@ -93,7 +112,12 @@
         </el-form-item>
         <el-form-item label="登录密码">
           <el-col :span="10">
-            <el-input v-model="baseInfo.password" placeholder="请输入登录密码" maxlength="11" readonly />
+            <el-input
+              v-model="baseInfo.password"
+              placeholder="请输入登录密码"
+              maxlength="11"
+              readonly
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="详细地址">
@@ -108,7 +132,12 @@
         </el-form-item>
         <el-form-item label="备注说明">
           <el-col :span="10">
-            <el-input v-model="baseInfo.note" type="textarea" :rows="2" placeholder="请输入备注" />
+            <el-input
+              v-model="baseInfo.note"
+              type="textarea"
+              :rows="2"
+              placeholder="请输入备注"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="用户状态">
@@ -129,9 +158,19 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card body-style="padding: 0" style="margin-top: 10px">
-      <div slot="header" class="flex justify-end align-center">
-        <el-button type="primary" size="small" @click="saveInfo">保存</el-button>
+    <el-card
+      body-style="padding: 0"
+      style="margin-top: 10px"
+    >
+      <div
+        slot="header"
+        class="flex justify-end align-center"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="saveInfo"
+        >保存</el-button>
       </div>
     </el-card>
   </div>

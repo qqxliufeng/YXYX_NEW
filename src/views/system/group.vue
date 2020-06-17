@@ -5,9 +5,9 @@
   >
     <table-header
       :form-model-array="formModelArray"
-      :show-search="buttonShowConfig.showSearch"
-      :show-add="buttonShowConfig.showAdd"
-      :show-delete="buttonShowConfig.showDelete"
+      :show-search="true"
+      :show-add="true"
+      :show-delete="true"
       @onsearch="onSearch"
       @onadd="onAdd"
       @ondelete="onDelete"

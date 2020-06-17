@@ -102,6 +102,7 @@ export default {
      * 获取所有的角色
      */
     getRoleList() {
+      const loadingInstance = Loading.service(document.getElementsByClassName('container')[0])
       this.$http({
         url: this.$urlPath.queryRoles,
         methods: this.HTTP_GET,
@@ -110,7 +111,15 @@ export default {
           pageSize: 100
         }
       }).then(res => {
-        console.log(res)
+        this.$nextTick(_ => {
+          loadingInstance.close()
+        })
+        this.roleList = res.obj.list
+      }).catch(error => {
+        console.log(error)
+        this.$nextTick(_ => {
+          loadingInstance.close()
+        })
       })
     }
   }

@@ -17,7 +17,7 @@
       @onadd="onAdd"
       @onsearch="onSearch($urlPath.querySchoolClassLike)"
     />
-    <el-card :body-style="{padding: '2px'}">
+    <el-card :body-style="{ padding: '2px' }">
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -28,38 +28,84 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <el-table-column align="center" label="学校名称" prop="schoolName" />
-        <el-table-column align="center" label="账号" prop="schoolTel" />
-        <el-table-column align="center" label="管理员">
-          <template slot-scope="scope">{{ scope.row.schoolLeaderName | emptyFormat }}</template>
+        <el-table-column
+          align="center"
+          label="学校名称"
+          prop="schoolName"
+        />
+        <el-table-column
+          align="center"
+          label="账号"
+          prop="schoolTel"
+        />
+        <el-table-column
+          align="center"
+          label="管理员"
+        >
+          <template slot-scope="scope">{{
+            scope.row.schoolLeaderName | emptyFormat
+          }}</template>
         </el-table-column>
-        <el-table-column align="center" label="联系方式" prop="schoolTel" />
-        <el-table-column align="center" label="地区" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          label="联系方式"
+          prop="schoolTel"
+        />
+        <el-table-column
+          align="center"
+          label="地区"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">
-            <span
-              class="text-cut"
-            >{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+            <span class="text-cut">{{
+              scope.row.province + "/" + scope.row.city + "/" + scope.row.area
+            }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="详细地址" prop="addressDetail" show-overflow-tooltip>
+        <el-table-column
+          align="center"
+          label="详细地址"
+          prop="addressDetail"
+          show-overflow-tooltip
+        >
           <template slot-scope="scope">
             <span class="text-cut">{{ scope.row.addressDetail }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="创建时间" prop="createTime">
-          <template slot-scope="scope">{{ scope.row.createTime | parseTime }}</template>
+        <el-table-column
+          align="center"
+          label="创建时间"
+          prop="createTime"
+        >
+          <template slot-scope="scope">{{
+            scope.row.createTime | parseTime
+          }}</template>
         </el-table-column>
-        <el-table-column align="center" label="到期时间">
-          <template slot-scope="scope">{{ scope.row.endTime | parseTime }}</template>
+        <el-table-column
+          align="center"
+          label="到期时间"
+        >
+          <template slot-scope="scope">{{
+            scope.row.endTime | parseTime
+          }}</template>
         </el-table-column>
-        <el-table-column align="center" label="状态" prop="status" />
-        <el-table-column align="center" label="操作" fixed="right" min-width="150">
+        <el-table-column
+          align="center"
+          label="状态"
+          prop="status"
+        />
+        <el-table-column
+          align="center"
+          label="操作"
+          fixed="right"
+          min-width="150"
+        >
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
               @click="changeLockStatus(scope.row)"
-            >{{ scope.row.status === 0 ? '禁用' : '正常' }}</el-button>
+            >{{ scope.row.status === 0 ? "禁用" : "正常" }}</el-button>
             <el-button
               :size="$style.tableButtonSize"
               type="primary"
@@ -78,8 +124,15 @@
       @refresh="reloadData"
     />
     <!-- 增加班级对话框 -->
-    <el-dialog :title="mode === 'add' ? '添加班级' : '编辑班级信息'" :visible.sync="dialogFormVisible">
-      <el-form label-position="right" label-width="120px" style="width: 90%; ">
+    <el-dialog
+      :title="mode === 'add' ? '添加班级' : '编辑班级信息'"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        label-position="right"
+        label-width="120px"
+        style="width: 90%; "
+      >
         <el-form-item label="学校名称">
           <el-col :span="24">
             <el-select
@@ -99,12 +152,20 @@
         </el-form-item>
         <el-form-item label="年级名称">
           <el-col :span="24">
-            <el-input v-model="classModel.classLevel" placeholder="请输入年级名称（必填）" maxlength="6" />
+            <el-input
+              v-model="classModel.classLevel"
+              placeholder="请输入年级名称（必填）"
+              maxlength="6"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="班级名称">
           <el-col :span="24">
-            <el-input v-model="classModel.className" placeholder="请输入班级名称（必填）" maxlength="20" />
+            <el-input
+              v-model="classModel.className"
+              placeholder="请输入班级名称（必填）"
+              maxlength="20"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="班级负责人">
@@ -126,7 +187,11 @@
         </el-form-item>
         <el-form-item label="负责人姓名">
           <el-col :span="24">
-            <el-input v-model="classModel.classLeaderName" maxlength="6" placeholder="请输入负责人姓名（必填）" />
+            <el-input
+              v-model="classModel.classLeaderName"
+              maxlength="6"
+              placeholder="请输入负责人姓名（必填）"
+            />
           </el-col>
         </el-form-item>
         <el-form-item label="班级状态">
@@ -139,13 +204,29 @@
         </el-form-item>
         <el-form-item label="备注说明">
           <el-col :span="24">
-            <el-input v-model="classModel.note" type="textarea" :rows="3" maxlength="100" placeholder="请输入备注说明" />
+            <el-input
+              v-model="classModel.note"
+              type="textarea"
+              :rows="3"
+              maxlength="100"
+              placeholder="请输入备注说明"
+            />
           </el-col>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogFormVisible = false">取消</el-button>
-        <el-button :size="$style.dialogButtonSize" type="primary" @click="handlerFormConfirm">确定</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handlerFormConfirm"
+        >确定</el-button>
       </div>
     </el-dialog>
     <!-- 增加班级对话框 -->
@@ -156,7 +237,7 @@
 import tableMixins from '../../mixins/table-mixins'
 import schoolMixins from '../../mixins/school-mixins'
 export default {
-  name: 'VipClass',
+  name: 'VIPClass',
   mixins: [tableMixins, schoolMixins],
   data() {
     return {
@@ -314,4 +395,3 @@ export default {
   }
 }
 </script>
-

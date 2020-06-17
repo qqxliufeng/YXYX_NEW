@@ -1,6 +1,10 @@
 <template>
   <div class="container">
-    <table-header title="基本操作" :show-delete="false" @onadd="onAdd" />
+    <table-header
+      title="基本操作"
+      :show-delete="false"
+      @onadd="onAdd"
+    />
     <el-card :body-style="{padding: 0}">
       <el-table
         v-loading="loading"
@@ -15,30 +19,69 @@
         row-key="menuId"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
-        <el-table-column align="center" prop="menuName" label="菜单名称" width />
-        <el-table-column align="center" prop="menuSequence" label="序号" show-overflow-tooltip />
-        <el-table-column align="center" prop="menuUrl" label="菜单地址" width />
-        <el-table-column align="center" prop="createTime" label="创建时间" show-overflow-tooltip />
+        <el-table-column
+          align="center"
+          prop="menuName"
+          label="菜单名称"
+          width
+        />
+        <el-table-column
+          align="center"
+          prop="menuSequence"
+          label="序号"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          prop="menuUrl"
+          label="菜单地址"
+          width
+        />
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+          show-overflow-tooltip
+        />
         <el-table-column
           align="center"
           label="操作"
         >
           <template slot-scope="scope">
-            <el-button type="primary" :size="$style.tableButtonSize" @click="handleUpdate(scope.row)">编辑</el-button>
-            <el-button type="danger" :size="$style.tableButtonSize" @click="handleDelete(scope.row)">删除</el-button>
-            <el-button :disabled="scope.row.parentMenuId === null" type="success" :size="$style.tableButtonSize" @click="buttonManger(scope.row)">按钮管理</el-button>
+            <el-button
+              type="primary"
+              :size="$style.tableButtonSize"
+              @click="handleUpdate(scope.row)"
+            >编辑</el-button>
+            <el-button
+              type="danger"
+              :size="$style.tableButtonSize"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
+            <el-button
+              :disabled="scope.row.parentMenuId === null"
+              type="success"
+              :size="$style.tableButtonSize"
+              @click="buttonManger(scope.row)"
+            >按钮管理</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-    <el-dialog :title="mode === 'add' ? '添加菜单' : '编辑菜单'" :visible.sync="dialogFormVisible">
+    <el-dialog
+      :title="mode === 'add' ? '添加菜单' : '编辑菜单'"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form
         :model="tempItem"
         label-position="left"
         label-width="180px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="父级菜单" prop="parentDeptId">
+        <el-form-item
+          label="父级菜单"
+          prop="parentDeptId"
+        >
           <el-col :span="24">
             <el-select
               v-model="tempItem.parentMenuId"
@@ -56,12 +99,23 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="菜单名称" prop="menuName">
+        <el-form-item
+          label="菜单名称"
+          prop="menuName"
+        >
           <el-col :span="24">
-            <el-input v-model="tempItem.menuName" maxlength="15" placeholder="请输入菜单名称" clearable />
+            <el-input
+              v-model="tempItem.menuName"
+              maxlength="15"
+              placeholder="请输入菜单名称"
+              clearable
+            />
           </el-col>
         </el-form-item>
-        <el-form-item label="菜单序号" prop="menuSequence">
+        <el-form-item
+          label="菜单序号"
+          prop="menuSequence"
+        >
           <el-col :span="24">
             <el-input-number
               v-model="tempItem.menuSequence"
@@ -84,9 +138,19 @@
           </el-col>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button :size="$style.dialogButtonSize" @click="dialogFormVisible = false">取消</el-button>
-        <el-button :size="$style.dialogButtonSize" type="primary" @click="handleDialogConfirm">确定</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handleDialogConfirm"
+        >确定</el-button>
       </div>
     </el-dialog>
   </div>
