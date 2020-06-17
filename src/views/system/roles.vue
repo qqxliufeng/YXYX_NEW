@@ -43,6 +43,7 @@
         <el-table-column
           align="center"
           prop="createTime"
+          width="160"
           label="创建时间"
         />
         <el-table-column

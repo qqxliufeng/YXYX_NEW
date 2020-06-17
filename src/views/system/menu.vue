@@ -46,6 +46,7 @@
         <el-table-column
           align="center"
           label="操作"
+          width="250"
         >
           <template slot-scope="scope">
             <el-button
