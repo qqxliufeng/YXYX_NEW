@@ -30,11 +30,27 @@ export default [
         }
       },
       {
+        path: '/schoolrecordlist/:schoolId',
+        component: () => import('@/views/membership/SchoolRecordList.vue'),
+        name: 'SchoolRecordList',
+        meta: {
+          title: '学校服务记录'
+        }
+      },
+      {
         path: '/schoolstudycardlist/:schoolId/:schoolName/:type',
         component: () => import('@/views/membership/SchoolStudyCardList.vue'),
         name: 'SchoolStudyCardList',
         meta: {
           title: '学习卡列表'
+        }
+      },
+      {
+        path: '/granttextbook/:studentId',
+        component: () => import('@/views/membership/GrantTextBookToStudent.vue'),
+        name: 'GrantTextBookToStudent',
+        meta: {
+          title: '分配教材'
         }
       }
     ]

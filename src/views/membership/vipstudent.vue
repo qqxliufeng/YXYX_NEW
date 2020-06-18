@@ -30,51 +30,79 @@
       >
         <el-table-column
           align="center"
-          label="学校名称"
-          prop="schoolName"
+          label="ID"
+          prop="studentId"
+          fixed="left"
         />
         <el-table-column
           align="center"
-          label="账号"
-          prop="schoolTel"
+          label="学生姓名"
+          prop="studentName"
+          fixed="left"
         />
         <el-table-column
           align="center"
-          label="管理员"
+          label="学号"
+          prop="schoolNo"
+        >
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.studentNo ? scope.row.studentNo : '暂无' }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="手机号码"
+          width="160"
+          prop="studentPhone"
+        />
+        <el-table-column
+          align="center"
+          label="性别"
+          show-overflow-tooltip
         >
           <template slot-scope="scope">{{
-            scope.row.schoolLeaderName | emptyFormat
+            scope.row.sex === 0 ? "男" : "女"
           }}</template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="联系方式"
-          prop="schoolTel"
+          label="在线状态"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.isOnLine === 1 ? "线上" : "线下" }}
+            </div>
+            <el-link
+              v-if="scope.row.isOnLine === 0"
+              style="font-size: 14px"
+              type="danger"
+              @click.native="assginTextbook(scope.row)"
+            >分配教材</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="学生属性"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">{{
+            scope.row.isTeacher === 0 ? "普通学生" : "老师"
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="家庭地址"
+          prop="address"
+          width="200"
+          show-overflow-tooltip
         />
         <el-table-column
           align="center"
-          label="地区"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <span class="text-cut">{{
-              scope.row.province + "/" + scope.row.city + "/" + scope.row.area
-            }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="详细地址"
-          prop="addressDetail"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <span class="text-cut">{{ scope.row.addressDetail }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
           label="创建时间"
+          width="160"
           prop="createTime"
         >
           <template slot-scope="scope">{{
@@ -83,32 +111,39 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="到期时间"
+          label="状态"
+          prop="status"
         >
           <template slot-scope="scope">{{
-            scope.row.endTime | parseTime
+            scope.row.status === 0 ? '正常' : '禁用'
           }}</template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="状态"
-          prop="status"
-        />
-        <el-table-column
-          align="center"
           label="操作"
           fixed="right"
-          min-width="150"
+          min-width="250"
         >
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
-              @click="changeLockStatus(scope.row)"
+              @click="changeLockStatus({
+                item: scope.row,
+                statusField: 'status',
+                data: { studentId: scope.row.studentId },
+                lockUrl: $urlPath.lockStudent,
+                unLockUrl: $urlPath.unLockStudent
+              })"
             >{{ scope.row.status === 0 ? "禁用" : "正常" }}</el-button>
             <el-button
               :size="$style.tableButtonSize"
               type="primary"
+              @click="handlerUpdate(scope.row)"
+            >编辑</el-button>
+            <el-button
+              :size="$style.tableButtonSize"
+              type="success"
               @click="initPassword(scope.row)"
             >重置密码</el-button>
           </template>
@@ -153,16 +188,16 @@
         <el-form-item label="班级名称">
           <el-col :span="24">
             <el-select
-              v-model="studentModel.schoolId"
+              v-model="studentModel.classId"
               style="width: 100%"
               class="filter-item"
               placeholder="请选择班级名称"
             >
               <el-option
-                v-for="item of schoolList"
-                :key="item.schoolId"
-                :label="item.schoolName"
-                :value="item.schoolId"
+                v-for="item of classList"
+                :key="item.classId"
+                :label="item.className"
+                :value="item.classId"
               />
             </el-select>
           </el-col>
@@ -223,8 +258,8 @@
         <el-form-item label="是否线上">
           <el-col :span="24">
             <el-radio-group v-model="studentModel.isOnLine">
-              <el-radio :label="0">否</el-radio>
               <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
             </el-radio-group>
           </el-col>
         </el-form-item>
@@ -281,16 +316,7 @@ export default {
           name: 'classId',
           span: 5,
           type: 'select',
-          selectOptions: [
-            {
-              label: '正常',
-              value: 0
-            },
-            {
-              label: '禁用',
-              value: 1
-            }
-          ]
+          selectOptions: []
         },
         {
           id: 3,
@@ -345,9 +371,11 @@ export default {
         address: '', // 家庭地址
         sex: 0, // 性别 0男 1女
         isTeacher: 0, // 学生属性 0普通学生 1老师
-        isOnLine: 0, // 是否线上 0否 1是，和学校线上线下一致
+        isOnLine: 1, // 是否线上 0否 1是，和学校线上线下一致
         status: 0 // 状态，0正常 1禁用
-      }
+      },
+      dialogTableVisible: false,
+      textbookList: []
     }
   },
   mounted() {
@@ -358,6 +386,16 @@ export default {
           return {
             label: it.schoolName,
             value: it.schoolId
+          }
+        })
+      }
+    })
+    this.getClassList(_ => {
+      if (this.classList && this.classList.length > 0) {
+        this.formModelArray[1].selectOptions = this.classList.map(it => {
+          return {
+            label: it.className,
+            value: it.classId
           }
         })
       }
@@ -393,7 +431,7 @@ export default {
         address: '', // 家庭地址
         sex: 0, // 性别 0男 1女
         isTeacher: 0, // 学生属性 0普通学生 1老师
-        isOnLine: 0, // 是否线上 0否 1是，和学校线上线下一致
+        isOnLine: 1, // 是否线上 0否 1是，和学校线上线下一致
         status: 0 // 状态，0正常 1禁用
       }
     },
@@ -401,6 +439,7 @@ export default {
       this.dialogFormVisible = true
       this.mode = 'edit'
       this.studentModel.studentId = item.studentId
+      this.studentModel.schoolId = item.schoolId
       this.studentModel.classId = item.classId
       this.studentModel.studentName = item.studentName
       this.studentModel.studentPhone = item.studentPhone
@@ -433,21 +472,44 @@ export default {
       }
       if (this.mode === 'add') {
         this.$http({
-          url: this.$urlPath.saveSchoolClass,
+          url: this.$urlPath.saveStudent,
           data: this.studentModel
         }).then(res => {
+          this.dialogFormVisible = false
           this.$successMsg('学生添加成功')
           this.getData()
         })
       } else {
         this.$http({
-          url: this.$urlPath.editSchoolClass,
+          url: this.$urlPath.updateStudent,
           data: this.studentModel
         }).then(res => {
+          this.dialogFormVisible = false
           this.$successMsg('学生信息修改成功')
           this.getData()
         })
       }
+    },
+    initPassword(item) {
+      this.$warningConfirm('是否要重新设置密码为手机号后六位？', _ => {
+        this.$http({
+          url: this.$urlPath.initStudentPassword,
+          data: {
+            studentId: item.studentId,
+            studentPhone: item.studentPhone
+          }
+        }).then(res => {
+          this.$successMsg('密码重置成功')
+        })
+      })
+    },
+    assginTextbook(item) {
+      this.$router.push({
+        name: 'GrantTextBookToStudent',
+        params: {
+          studentId: item.studentId
+        }
+      })
     }
   }
 }

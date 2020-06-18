@@ -30,51 +30,34 @@
       >
         <el-table-column
           align="center"
-          label="学校名称"
-          prop="schoolName"
+          label="ID"
+          prop="classId"
         />
         <el-table-column
           align="center"
-          label="账号"
-          prop="schoolTel"
+          label="班级名称"
+          prop="className"
         />
         <el-table-column
           align="center"
-          label="管理员"
-        >
-          <template slot-scope="scope">{{
-            scope.row.schoolLeaderName | emptyFormat
-          }}</template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="联系方式"
-          prop="schoolTel"
+          label="年级名称"
+          prop="classLevel"
         />
         <el-table-column
           align="center"
-          label="地区"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <span class="text-cut">{{
-              scope.row.province + "/" + scope.row.city + "/" + scope.row.area
-            }}</span>
-          </template>
-        </el-table-column>
+          label="班级负责人"
+          prop="classLeaderName"
+        />
         <el-table-column
           align="center"
-          label="详细地址"
-          prop="addressDetail"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <span class="text-cut">{{ scope.row.addressDetail }}</span>
-          </template>
-        </el-table-column>
+          label="班级人数"
+          prop="classPersonNum"
+        />
+
         <el-table-column
           align="center"
           label="创建时间"
+          width="160"
           prop="createTime"
         >
           <template slot-scope="scope">{{
@@ -83,17 +66,15 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="到期时间"
-        >
-          <template slot-scope="scope">{{
-            scope.row.endTime | parseTime
-          }}</template>
-        </el-table-column>
-        <el-table-column
-          align="center"
           label="状态"
           prop="status"
-        />
+        >
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.status === 0 ? '正常' : '禁用' }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="操作"
@@ -104,13 +85,13 @@
             <el-button
               :size="$style.tableButtonSize"
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
-              @click="changeLockStatus(scope.row)"
-            >{{ scope.row.status === 0 ? "禁用" : "正常" }}</el-button>
+              @click="changeLockStatus({item: scope.row, statusField: 'status', data: { classId: scope.row.classId }, lockUrl: $urlPath.lockSchoolClass, unLockUrl: $urlPath.unLockSchoolClass})"
+            >{{ scope.row.status === 0 ? "禁用" : "解锁" }}</el-button>
             <el-button
               :size="$style.tableButtonSize"
               type="primary"
-              @click="initPassword(scope.row)"
-            >重置密码</el-button>
+              @click="handlerUpdate(scope.row)"
+            >编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -174,13 +155,14 @@
               v-model="classModel.classLeaderId"
               style="width: 100%"
               class="filter-item"
-              placeholder="请选择学校名称"
+              placeholder="请选择班级负责人"
+              @change="teacherChange"
             >
               <el-option
-                v-for="item of schoolList"
-                :key="item.schoolId"
-                :label="item.schoolName"
-                :value="item.schoolId"
+                v-for="item of teacherList"
+                :key="item.userId"
+                :label="item.username"
+                :value="item.userId"
               />
             </el-select>
           </el-col>
@@ -312,6 +294,7 @@ export default {
         })
       }
     })
+    this.getTeacherList()
   },
   methods: {
     getData() {
@@ -379,6 +362,7 @@ export default {
           url: this.$urlPath.saveSchoolClass,
           data: this.classModel
         }).then(res => {
+          this.dialogFormVisible = false
           this.$successMsg('班级添加成功')
           this.getData()
         })
@@ -387,10 +371,14 @@ export default {
           url: this.$urlPath.editSchoolClass,
           data: this.classModel
         }).then(res => {
+          this.dialogFormVisible = false
           this.$successMsg('班级信息修改成功')
           this.getData()
         })
       }
+    },
+    teacherChangeCallBack(teacherName) {
+      this.classModel.classLeaderName = teacherName
     }
   }
 }

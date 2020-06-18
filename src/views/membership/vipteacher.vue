@@ -36,15 +36,19 @@
         />
         <el-table-column
           align="center"
-          label="用户名称"
+          label="老师姓名"
           prop="username"
           fixed="left"
         />
         <el-table-column
           align="center"
-          label="用户昵称"
+          label="老师昵称"
           prop="userNickName"
-        />
+        >
+          <template slot-scope="scope">
+            <div>{{ scope.row.userNickName || '暂无' }}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="手机号码"
@@ -53,8 +57,8 @@
         />
         <el-table-column
           align="center"
-          prop="dept.deptName"
-          label="所属部门"
+          prop="roles[0].roleName"
+          label="老师角色"
           show-overflow-tooltip
         />
         <el-table-column
@@ -213,6 +217,15 @@
             />
           </el-col>
         </el-form-item>
+        <el-form-item label="老师昵称">
+          <el-col :span="24">
+            <el-input
+              v-model="teacherModel.userNickName"
+              placeholder="请输入老师昵称"
+              maxlength="6"
+            />
+          </el-col>
+        </el-form-item>
         <el-form-item label="手机号码">
           <el-col :span="24">
             <el-input
@@ -357,6 +370,7 @@ export default {
       teacherModel: {
         schoolId: '', // 学校ID
         userName: '', // 老师姓名
+        userNickName: '', // 老师昵称
         phone: '', // 老师手机(默认登录密码为手机号后6位)
         address: '', // 家庭住址
         sex: 1, // 性别，1男 0女
@@ -409,6 +423,7 @@ export default {
         schoolId: '',
         roleId: '',
         userName: '',
+        userNickName: '',
         phone: '',
         address: '',
         isSchoolLeader: 0,
@@ -422,6 +437,7 @@ export default {
       this.teacherModel.schoolId = item.schoolId
       this.teacherModel.roleId = item.roleId
       this.teacherModel.userName = item.username
+      this.teacherModel.userNickName = item.userNickName
       this.teacherModel.phone = item.phone
       this.teacherModel.address = item.address
       this.teacherModel.sex = item.sex

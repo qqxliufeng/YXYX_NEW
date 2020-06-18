@@ -1,8 +1,16 @@
+/* eslint-disable space-before-function-paren */
 <template>
-  <div :class="{fullscreen:fullscreen}" class="tinymce-container" :style="{width:containerWidth}">
-    <textarea :id="tinymceId" class="tinymce-textarea" />
+  <div
+    :class="{fullscreen:fullscreen}"
+    class="tinymce-container"
+    :style="{width:containerWidth}"
+  >
+    <textarea
+      :id="tinymceId"
+      class="tinymce-textarea"
+    />
     <div class="editor-custom-btn-container">
-      <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK" />
+      <editorImage v-if="showUploadImage" color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK" />
     </div>
   </div>
 </template>
@@ -26,7 +34,8 @@ export default {
   props: {
     id: {
       type: String,
-      default: function() {
+      // eslint-disable-next-line space-before-function-paren
+      default: function () {
         return 'vue-tinymce-' + +new Date() + ((Math.random() * 1000).toFixed(0) + '')
       }
     },
@@ -54,6 +63,10 @@ export default {
       type: [Number, String],
       required: false,
       default: 'auto'
+    },
+    showUploadImage: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -214,7 +227,7 @@ export default {
   position: relative;
   line-height: normal;
 }
-.tinymce-container>>>.mce-fullscreen {
+.tinymce-container >>> .mce-fullscreen {
   z-index: 10000;
 }
 .tinymce-textarea {

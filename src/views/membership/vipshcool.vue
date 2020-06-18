@@ -19,7 +19,7 @@
       @onadd="onAdd"
       @onsearch="onSearch($urlPath.querySchoolListLike)"
     />
-    <el-card :body-style="{padding: '2px'}">
+    <el-card :body-style="{ padding: '2px' }">
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -48,7 +48,9 @@
           align="center"
           label="管理员"
         >
-          <template slot-scope="scope">{{ scope.row.schoolLeaderName | emptyFormat }}</template>
+          <template slot-scope="scope">{{
+            scope.row.schoolLeaderName | emptyFormat
+          }}</template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -63,7 +65,9 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <span class="text-cut">{{ scope.row.province + '/' + scope.row.city + '/' + scope.row.area }}</span>
+            <span class="text-cut">{{
+              scope.row.province + "/" + scope.row.city + "/" + scope.row.area
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -116,8 +120,16 @@
             <el-button
               :size="$style.tableButtonSize"
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
-              @click="changeLockStatus({item: scope.row, statusField: 'status', data: { schoolId: scope.row.schoolId }, lockUrl: $urlPath.lockSchool, unLockUrl: $urlPath.unLockSchool})"
-            >{{ scope.row.status === 0 ? '禁用' : '解锁' }}</el-button>
+              @click="
+                changeLockStatus({
+                  item: scope.row,
+                  statusField: 'status',
+                  data: { schoolId: scope.row.schoolId },
+                  lockUrl: $urlPath.lockSchool,
+                  unLockUrl: $urlPath.unLockSchool
+                })
+              "
+            >{{ scope.row.status === 0 ? "禁用" : "解锁" }}</el-button>
             <el-button
               :size="$style.tableButtonSize"
               type="primary"
@@ -132,10 +144,10 @@
             >
               更多
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{tag: 1, item: scope.row}">已分配的学习卡</el-dropdown-item>
-                <el-dropdown-item :command="{tag: 2, item: scope.row}">未分配的学习卡</el-dropdown-item>
-                <el-dropdown-item :command="{tag: 3, item: scope.row}">查询服务记录</el-dropdown-item>
-                <el-dropdown-item :command="{tag: 4, item: scope.row}">增加服务记录</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 1, item: scope.row }">已分配的学习卡</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 2, item: scope.row }">未分配的学习卡</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 3, item: scope.row }">查询服务记录</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 4, item: scope.row }">增加服务记录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -154,6 +166,7 @@
     <el-dialog
       title="添加服务记录"
       :visible.sync="dialogAddRecordVisible"
+      width="90%"
     >
       <el-form
         label-position="left"
@@ -161,17 +174,11 @@
         style="width: 90%; "
       >
         <el-form-item label="服务内容">
-          <el-col :span="24">
-            <el-input
-              v-model="recordModel.record"
-              style="width: 100%"
-              type="textarea"
-              :rows="5"
-              maxlength="200"
-              placeholder="请输入服务内容"
-              show-word-limit
-            />
-          </el-col>
+          <tinymce
+            v-model="recordModel.record"
+            :show-upload-image="false"
+            :height="300"
+          />
         </el-form-item>
       </el-form>
       <div
@@ -190,9 +197,13 @@
 </template>
 
 <script>
+import Tinymce from '@/components/Tinymce'
 import TableMixins from '../../mixins/table-mixins'
 export default {
   name: 'VIPShcool',
+  components: {
+    Tinymce
+  },
   mixins: [TableMixins],
   data() {
     return {
@@ -308,16 +319,11 @@ export default {
           })
           break
         case 3:
-          this.$http({
-            url: this.$urlPath.querySchoolRecordList,
-            methods: this.HTTP_GET,
-            data: {
-              schoolId: item.schoolId,
-              pageNum: 0,
-              pageSize: 10
+          this.$router.push({
+            name: 'SchoolRecordList',
+            params: {
+              schoolId: item.schoolId
             }
-          }).then(res => {
-            console.log(res)
           })
           break
         case 4:
@@ -343,5 +349,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>
