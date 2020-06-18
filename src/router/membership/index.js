@@ -10,7 +10,8 @@ export default [
         component: () => import('@/views/membership/AddSchool.vue'),
         name: 'AddSchool',
         meta: {
-          title: '添加学校'
+          title: '添加学校',
+          noCache: true
         }
       },
       {
@@ -50,7 +51,8 @@ export default [
         component: () => import('@/views/membership/GrantTextBookToStudent.vue'),
         name: 'GrantTextBookToStudent',
         meta: {
-          title: '分配教材'
+          title: '分配教材',
+          noCache: true
         }
       }
     ]

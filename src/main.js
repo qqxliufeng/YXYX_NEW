@@ -84,6 +84,10 @@ Vue.prototype.$closeView = function (path) {
   })
 }
 
+Vue.prototype.$closeCurrentView = function () {
+  this.$closeView(this.$route.path)
+}
+
 Vue.prototype.$warningConfirm = function (message = '', handlerFunction = null) {
   this.$confirm(message, '提示', {
     confirmButtonText: '确定',

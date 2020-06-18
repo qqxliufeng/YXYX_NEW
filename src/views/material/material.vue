@@ -53,7 +53,7 @@
         />
         <el-table-column
           align="center"
-          prop="textbookVersionId"
+          prop="textbookVersion"
           label="教材版本"
         />
         <el-table-column
@@ -206,13 +206,18 @@
         </el-form-item>
         <el-form-item label="教材版本">
           <el-col :span="24">
-            <el-input
-              v-model="materialModel.textbookVersionId"
-              type="textarea"
-              :rows="3"
-              maxlength="100"
-              placeholder="请输入教材家庭住址（必填）"
-            />
+            <el-select
+              v-model="materialModel.textbookVersion"
+              style="width: 100%"
+              placeholder="请选择教材版本"
+            >
+              <el-option
+                v-for="item of textbookVersion"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-col>
         </el-form-item>
         <el-form-item label="是否对用户开放">
@@ -265,7 +270,7 @@
     </el-dialog>
     <!-- 增加教材对话框 -->
     <!-- 查看教材授权的学校对话框 -->
-    <el-dialog
+    <!-- <el-dialog
       title="授权教材列表"
       :visible.sync="dialogGrantTextBookVisible"
     >
@@ -291,7 +296,7 @@
         />
         <el-table-column
           align="center"
-          prop="textbookVersionId"
+          prop="textbookVersion"
           label="教材版本"
         />
         <el-table-column
@@ -320,7 +325,7 @@
           @click="dialogGrantTextBookVisible = false"
         >知道了</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
     <!-- 查看教材授权的学校对话框 -->
   </div>
 </template>
@@ -328,6 +333,7 @@
 <script>
 import tableMixins from '../../mixins/table-mixins'
 import { blobToExecl } from '../../api/common'
+import textBookMixins from '../../mixins/text-book-mixins'
 const textbookTypes = [
   {
     label: '词汇',
@@ -360,13 +366,56 @@ const textbookCategorys = [
     value: 2
   }
 ]
+const textbookVersion = [
+  {
+    label: '人教版',
+    value: '人教版'
+  },
+  {
+    label: '大纲版',
+    value: '大纲版'
+  },
+  {
+    label: '鲁教版',
+    value: '鲁教版'
+  },
+  {
+    label: '外研社版',
+    value: '外研社版'
+  },
+  {
+    label: '冀教版',
+    value: '冀教版'
+  },
+  {
+    label: '北师大版',
+    value: '北师大版'
+  },
+  {
+    label: '仁爱版',
+    value: '仁爱版'
+  },
+  {
+    label: '译林牛津版',
+    value: '译林牛津版'
+  },
+  {
+    label: '上海牛津版',
+    value: '上海牛津版'
+  },
+  {
+    label: '上海新世纪版',
+    value: '上海新世纪版'
+  }
+]
 export default {
   name: 'Material',
-  mixins: [tableMixins],
+  mixins: [tableMixins, textBookMixins],
   data() {
     return {
       textbookTypes,
       textbookCategorys,
+      textbookVersion,
       formModelArray: [
         {
           id: 1,
@@ -398,9 +447,10 @@ export default {
           id: 4,
           value: '',
           label: '教材版本',
-          name: 'textbookVersionId',
+          name: 'textbookVersion',
           span: 5,
-          type: 'input'
+          type: 'select',
+          selectOptions: textbookVersion
         }
       ],
       materialModel: {
@@ -408,7 +458,7 @@ export default {
         unLockCoins: 0, // 解锁所需优钻
         textbookType: 0, // 教材类型 0词汇 1语法 2体验 3自然拼读
         textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
-        textbookVersionId: 1, // 教材版本主键ID
+        textbookVersion: '人教版', // 教材版本主键ID
         isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
         schoolIds: '', // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
         isHasVideo: 0, // 是否有视频 0是 1否
@@ -465,7 +515,7 @@ export default {
         unLockCoins: 0, // 解锁所需优钻
         textbookType: 0, // 教材类型 0词汇 1语法 2体验 3自然拼读
         textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
-        textbookVersionId: 1, // 教材版本主键ID
+        textbookVersion: '人教版', // 教材版本
         isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
         schoolIds: '', // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
         isHasVideo: 0, // 是否有视频 0是 1否
@@ -539,7 +589,7 @@ export default {
       this.materialModel.unLockCoins = item.unLockCoins // 解锁所需优钻
       this.materialModel.textbookType = item.textbookType // 教材类型 0词汇 1语法 2体验 3自然拼读
       this.materialModel.textbookCategory = item.textbookCategory // 教材类别 0YouCan 1拳心同步 2智能英语
-      this.materialModel.textbookVersionId = item.textbookVersionId // 教材版本主键ID
+      this.materialModel.textbookVersion = item.textbookVersion // 教材版本主键ID
       this.materialModel.isOpenUser = item.isOpenUser // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
       this.materialModel.schoolIds = item.schoolIds // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
       this.materialModel.isHasVideo = item.isHasVideo // 是否有视频 0是 1否

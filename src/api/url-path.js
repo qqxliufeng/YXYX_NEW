@@ -188,6 +188,8 @@ export const initStudentPassword = baseModuleUrl + 'initStudentPassword'
 
 export const studentAssignedTextBook = baseModuleUrl + 'studentAssignedTextBook'
 
+export const getAllTextBookAndStudent = baseModuleUrl + 'getAllTextBookAndStudent'
+
 // ****************会员管理 --- 学生管理 **************** //
 
 // ****************教材信息**************** //

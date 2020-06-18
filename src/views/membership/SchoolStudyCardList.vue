@@ -185,7 +185,7 @@
         />
         <el-table-column
           align="center"
-          prop="textbookVersionId"
+          prop="textbookVersion"
           label="教材版本"
         />
         <el-table-column

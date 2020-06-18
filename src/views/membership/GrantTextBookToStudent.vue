@@ -1,6 +1,91 @@
 <template>
-  <div>
-    {{ $route.params.studentId }}
+  <div class="container">
+    <table-header
+      title="提示：已授权分配的教材不能取消分配"
+      :show-search="false"
+      :show-add="false"
+      :show-delete="false"
+    >
+      <template slot="other">
+        <el-button
+          type="primary"
+          size="mini"
+          @click="grantTextBook"
+        >批量授权</el-button>
+      </template>
+    </table-header>
+    <el-card :body-style="{padding: 0}">
+      <el-table
+        ref="muiltTable"
+        v-loading="loading"
+        :stripe="tableConfig.stripe"
+        :header-cell-style="tableConfig.headerCellStyle"
+        :data="tableData"
+        :border="tableConfig.border"
+        :size="tableConfig.size"
+        :default-sort="tableConfig.defalutSort"
+        :style="tableConfig.style"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          align="center"
+          type="selection"
+          width="55"
+          fixed="left"
+          :selectable="canSelectable"
+        />
+        <el-table-column
+          align="center"
+          prop="textbookId"
+          label="ID"
+        />
+        <el-table-column
+          align="center"
+          prop="textbookName"
+          label="教材名称"
+        />
+        <el-table-column
+          align="center"
+          prop="textbookVersion"
+          label="教材版本"
+        />
+        <el-table-column
+          align="center"
+          prop="resourceFileUrl"
+          label="资源地址"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+          width="160"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <span>{{ scope.row.createTime | parseTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="状态"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <el-button
+              v-if="scope.row.stuTextbookId === null"
+              type="danger"
+              size="mini"
+            >未授权</el-button>
+            <el-button
+              v-else
+              type="success"
+              size="mini"
+            >已授权</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
   </div>
 </template>
 
@@ -19,7 +104,48 @@ export default {
     this.getData()
   },
   methods: {
-    getData() { }
+    getData() {
+      this.$http({
+        url: this.$urlPath.getAllTextBookAndStudent,
+        methods: this.HTTP_GET,
+        data: {
+          studentId: this.$route.params.studentId
+        }
+      }).then(res => {
+        this.loading = false
+        this.tableData = res.obj
+        if (this.tableData && this.tableData.length > 0) {
+          const hasGrantItems = this.tableData.filter(it => it.stuTextbookId !== null)
+          this.$nextTick(_ => {
+            if (hasGrantItems && hasGrantItems.length > 0) {
+              hasGrantItems.forEach(row => {
+                this.$refs.muiltTable.toggleRowSelection(row, true)
+              })
+            }
+          })
+        }
+      })
+    },
+    grantTextBook() {
+      if (this.canHandlerItems()) {
+        this.confirmHandlerMultiItems('确定要把教材授权分配到该学生上吗？', 'textbookId', ids => {
+          this.$http({
+            url: this.$urlPath.studentAssignedTextBook,
+            data: {
+              studentId: this.$route.params.studentId,
+              isOnLine: 0,
+              textbookIds: ids
+            }
+          }).then(res => {
+            this.$successMsg('教材分配成功')
+            this.$closeCurrentView()
+          })
+        })
+      }
+    },
+    canSelectable(row) {
+      return row.stuTextbookId === null
+    }
   }
 }
 </script>
