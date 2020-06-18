@@ -5,8 +5,8 @@ import { getToken } from '@/utils/auth'
 import qs from 'qs'
 
 const service = axios.create({
-  // baseURL: 'http://118.190.3.78:8880',
-  baseURL: 'http://192.168.0.123:8880',
+  baseURL: 'http://118.190.3.78:8880',
+  // baseURL: 'http://192.168.0.123:8880',
   timeout: 15000,
   withCredentials: true // 跨域请求时发送cookie
 })

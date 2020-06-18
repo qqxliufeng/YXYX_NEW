@@ -19,6 +19,12 @@ export const constantRoutes = [
   ...membershipRouter,
   ...systemRouter,
   {
+    path: '/',
+    component: Layout,
+    hidden: true,
+    redirect: '/login'
+  },
+  {
     path: '/redirect',
     component: Layout,
     hidden: true,
