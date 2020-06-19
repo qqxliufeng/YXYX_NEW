@@ -13,7 +13,7 @@ import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
-import Element from 'element-ui'
+import Element, { Loading } from 'element-ui'
 import './styles/element-variables.scss'
 
 import './assets/custom-theme/main.css'
@@ -40,6 +40,7 @@ import TableFoot from './components/Common/TableFoot.vue'
 import TableHeader from './components/Common/TableHeader.vue'
 import { level } from 'province-city-china/data'
 import { style, menuButtonModel } from './utils/app-config'
+import language from './components/ImageCropper/utils/language'
 
 Vue.component('TableFoot', TableFoot)
 Vue.component('TableHeader', TableHeader)
@@ -86,6 +87,17 @@ Vue.prototype.$closeView = function (path) {
 
 Vue.prototype.$closeCurrentView = function () {
   this.$closeView(this.$route.path)
+}
+
+Vue.prototype.$showLoading = function (callback) {
+  const loadingInstance = Loading.service({
+    target: document.getElementById('content-wrapper')
+  })
+  if (callback) {
+    callback(loadingInstance)
+  } else {
+    loadingInstance.close()
+  }
 }
 
 Vue.prototype.$warningConfirm = function (message = '', handlerFunction = null) {

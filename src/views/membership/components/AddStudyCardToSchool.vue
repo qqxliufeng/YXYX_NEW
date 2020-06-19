@@ -2,7 +2,12 @@
   <div>
     <el-card style="margin-top: 10px">
       <div slot="header">
-        <span class="title text-bold">学习卡信息</span>
+        <span class="title text-bold">学习卡信息
+          <el-link
+            :underline="false"
+            type="danger"
+          >此选项只针对线上学校有效</el-link>
+        </span>
       </div>
       <el-form>
         <el-form-item label="添加类型">

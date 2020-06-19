@@ -14,10 +14,12 @@ Vue.use(Router)
 import Layout from '@/layout'
 import membershipRouter from './membership'
 import systemRouter from './system'
+import materialRouter from './material'
 
 export const constantRoutes = [
   ...membershipRouter,
   ...systemRouter,
+  ...materialRouter,
   {
     path: '/',
     component: Layout,

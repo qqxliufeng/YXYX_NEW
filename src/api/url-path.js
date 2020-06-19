@@ -134,6 +134,10 @@ export const addSchoolRecord = baseModuleUrl + 'addSchoolRecord'
 
 export const queryStudyCardNotBind = baseModuleUrl + 'queryStudyCardNotBind'
 
+export const queryTextBookOfflineSchool = baseModuleUrl + 'queryTextBookOfflineSchool'
+
+export const grantTextBooksToSchool = baseModuleUrl + 'grantTextBooksToSchool'
+
 // ****************会员管理 --- 学校管理 **************** //
 
 // ****************会员管理 --- 老师管理 **************** //

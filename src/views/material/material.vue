@@ -1,5 +1,6 @@
 <template>
   <div
+    id="content-wrapper"
     class="container"
     style="padding: 1px"
   >
@@ -102,7 +103,13 @@
           label="资源地址"
           width="200"
           show-overflow-tooltip
-        />
+        >
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.resourceFileUrl ? scope.row.resourceFileUrl : '暂无地址' }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="操作"
@@ -476,40 +483,6 @@ export default {
     this.getData()
   },
   methods: {
-    typeFormatter(item) {
-      switch (item.textbookType) {
-        case 0:
-          return '词汇'
-        case 1:
-          return '语法'
-        case 2:
-          return '体验'
-        case 3:
-          return '自然拼读'
-      }
-    },
-    categoryFormatter(item) {
-      switch (item.textbookCategory) {
-        case 0:
-          return 'YouCan'
-        case 1:
-          return '拳心同步'
-        case 2:
-          return '智能英语'
-      }
-    },
-    videoFormatter(item) {
-      return item.isHasVideo === 0 ? '是' : '否'
-    },
-    exercisesFormatter(item) {
-      return item.isHasExercises === 0 ? '是' : '否'
-    },
-    openFormatter(item) {
-      return item.isOpenUser === 0 ? '是' : '否'
-    },
-    statusFormatter(item) {
-      return item.status === 0 ? '正常' : '禁用'
-    },
     onAdd() {
       this.dialogFormVisible = true
       this.mode = 'add'
@@ -530,7 +503,7 @@ export default {
       this.$http({
         url: this.$urlPath.queryTextBookListLike,
         methods: this.HTTP_GET,
-        data: this.generatorFormObj()
+        data: this.generatorFormObj(this.formModelArray)
       }).then(res => {
         this.onSuccess(res.obj)
       })
@@ -561,7 +534,12 @@ export default {
           })
           break
         case 2: // 授权到某一个学校
-          console.log(tag)
+          this.$router.push({
+            name: 'GrantTextBookToSchool',
+            params: {
+              textbookId: item.textbookId
+            }
+          })
           break
         case 3: // 生成教材
           console.log(tag)
@@ -577,11 +555,32 @@ export default {
         return
       }
       this.dialogFormVisible = false
-      this.$http({
-        url: this.$urlPath.saveTextBook,
-        data: this.materialModel
-      }).then(res => {
-        console.log(res)
+      this.$showLoading(loadingInstance => {
+        if (this.mode === 'add') {
+          this.$http({
+            url: this.$urlPath.saveTextBook,
+            data: this.materialModel
+          }).then(res => {
+            this.$successMsg('教材添加成功')
+            this.getData()
+          })
+        } else {
+          this.$http({
+            url: this.$urlPath.updateTextBook,
+            data: this.materialModel
+          }).then(res => {
+            this.$nextTick(_ => {
+              loadingInstance.close()
+            })
+            this.$successMsg('教材修改成功')
+            this.getData()
+          }).catch(error => {
+            console.log(error)
+            this.$nextTick(_ => {
+              loadingInstance.close()
+            })
+          })
+        }
       })
     },
     handlerUpdate(item) {
@@ -598,6 +597,19 @@ export default {
       this.materialModel.isHasVideo = item.isHasVideo // 是否有视频 0是 1否
       this.materialModel.isHasExercises = item.isHasExercises // 是否有配对练习 0是 1否
       this.materialModel.status = item.status// 教材状态 0正常 1禁用
+    },
+    deleteItem(item) {
+      this.$warningConfirm('确定要删除此教材信息，删除后不可恢复。', _ => {
+        this.$http({
+          url: this.$urlPath.deleteTextBook,
+          data: {
+            textbookId: item.textbookId
+          }
+        }).then(res => {
+          this.$successMsg('教材删除成功')
+          this.tableData.splice(this.tableData.indexOf(item), 1)
+        })
+      })
     },
     downExcel() {
       this.$http({

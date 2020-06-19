@@ -33,6 +33,19 @@
             />
           </el-col>
         </el-form-item>
+        <el-form-item label="在线状态">
+          <el-col :span="10">
+            <el-radio-group v-model="schoolModel.isOnLine">
+              <el-radio :label="0">线下</el-radio>
+              <el-radio :label="1">线上</el-radio>
+            </el-radio-group>
+            <el-link
+              type="danger"
+              :underline="false"
+              style="margin-left: 10px"
+            >选择并提交后不可更改此状态</el-link>
+          </el-col>
+        </el-form-item>
         <el-form-item label="学校管理者">
           <el-col :span="10">
             <el-select
@@ -191,7 +204,10 @@
       </el-form>
     </el-card>
 
-    <add-study-card-to-school ref="studyCardParams" />
+    <add-study-card-to-school
+      v-if="schoolModel.isOnLine === 1"
+      ref="studyCardParams"
+    />
     <el-card
       body-style="padding: 0"
       style="margin-top: 10px"
@@ -225,6 +241,7 @@ export default {
       level: this.$privinceData,
       schoolModel: {
         schoolName: '', //        学校名称
+        isOnLine: '', // 是否线上线下学校，0线下 1线上
         schoolLeaderId: '', //    学校管理者ID
         schoolLeaderName: '', //  管理者姓名
         schoolTel: '', //         学校联系方式
@@ -260,6 +277,10 @@ export default {
       const postData = {}
       if (!this.schoolModel.schoolName) {
         this.$errorMsg('请输入学校名称')
+        return
+      }
+      if (!this.schoolModel.isOnLine) {
+        this.$errorMsg('请选择是线上或者是线下学校，请谨慎选择，后期不可更改')
         return
       }
       postData.schoolName = this.schoolModel.schoolName

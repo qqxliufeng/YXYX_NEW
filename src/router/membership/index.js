@@ -47,11 +47,20 @@ export default [
         }
       },
       {
+        path: '/grant-tb-off-school/:schoolId',
+        component: () => import('@/views/membership/GrantTextBookToOffLineSchool.vue'),
+        name: 'GrantTextBookToOffLineSchool',
+        meta: {
+          title: '给学校分配教材',
+          noCache: true
+        }
+      },
+      {
         path: '/granttextbook/:studentId',
         component: () => import('@/views/membership/GrantTextBookToStudent.vue'),
         name: 'GrantTextBookToStudent',
         meta: {
-          title: '分配教材',
+          title: '给学生分配教材',
           noCache: true
         }
       }

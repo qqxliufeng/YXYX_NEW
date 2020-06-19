@@ -33,6 +33,14 @@
             />
           </el-col>
         </el-form-item>
+        <el-form-item label="在线状态">
+          <el-col :span="10">
+            <el-link
+              type="danger"
+              :underline="false"
+            >{{ '当前学校状态为 ' + (schoolModel.isOnLine === 0 ? '线下' : '线上') + ' 状态' }}</el-link>
+          </el-col>
+        </el-form-item>
         <el-form-item label="学校管理者">
           <el-col :span="10">
             <el-select
@@ -190,7 +198,10 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <add-study-card-to-school ref="studyCardParams" />
+    <add-study-card-to-school
+      v-if="schoolModel.isOnLine === 1"
+      ref="studyCardParams"
+    />
     <el-card
       body-style="padding: 0"
       style="margin-top: 10px"
@@ -226,6 +237,7 @@ export default {
       schoolModel: {
         schoolId: '', // 学校ID
         schoolName: '', //        学校名称
+        isOnLine: 0, // 学校的在线状态  0 线下 1线上
         schoolLeaderId: '', //    学校管理者ID
         schoolLeaderName: '', //  管理者姓名
         schoolTel: '', //         学校联系方式
@@ -265,6 +277,7 @@ export default {
       }).then(res => {
         this.schoolModel.schoolId = res.obj.schoolId
         this.schoolModel.schoolName = res.obj.schoolName
+        this.schoolModel.isOnLine = res.obj.isOnLine
         this.schoolModel.schoolLeaderId = res.obj.schoolLeaderId
         this.schoolModel.schoolLeaderName = res.obj.schoolLeaderName
         this.schoolModel.schoolTel = res.obj.schoolTel

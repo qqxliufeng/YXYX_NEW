@@ -46,6 +46,42 @@
         />
         <el-table-column
           align="center"
+          label="在线状态"
+          prop="schoolTel"
+          min-width="120"
+        >
+          <template slot-scope="scope">
+            <div>
+              <el-link
+                v-if="scope.row.isOnLine === 0"
+                :underline="false"
+                type="warning"
+              >线下</el-link>
+              <el-link
+                v-else
+                :underline="false"
+                type="primary"
+              >线上</el-link>
+            </div>
+            <div v-if="scope.row.isOnLine === 0">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="线下的学校可以进行分配学习教材"
+                placement="right"
+              >
+                <el-link
+                  style="font-size: 10px"
+                  size="mini"
+                  type="danger"
+                  @click.native="grantToOffSchool(scope.row)"
+                >分配教材</el-link>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           label="管理员"
         >
           <template slot-scope="scope">{{
@@ -343,6 +379,12 @@ export default {
         data: this.recordModel
       }).then(res => {
         this.$successMsg('服务添加成功')
+      })
+    },
+    grantToOffSchool(item) {
+      this.$router.push({
+        name: 'GrantTextBookToOffLineSchool',
+        params: { schoolId: item.schoolId }
       })
     }
   }
