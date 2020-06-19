@@ -5,6 +5,80 @@
       :show-level="false"
       @on-change-value="onChangeValue"
     />
+    <el-card :body-style="{ padding: '2px' }">
+      <el-table
+        v-loading="loading"
+        :stripe="tableConfig.stripe"
+        :header-cell-style="tableConfig.headerCellStyle"
+        :data="tableData"
+        :border="tableConfig.border"
+        :size="tableConfig.size"
+        :default-sort="tableConfig.defalutSort"
+        :style="tableConfig.style"
+      >
+        <el-table-column
+          align="center"
+          label="ID"
+          prop="courseLevelId"
+          fixed="left"
+        />
+        <el-table-column
+          align="center"
+          label="关卡编号"
+          prop="levelCode"
+          fixed="left"
+        />
+        <el-table-column
+          align="center"
+          label="关卡名称"
+          prop="levelName"
+          width="150"
+          fixed="left"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          label="分组数量"
+          prop="groupNum"
+        />
+        <el-table-column
+          align="center"
+          label="创建时间"
+          prop="createTime"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <div class="text-cut">
+              {{ scope.row.createTime | parseTime }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="状态"
+          prop="status"
+        >
+          <template slot-scope="scope">
+            <div>
+              <el-link
+                :type="scope.row.status === 0 ? 'primary' : 'danger'"
+                :underline="false"
+              >
+                {{ scope.row.status === 0 ? '正常' : '禁用' }}
+              </el-link>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+    <table-foot
+      :total="total"
+      :page-size="pageSize"
+      @prev-click="prevClick"
+      @next-click="nextClick"
+      @current-change="currentChange"
+      @refresh="reloadData"
+    />
   </div>
 </template>
 
@@ -32,7 +106,7 @@ export default {
           pageSize: this.pageSize
         }
       }).then(res => {
-        console.log(res)
+        this.onSuccess(res.obj)
       })
     }
   }

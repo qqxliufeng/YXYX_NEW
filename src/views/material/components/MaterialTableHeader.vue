@@ -65,9 +65,9 @@
             >
               <el-option
                 v-for="item of levelList"
-                :key="item.textbookId"
-                :label="item.textbookName"
-                :value="item.textbookId"
+                :key="item.levelCode"
+                :label="item.levelName"
+                :value="item.levelCode"
               />
             </el-select>
           </div>
@@ -130,7 +130,7 @@ export default {
           this.levelList = ''
           this.getLevelList(this.materialId, newVal, _ => {
             if (this.levelList && this.levelList.length > 0) {
-              this.levelCode = this.levelList[0].textbookId
+              this.levelCode = this.levelList[0].levelCode
             }
           })
         }
