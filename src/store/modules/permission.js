@@ -126,7 +126,6 @@ export function generaMenu(routes, data) {
         pathName = tempPath
       }
     }
-    console.log(item.menuUrl)
     const menu = {
       path: item.menuUrl === '#' ? item.menuUrl + '_key' : item.menuUrl,
       component: isMenu ? Layout : getViews(item.menuUrl),

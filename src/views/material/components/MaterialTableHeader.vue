@@ -105,24 +105,40 @@ export default {
   },
   watch: {
     materialId(newVal, oldVal) {
-      if (newVal && this.showCourse) {
-        this.courseCode = ''
-        this.levelCode = ''
-        this.getCourseList(newVal, _ => {
-          if (this.courseList && this.courseList.length > 0) {
-            this.courseCode = this.courseList[0].courseCode
-          }
-        })
+      if (!this.showCourse) {
+        this.changeValue()
+      } else {
+        if (newVal) {
+          this.courseCode = ''
+          this.levelCode = ''
+          this.courseList = []
+          this.levelList = []
+          this.getCourseList(newVal, _ => {
+            if (this.courseList && this.courseList.length > 0) {
+              this.courseCode = this.courseList[0].courseCode
+            }
+          })
+        }
       }
     },
     courseCode(newVal, oldVal) {
-      if (newVal && this.showLevel) {
-        this.levelCode = ''
-        this.getLevelList(this.materialId, newVal, _ => {
-          if (this.levelList && this.levelList.length > 0) {
-            this.levelCode = this.levelList[0].textbookId
-          }
-        })
+      if (!this.showLevel) {
+        this.changeValue()
+      } else {
+        if (newVal) {
+          this.levelCode = ''
+          this.levelList = ''
+          this.getLevelList(this.materialId, newVal, _ => {
+            if (this.levelList && this.levelList.length > 0) {
+              this.levelCode = this.levelList[0].textbookId
+            }
+          })
+        }
+      }
+    },
+    levelCode(newVal, oldVal) {
+      if (newVal) {
+        this.changeValue()
       }
     }
   },
@@ -134,6 +150,13 @@ export default {
     })
   },
   methods: {
+    changeValue() {
+      this.$emit('on-change-value', {
+        textbookId: this.materialId,
+        courseCode: this.courseCode,
+        levelCode: this.levelCode
+      })
+    }
   }
 }
 </script>

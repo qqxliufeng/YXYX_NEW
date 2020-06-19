@@ -18,7 +18,9 @@ export default {
       this.enginData({ url: this.$urlPath.queryCourseLevel, postData: { textbookId, courseCode }, dataName: 'levelList', callback })
     },
     enginData({ url, postData, dataName, pageSize = 100, callback }) {
-      const loadingInstance = Loading.service(document.getElementsByClassName('container')[0])
+      const loadingInstance = Loading.service({
+        target: document.getElementsByClassName('container')[0]
+      })
       if (!postData) postData = {}
       postData.pageNum = 0
       postData.pageSize = pageSize

@@ -555,7 +555,7 @@ export default {
         return
       }
       this.dialogFormVisible = false
-      this.$showLoading(loadingInstance => {
+      this.$showLoading(closeLoading => {
         if (this.mode === 'add') {
           this.$http({
             url: this.$urlPath.saveTextBook,
@@ -569,16 +569,11 @@ export default {
             url: this.$urlPath.updateTextBook,
             data: this.materialModel
           }).then(res => {
-            this.$nextTick(_ => {
-              loadingInstance.close()
-            })
+            closeLoading()
             this.$successMsg('教材修改成功')
             this.getData()
-          }).catch(error => {
-            console.log(error)
-            this.$nextTick(_ => {
-              loadingInstance.close()
-            })
+          }).catch(_ => {
+            closeLoading()
           })
         }
       })

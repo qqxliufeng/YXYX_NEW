@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <material-table-header
+      :show-course="false"
+      :show-level="false"
+      @on-change-value="onChangeValue"
+    />
     <el-card :body-style="{ padding: '2px' }">
       <el-table
         v-loading="loading"
@@ -93,44 +98,17 @@
         />
         <el-table-column
           align="center"
-          label="操作"
+          label="授权状态"
           fixed="right"
-          min-width="250"
+          width="100"
         >
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
-              @click="
-                changeLockStatus({
-                  item: scope.row,
-                  statusField: 'status',
-                  data: { schoolId: scope.row.schoolId },
-                  lockUrl: $urlPath.lockSchool,
-                  unLockUrl: $urlPath.unLockSchool
-                })
-              "
-            >{{ scope.row.status === 0 ? "禁用" : "解锁" }}</el-button>
-            <el-button
-              :size="$style.tableButtonSize"
-              type="primary"
-              @click="editAccountInfo(scope.row)"
-            >编辑</el-button>
-            <el-dropdown
-              style="display: inline-block; margin-left: 10px"
-              :size="$style.tableButtonSize"
-              type="success"
-              split-button
-              @command="handleSchoolCommand"
             >
-              更多
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{ tag: 1, item: scope.row }">已分配的学习卡</el-dropdown-item>
-                <el-dropdown-item :command="{ tag: 2, item: scope.row }">未分配的学习卡</el-dropdown-item>
-                <el-dropdown-item :command="{ tag: 3, item: scope.row }">查询服务记录</el-dropdown-item>
-                <el-dropdown-item :command="{ tag: 4, item: scope.row }">增加服务记录</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+              已授权
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -140,13 +118,32 @@
 
 <script>
 import tableMixins from '../../mixins/table-mixins'
+import MaterialTableHeader from './components/MaterialTableHeader'
 export default {
   name: 'GrantTextBookToSchool',
-  mixins: [tableMixins],
-  mounted() {
-    this.getData()
+  components: {
+    MaterialTableHeader
   },
+  mixins: [tableMixins],
   methods: {
+    getAddressInfo(item) {
+      if (item.addressDetailList && item.addressDetailList.length > 0) {
+        return item.addressDetailList.map(it => it.address).join(',')
+      }
+      return '暂无详细地址'
+    },
+    statusFormat(item) {
+      if (parseInt(item.status) === 0) {
+        return '正常'
+      }
+      if (parseInt(item.status) === 1) {
+        return '禁用'
+      }
+      return '未知'
+    },
+    onChangeValue({ textbookId, courseCode, levelCode }) {
+      this.getData()
+    },
     getData() {
       this.$http({
         url: this.$urlPath.querySchoolList,
@@ -156,7 +153,8 @@ export default {
           pageSize: this.pageSize
         }
       }).then(res => {
-        console.log(res)
+        this.loading = false
+        this.tableData = res.obj.list
       })
     }
   }

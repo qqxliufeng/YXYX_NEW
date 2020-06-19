@@ -34,6 +34,13 @@
         />
         <el-table-column
           align="center"
+          prop="textbookId"
+          label="ID"
+          fixed="left"
+          width="90"
+        />
+        <el-table-column
+          align="center"
           prop="textbookName"
           label="教材名称"
           fixed="left"
@@ -87,28 +94,16 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="resourceFileUrl"
-          label="资源地址"
-          width="200"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <div>
-              {{ scope.row.resourceFileUrl ? scope.row.resourceFileUrl : '暂无地址' }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
           label="状态"
           width="150"
           fixed="right"
         >
           <template slot-scope="scope">
             <el-button
-              :type="scope.row.offlineSchoolId !== null ? 'primary' : 'danger'"
+              :type="scope.row.offlineSchoolId !== null ? 'danger' : 'primary'"
               :size="$style.tableButtonSize"
-            >{{ scope.row.offlineSchoolId !== null ? '已授权' : '未授权' }}</el-button>
+              @click="handlerGrant(scope.row)"
+            >{{ scope.row.offlineSchoolId !== null ? '取消授权' : '分配授权' }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -160,6 +155,48 @@ export default {
           }).then(res => {
             this.$successMsg('教材分配成功')
             this.$closeCurrentView()
+          })
+        })
+      }
+    },
+    handlerGrant(item) {
+      if (item.offlineSchoolId === null) {
+        this.$warningConfirm('确定要把教材授权分配到该学校上吗？', _ => {
+          this.$showLoading(closeLoading => {
+            const hasGrantItems = this.tableData.filter(it => it.offlineSchoolId !== null || it.textbookId === item.textbookId)
+            this.$http({
+              url: this.$urlPath.grantTextBooksToSchool,
+              data: {
+                schoolId: this.$route.params.schoolId,
+                textbookIds: hasGrantItems.map(it => it.textbookId).join(',')
+              }
+            }).then(res => {
+              this.$successMsg('教材分配成功')
+              this.getData()
+              closeLoading()
+            }).catch(_ => {
+              closeLoading()
+            })
+          })
+        })
+      } else {
+        this.$warningConfirm('确定要把此教材取消授权该学校吗？', _ => {
+          this.$showLoading(closeLoading => {
+            const hasGrantItems = this.tableData.filter(it => it.offlineSchoolId !== null)
+            hasGrantItems.splice(hasGrantItems.indexOf(item), 1)
+            this.$http({
+              url: this.$urlPath.grantTextBooksToSchool,
+              data: {
+                schoolId: this.$route.params.schoolId,
+                textbookIds: hasGrantItems.map(it => it.textbookId).join(',')
+              }
+            }).then(res => {
+              this.$successMsg('教材已取消授权到该学校')
+              this.getData()
+              closeLoading()
+            }).catch(_ => {
+              closeLoading()
+            })
           })
         })
       }
