@@ -138,7 +138,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{tag: 1, item: scope.row}">查看已授权的学校</el-dropdown-item>
                 <el-dropdown-item :command="{tag: 2, item: scope.row}">授权到学校</el-dropdown-item>
-                <el-dropdown-item :command="{tag: 3, item: scope.row}">生成教材</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 3, item: scope.row}">生成/编辑教材</el-dropdown-item>
                 <el-dropdown-item :command="{tag: 4, item: scope.row}">生成资源包</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -542,7 +542,12 @@ export default {
           })
           break
         case 3: // 生成教材
-          console.log(tag)
+          this.$router.push({
+            name: 'GenerateMaterial',
+            params: {
+              textbookId: item.textbookId
+            }
+          })
           break
         case 4: // 生成资源包
           console.log(tag)

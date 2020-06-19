@@ -117,6 +117,7 @@ export default {
   mixins: [tableMixins],
   methods: {
     onChangeValue({ textbookId, courseCode, levelCode }) {
+      this.page = 0
       this.getData(textbookId, courseCode, levelCode)
     },
     getData(textbookId, courseCode, levelCode) {

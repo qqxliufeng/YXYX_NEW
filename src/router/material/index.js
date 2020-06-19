@@ -13,6 +13,15 @@ export default [
           title: '授权学校',
           noCache: true
         }
+      },
+      {
+        path: '/generatematerial/:textbookId',
+        component: () => import('@/views/material/GenerateMaterial.vue'),
+        name: 'GenerateMaterial',
+        meta: {
+          title: '生成或者编辑教材',
+          noCache: true
+        }
       }
     ]
   }
