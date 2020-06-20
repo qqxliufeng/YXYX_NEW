@@ -17,6 +17,7 @@ export default {
       downSingleLoading: false,
       downExampleLoading: false,
       uploadZipLoading: false,
+      generateResourceLoading: false,
       zipFormData: new FormData()
     }
   },
@@ -126,6 +127,21 @@ export default {
       }).catch(_ => {
         this.uploadZipLoading = false
         this.$errorMsg('文件上传失败')
+      })
+    },
+    generateResourcePackage() {
+      this.generateResourceLoading = true
+      this.$http({
+        url: this.$urlPath.wordZipResourceFile,
+        data: {
+          textbookId: this.$route.params.textbookId
+        }
+      }).then(res => {
+        this.generateResourceLoading = false
+        this.$successMsg('生成资源包成功')
+        this.$closeCurrentView()
+      }).catch(_ => {
+        this.generateResourceLoading = false
       })
     }
   }

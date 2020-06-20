@@ -246,8 +246,17 @@
           class="card-wrapper"
           :body-style="{padding: 0}"
         >
-          <div slot="header">
+          <div
+            slot="header"
+            class="flex justify-between"
+          >
             <span class="title text-bold">生成资源包</span>
+            <el-button
+              :loading="generateResourceLoading"
+              type="primary"
+              size="mini"
+              @click="generateResourcePackage"
+            >生成资源包</el-button>
           </div>
         </el-card>
       </div>

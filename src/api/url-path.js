@@ -222,7 +222,7 @@ export const uploadTextBookEgsTxt = baseModuleUrl + 'uploadTextBookEgsTxt'
 
 export const importAudioAndImage = baseModuleUrl + 'importAudioAndImage'
 
-export const generateSubjectFromWord = baseModuleUrl + 'generateSubjectFromWord'
+export const wordZipResourceFile = baseModuleUrl + 'wordZipResourceFile'
 
 export const grantTextBookToSchool = baseModuleUrl + 'grantTextBookToSchool'
 
