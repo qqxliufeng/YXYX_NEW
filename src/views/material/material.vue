@@ -280,15 +280,15 @@
     </el-dialog>
     <!-- 增加教材对话框 -->
     <!-- 查看教材授权的学校对话框 -->
-    <!-- <el-dialog
-      title="授权教材列表"
-      :visible.sync="dialogGrantTextBookVisible"
+    <el-dialog
+      title="授权学校列表"
+      :visible.sync="dialogGrantSchoolVisible"
     >
       <el-table
-        v-loading="grantTextBookLoading"
+        v-loading="grantSchoolLoading"
         :stripe="tableConfig.stripe"
         :header-cell-style="tableConfig.headerCellStyle"
-        :data="grantTextBookTableData"
+        :data="grantSchoolTableData"
         :border="tableConfig.border"
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
@@ -296,33 +296,97 @@
       >
         <el-table-column
           align="center"
-          prop="textbookId"
-          label="ID"
+          label="学校名称"
+          prop="schoolName"
+          width="120"
+          fixed="left"
         />
         <el-table-column
           align="center"
-          prop="textbookName"
-          label="教材名称"
+          label="账号"
+          prop="schoolTel"
+          min-width="120"
+          fixed="left"
         />
         <el-table-column
           align="center"
-          prop="textbookVersion"
-          label="教材版本"
+          label="在线状态"
+          prop="schoolTel"
+          min-width="120"
+        >
+          <template slot-scope="scope">
+            <div>
+              <el-link
+                v-if="scope.row.isOnLine === 0"
+                :underline="false"
+                type="warning"
+              >线下</el-link>
+              <el-link
+                v-else
+                :underline="false"
+                type="primary"
+              >线上</el-link>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="管理员"
+        >
+          <template slot-scope="scope">{{
+            scope.row.schoolLeaderName | emptyFormat
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="联系方式"
+          prop="schoolTel"
+          min-width="120"
         />
         <el-table-column
           align="center"
-          prop="resourceFileUrl"
-          label="资源地址"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          align="center"
-          prop="createTime"
-          label="创建时间"
+          label="地区"
+          min-width="150"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <span>{{ scope.row.createTime | parseTime }}</span>
+            <span class="text-cut">{{
+              scope.row.province + "/" + scope.row.city + "/" + scope.row.area
+            }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="详细地址"
+          width="200"
+          prop="addressDetail"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <span class="text-cut">{{ getAddressInfo(scope.row) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="创建时间"
+          prop="createTime"
+          min-width="180"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <div class="text-cut">
+              {{ scope.row.createTime | parseTime }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="到期时间"
+          min-width="180"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <div class="text-cut">{{ scope.row.endTime | parseTime }}</div>
           </template>
         </el-table-column>
       </el-table>
@@ -332,10 +396,10 @@
       >
         <el-button
           :size="$style.dialogButtonSize"
-          @click="dialogGrantTextBookVisible = false"
+          @click="dialogGrantSchoolVisible = false"
         >知道了</el-button>
       </div>
-    </el-dialog> -->
+    </el-dialog>
     <!-- 查看教材授权的学校对话框 -->
   </div>
 </template>
@@ -476,13 +540,23 @@ export default {
         status: 0// 教材状态 0正常 1禁用
       },
       mode: 'add',
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      dialogGrantSchoolVisible: false,
+      grantSchoolLoading: false,
+      grantSchoolTableData: []
+
     }
   },
   mounted() {
     this.getData()
   },
   methods: {
+    getAddressInfo(item) {
+      if (item.addressDetailList && item.addressDetailList.length > 0) {
+        return item.addressDetailList.map(it => it.address).join(',')
+      }
+      return '暂无详细地址'
+    },
     onAdd() {
       this.dialogFormVisible = true
       this.mode = 'add'
@@ -523,6 +597,8 @@ export default {
     handleMaterialCommand({ tag, item }) {
       switch (tag) {
         case 1: // 查看授权的学校
+          this.dialogGrantSchoolVisible = true
+          this.grantSchoolLoading = true
           this.$http({
             url: this.$urlPath.querySchoolByTextBookId,
             methods: this.HTTP_GET,
@@ -530,7 +606,8 @@ export default {
               textbookId: item.textbookId
             }
           }).then(res => {
-            console.log(res)
+            this.grantSchoolLoading = false
+            this.grantSchoolTableData = res.obj
           })
           break
         case 2: // 授权到某一个学校
@@ -545,7 +622,8 @@ export default {
           this.$router.push({
             name: 'GenerateMaterial',
             params: {
-              textbookId: item.textbookId
+              textbookId: item.textbookId,
+              progressNo: item.progressNo
             }
           })
           break
@@ -559,15 +637,32 @@ export default {
         this.$errorMsg('请输入教材名称')
         return
       }
-      this.dialogFormVisible = false
       this.$showLoading(closeLoading => {
         if (this.mode === 'add') {
           this.$http({
             url: this.$urlPath.saveTextBook,
             data: this.materialModel
           }).then(res => {
+            closeLoading()
+            this.dialogFormVisible = false
+            this.grantSchoolLoading = false
             this.$successMsg('教材添加成功')
             this.getData()
+            this.$nextTick(_ => {
+              this.$warningConfirm('教材基本信息创建成功，是否要创建教材其它信息？', _ => {
+                this.$router.push({
+                  name: 'GenerateMaterial',
+                  params: {
+                    textbookId: res.obj,
+                    progressNo: 0
+                  }
+                })
+              })
+            })
+          }).catch(_ => {
+            closeLoading()
+            this.dialogFormVisible = false
+            this.grantSchoolLoading = false
           })
         } else {
           this.$http({
@@ -621,9 +716,6 @@ export default {
         blobToExecl(res)
       })
     }
-  },
-  deleteItem(item) {
-    this.$warningConfirm('确定要删除此教材信息吗，删除后不可恢复。', _ => { })
   }
 }
 </script>

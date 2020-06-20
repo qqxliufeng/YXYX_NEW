@@ -41,11 +41,8 @@ export function http({ url, methods = HTTP_POST, data = {}, withRoleId = true, w
   }
 }
 
-export function blobToExecl(data, fileName = new Date().toLocaleTimeString()) {
-  const blob = new Blob([data], {
-    type:
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
-  })
+export function blobToFile(data, fileName = new Date().toLocaleTimeString(), type = 'application/zip;charset=utf-8') {
+  const blob = new Blob([data], { type })
   const objectUrl = URL.createObjectURL(blob)
   const link = document.createElement('a')
   const fname = fileName // 下载文件的名字
@@ -54,4 +51,20 @@ export function blobToExecl(data, fileName = new Date().toLocaleTimeString()) {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
+}
+
+export function blobToExecl(data, fileName = new Date().toLocaleTimeString()) {
+  // const blob = new Blob([data], {
+  //   type:
+  //     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
+  // })
+  // const objectUrl = URL.createObjectURL(blob)
+  // const link = document.createElement('a')
+  // const fname = fileName // 下载文件的名字
+  // link.href = objectUrl
+  // link.setAttribute('download', fname)
+  // document.body.appendChild(link)
+  // link.click()
+  // document.body.removeChild(link)
+  blobToFile(data, fileName, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8')
 }

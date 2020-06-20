@@ -7,6 +7,8 @@
  * @LastEditTime: 2020-06-08 15:38:21
  */
 
+export const baseIp = 'http://192.168.0.123:8880'
+
 /**
  * 基础模块名字
  */

@@ -72,5 +72,7 @@ Vue.prototype.$warningConfirm = function (message = '', handlerFunction = null) 
     if (handlerFunction) {
       handlerFunction()
     }
+  }).catch(_ => {
+    console.log('取消')
   })
 }
