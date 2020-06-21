@@ -51,7 +51,11 @@
           prop="status"
           label="状态"
           :formatter="statusFormatter"
-        />
+        >
+          <template slot-scope="scope">
+            <table-status :status="{label: scope.row.status === 0 ? '正常' : '禁用', type: scope.row.status === 0 ? 'primary' : 'danger'}" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="操作"

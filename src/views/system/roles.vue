@@ -73,6 +73,7 @@
             <el-button
               :size="$style.dialogButtonSize"
               type="danger"
+              :disabled="scope.row.roleCode === 'ROLE_admin'"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>

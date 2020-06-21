@@ -34,11 +34,13 @@ import * as filters from './filters' // global filters
 // common vue
 import TableFoot from './components/Common/TableFoot.vue'
 import TableHeader from './components/Common/TableHeader.vue'
+import TableStatus from './components/Common/TableStatus.vue'
 
 import './utils/init-vue.js'
 
 Vue.component('TableFoot', TableFoot)
 Vue.component('TableHeader', TableHeader)
+Vue.component('TableStatus', TableStatus)
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size

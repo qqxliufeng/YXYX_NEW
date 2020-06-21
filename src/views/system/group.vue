@@ -78,11 +78,13 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="accountNonLocked"
           label="状态"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">{{ !!(scope.row.accountNonLocked)?'正常':'禁用' }}</template>
+
+          <template slot-scope="scope">
+            <table-status :status="{ label: scope.row.accountNonLocked ? '正常' : '禁用', type: scope.row.accountNonLocked ? 'primary' : 'danger' }" />
+          </template>
         </el-table-column>
         <el-table-column
           align="center"

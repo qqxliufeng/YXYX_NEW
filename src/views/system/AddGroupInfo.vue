@@ -150,9 +150,12 @@
         </el-form-item>
         <el-form-item label="集团用户">
           <el-col :span="10">
-            <el-radio-group v-model="baseInfo.isyxuser">
-              <el-radio :label="0">否</el-radio>
+            <el-radio-group
+              v-model="baseInfo.isyxuser"
+              disabled
+            >
               <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
             </el-radio-group>
           </el-col>
         </el-form-item>
@@ -199,7 +202,7 @@ export default {
         sex: 1, //      性别 1男 0女
         address: '', //     家庭住址
         note: '', //     备注
-        isyxuser: 0 //     是否集团用户 0否 1是
+        isyxuser: 1 //     是否集团用户 0否 1是
       }
     }
   },
