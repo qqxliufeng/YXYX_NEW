@@ -16,6 +16,7 @@ export default {
       currentProgressNo: 0,
       downSingleLoading: false,
       downExampleLoading: false,
+      changeImageNameLoading: false,
       uploadZipLoading: false,
       generateResourceLoading: false,
       zipFormData: new FormData()
@@ -74,6 +75,35 @@ export default {
         this.currentProgressNo = this.currentProgressNo + 1
       }).catch(_ => {
         this.downExampleLoading = false
+      })
+    },
+    changeImageName() {
+      this.$confirm(`<ul>
+                    <li>操作之前，请确保备份图片资源</li>
+                    <li>请使用Windows操作系统，不支持其它操作系统</li>
+                    <li>图片格式只能为jpg/jpeg</li>
+                    <li>请将图片保存在<strong style="color: red">D://books/images/${this.$route.params.textbookId}</strong>目录下面</li>
+                    <li>此操作后期不可更改撤改，请谨慎操作</li>
+                    </ul>`, '重要提示', {
+        dangerouslyUseHTMLString: true,
+        cancelButtonText: '再想想',
+        confirmButtonText: '确定更改'
+      }).then(_ => {
+        this.changeImageNameLoading = true
+        this.$http({
+          url: this.$urlPath.updateImageName,
+          methods: this.HTTP_GET,
+          data: {
+            textbookId: this.$route.params.textbookId
+          }
+        }).then(res => {
+          this.changeImageNameLoading = false
+          this.currentProgressNo = this.currentProgressNo + 1
+        }).catch(_ => {
+          this.changeImageNameLoading = true
+        })
+      }).catch(_ => {
+        console.log('error了')
       })
     },
 

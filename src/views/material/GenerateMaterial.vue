@@ -139,6 +139,52 @@
             <div class="success-tip">等待下载</div>
           </div>
         </el-card>
+        <!--  start 更改图片名称 -->
+        <el-card
+          class="card-wrapper"
+          :body-style="{padding: 0}"
+        >
+          <div
+            slot="header"
+            class="flex justify-between"
+          >
+            <span class="title text-bold">更改图片名称</span>
+            <el-link
+              v-if="currentProgressNo < 3"
+              size="mini"
+              type="danger"
+              :underline="false"
+            >未开始</el-link>
+            <el-button
+              v-else-if="currentProgressNo === 3"
+              size="mini"
+              type="warning"
+              :loading="changeImageNameLoading"
+              @click="changeImageName"
+            >更改名称</el-button>
+            <el-link
+              v-else
+              size="mini"
+              type="success"
+              :underline="false"
+            >已完成</el-link>
+          </div>
+          <div
+            v-if="currentProgressNo > 3"
+            class="flex justify-center align-center flex-direction padding"
+          >
+            <i class="el-icon-success success-icon" />
+            <div class="success-tip">图片名称更改成功</div>
+          </div>
+          <div
+            v-if="currentProgressNo < 3"
+            class="flex justify-center align-center flex-direction padding"
+          >
+            <i class="el-icon-error error-icon" />
+            <div class="success-tip">等待更改</div>
+          </div>
+        </el-card>
+        <!-- end 更改图片名称 -->
         <el-card
           class="card-wrapper"
           :body-style="{padding: 0}"
@@ -149,13 +195,13 @@
           >
             <span class="title text-bold">上传文件</span>
             <el-link
-              v-if="currentProgressNo < 3"
+              v-if="currentProgressNo < 4"
               size="mini"
               type="danger"
               :underline="false"
             >未开始</el-link>
             <el-button
-              v-else-if="currentProgressNo === 3"
+              v-else-if="currentProgressNo === 4"
               size="mini"
               type="warning"
               :loading="uploadZipLoading"
@@ -169,7 +215,7 @@
             >已完成</el-link>
           </div>
           <div
-            v-if="currentProgressNo === 3"
+            v-if="currentProgressNo === 4"
             style="text-align: center"
           >
             <el-row>
@@ -227,7 +273,7 @@
             </el-row>
           </div>
           <div
-            v-else-if="currentProgressNo < 3"
+            v-else-if="currentProgressNo < 4"
             class="flex justify-center align-center flex-direction padding"
           >
             <i class="el-icon-error error-icon" />
@@ -251,12 +297,12 @@
           >
             <span class="title text-bold">生成资源包</span>
             <el-link
-              v-if="currentProgressNo < 4"
+              v-if="currentProgressNo < 5"
               :loading="generateResourceLoading"
               type="danger"
             >未开始</el-link>
             <el-button
-              v-else-if="currentProgressNo === 4"
+              v-else-if="currentProgressNo === 5"
               :loading="generateResourceLoading"
               type="primary"
               size="mini"
@@ -269,14 +315,14 @@
             >已完成</el-link>
           </div>
           <div
-            v-if="currentProgressNo > 4"
+            v-if="currentProgressNo > 5"
             class="flex justify-center align-center flex-direction padding"
           >
             <i class="el-icon-success success-icon" />
             <div class="success-tip">教材资源生成成功</div>
           </div>
           <div
-            v-if="currentProgressNo < 4"
+            v-if="currentProgressNo < 5"
             class="flex justify-center align-center flex-direction padding"
           >
             <i class="el-icon-error error-icon" />
@@ -307,6 +353,10 @@
             <el-step
               title="下载例句"
               description="下载例句压缩包"
+            />
+            <el-step
+              title="更改名称"
+              description="点击按钮更改名称"
             />
             <el-step
               title="上传文件"

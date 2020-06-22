@@ -226,6 +226,8 @@ export const importAudioAndImage = baseModuleUrl + 'importAudioAndImage'
 
 export const wordZipResourceFile = baseModuleUrl + 'wordZipResourceFile'
 
+export const updateImageName = baseModuleUrl + 'updateImageName'
+
 export const grantTextBookToSchool = baseModuleUrl + 'grantTextBookToSchool'
 
 export const cancelGrantTextBookToSchool = baseModuleUrl + 'cancelGrantTextBookToSchool'

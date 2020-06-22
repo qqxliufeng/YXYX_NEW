@@ -133,7 +133,7 @@ export function generaMenu(routes, data) {
       children: [],
       hidden: hiddenMenuList.includes(item.menuUrl),
       name: pathName,
-      meta: { title: item.menuName, noCache: false, id: item.menuId, roles: ['admin'], icon: 'people', affix: affixMenuList.includes(item.menuUrl) }
+      meta: { title: item.menuName, noCache: false, id: item.menuId, roles: ['admin'], icon: isMenu ? 'list' : 'people', affix: affixMenuList.includes(item.menuUrl) }
     }
     menuButtonModel[menu.name] = item.menuButtons
     if (isMenu) {
