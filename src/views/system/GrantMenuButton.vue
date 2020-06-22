@@ -34,17 +34,24 @@
         >
           <template slot-scope="scope">
             <div v-if="scope.row.menuButtons.length > 0">
-              <el-checkbox
-                v-for="item of scope.row.menuButtons"
-                :key="item.buttonId"
-                v-model="item.select"
-              >{{ item.buttonName }}</el-checkbox>
-              <el-button
-                size="mini"
-                type="danger"
-                class="margin-left"
-                @click="confirmGrantButton(scope.row)"
-              >确定分配</el-button>
+              <el-row>
+                <el-col :span="22">
+                  <el-checkbox
+                    v-for="item of scope.row.menuButtons"
+                    :key="item.buttonId"
+                    v-model="item.select"
+                    style="margin-bottom: 10px"
+                  >{{ item.buttonName }}</el-checkbox>
+                </el-col>
+                <el-col :span="2">
+                  <el-button
+                    size="mini"
+                    type="danger"
+                    class="margin-left"
+                    @click="confirmGrantButton(scope.row)"
+                  >确定分配</el-button>
+                </el-col>
+              </el-row>
             </div>
             <div
               v-else

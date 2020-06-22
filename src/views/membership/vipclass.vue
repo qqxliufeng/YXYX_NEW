@@ -70,9 +70,7 @@
           prop="status"
         >
           <template slot-scope="scope">
-            <div>
-              {{ scope.row.status === 0 ? '正常' : '禁用' }}
-            </div>
+            <table-status :status="statusFormat(scope.row)" />
           </template>
         </el-table-column>
         <el-table-column
@@ -108,6 +106,7 @@
     <el-dialog
       :title="mode === 'add' ? '添加班级' : '编辑班级信息'"
       :visible.sync="dialogFormVisible"
+      top="10vh"
     >
       <el-form
         label-position="right"
@@ -297,6 +296,12 @@ export default {
     this.getTeacherList()
   },
   methods: {
+    statusFormat(item) {
+      return {
+        label: item.status === 0 ? '正常' : '禁用',
+        type: item.status === 0 ? 'primary' : 'danger'
+      }
+    },
     getData() {
       this.$http({
         url: this.$urlPath.querySchoolClass,

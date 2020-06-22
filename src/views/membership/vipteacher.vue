@@ -108,9 +108,9 @@
           label="状态"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">{{
-            scope.row.isLock === 0 ? "正常" : "禁用"
-          }}</template>
+          <template slot-scope="scope">
+            <table-status :status="statusFormat(scope.row)" />
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -131,11 +131,6 @@
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
-              type="primary"
-              @click="hanlderUpdate(scope.row)"
-            >编辑</el-button>
-            <el-button
-              :size="$style.tableButtonSize"
               :type="scope.row.isLock === 0 ? 'danger' : 'warning'"
               @click="
                 changeLockStatus({
@@ -149,9 +144,22 @@
             >{{ scope.row.isLock === 0 ? "禁用" : "解锁" }}</el-button>
             <el-button
               :size="$style.tableButtonSize"
+              type="primary"
+              @click="hanlderUpdate(scope.row)"
+            >编辑</el-button>
+            <el-dropdown
+              style="display: inline-block; margin-left: 10px"
+              :size="$style.tableButtonSize"
               type="success"
-              @click="initPassword(scope.row)"
-            >重置密码</el-button>
+              split-button
+              @command="handleTeacherCommand"
+            >
+              更多
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{tag: 1, item: scope.row}">重置密码</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 2, item: scope.row}">分配按钮</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -398,6 +406,12 @@ export default {
     this.getRoleList()
   },
   methods: {
+    statusFormat(item) {
+      return {
+        label: item.isLock === 0 ? '正常' : '禁用',
+        type: item.isLock === 0 ? 'primary' : 'danger'
+      }
+    },
     getData() {
       this.$http({
         url: this.$urlPath.queryTeacherList,
@@ -487,6 +501,16 @@ export default {
         })
       }
     },
+    handleTeacherCommand({ tag, item }) {
+      switch (tag) {
+        case 1:
+          this.initPassword(item)
+          break
+        case 2:
+          this.grantMenuButton(item)
+          break
+      }
+    },
     initPassword(item) {
       this.$warningConfirm('是否要重新设置密码为手机号后六位？', _ => {
         this.$http({
@@ -498,6 +522,15 @@ export default {
         }).then(res => {
           this.$successMsg('密码重置成功')
         })
+      })
+    },
+    grantMenuButton(item) {
+      this.$router.push({
+        name: 'GrantMenuButton',
+        params: {
+          userId: item.userId,
+          roleId: item.roleId
+        }
       })
     }
   }

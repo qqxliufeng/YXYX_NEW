@@ -62,6 +62,7 @@
             <el-button
               type="primary"
               :size="$style.dialogButtonSize"
+              :disabled="scope.row.roleCode === 'ROLE_admin'"
               @click="handleUpdate(scope.row)"
             >编辑</el-button>
             <el-button
@@ -297,12 +298,14 @@ export default {
     },
     roleMenusConfirm() {
       this.dialogMenuVisible = false
+      const halfKeys = this.$refs.menuTree.getHalfCheckedKeys()
       const checkedKeys = this.$refs.menuTree.getCheckedKeys()
+      const allKeys = halfKeys.concat(checkedKeys)
       this.$http({
         url: this.$urlPath.saveRoleMenus,
         data: {
           roleId: this.tempItem.roleId,
-          menuIds: checkedKeys.length > 0 ? checkedKeys.join(',') : null
+          menuIds: allKeys.join(',')
         }
       }).then(res => {
         this.$successMsg('操作成功')

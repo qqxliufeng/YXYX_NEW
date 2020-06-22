@@ -1,9 +1,10 @@
 <template>
   <div>
-    <el-link
+    <el-tag
       :type="status.type"
-      :underline="false"
-    >{{ status.label }}</el-link>
+      effect="dark"
+      size="mini"
+    >{{ status.label }}</el-tag>
   </div>
 </template>
 

@@ -144,8 +144,11 @@
           align="center"
           label="状态"
           prop="status"
-          :formatter="statusFormat"
-        />
+        >
+          <template slot-scope="scope">
+            <table-status :status="statusFormat(scope.row)" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="操作"
@@ -304,12 +307,12 @@ export default {
     },
     statusFormat(item) {
       if (parseInt(item.status) === 0) {
-        return '正常'
+        return { label: '正常', type: 'primary' }
       }
       if (parseInt(item.status) === 1) {
-        return '禁用'
+        return { label: '禁用', type: 'danger' }
       }
-      return '未知'
+      return { label: '未知', type: 'warning' }
     },
     onAdd() {
       this.$router.push({ name: 'AddSchool' })

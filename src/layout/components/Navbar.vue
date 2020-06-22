@@ -1,48 +1,29 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-
+    <hamburger
+      id="hamburger-container"
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
+    <breadcrumb
+      id="breadcrumb-container"
+      class="breadcrumb-container"
+    />
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <search id="header-search" class="right-menu-item" />
-
-        <error-log class="errLog-container right-menu-item hover-effect" />
-
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
-        <el-tooltip content="Global Size" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
-
-      </template>
-
-      <!-- <div class="user-name">  444</div> -->
-
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-        <div class="avatar-wrapper">
-          <img src="../../../public/img-user.jpg" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+      <div class="avatar-container right-menu-item hover-effect">
+        <div class="avatar-wrapper flex justify-center align-center">
+          <el-image
+            src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+            class="user-avatar"
+            fit="cover"
+          />
+          <el-link
+            :underline="false"
+            @click="logout"
+          >退出</el-link>
         </div>
-        <el-dropdown-menu slot="dropdown">
-          <!-- <router-link to="/profile/index">
-            <el-dropdown-item>Profile</el-dropdown-item>
-          </router-link>
-          <router-link to="/">
-            <el-dropdown-item>Dashboard</el-dropdown-item>
-          </router-link> -->
-          <!-- <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a> -->
-          <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">登出</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+      </div>
     </div>
   </div>
 </template>
@@ -51,19 +32,11 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import ErrorLog from '@/components/ErrorLog'
-import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger,
-    ErrorLog,
-    Screenfull,
-    SizeSelect,
-    Search
+    Hamburger
   },
   computed: {
     ...mapGetters([
@@ -76,9 +49,19 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    logout() {
+      this.$confirm('是否要退出当前账号?', '提示', {
+        confirmButtonText: '退出',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$store.dispatch('user/logout').then(_ => {
+          window.location.href = '/login'
+          // this.$router.replace(`/login?redirect=${this.$route.fullPath}`)
+        })
+      }).catch(() => {
+        console.log('退出当前账号')
+      })
     }
   }
 }
@@ -90,18 +73,18 @@ export default {
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
     line-height: 46px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -133,10 +116,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }
@@ -145,14 +128,14 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
         position: relative;
 
         .user-avatar {
           cursor: pointer;
           width: 40px;
           height: 40px;
-          border-radius: 10px;
+          border-radius: 50%;
+          margin-right: 10px;
         }
 
         .el-icon-caret-bottom {

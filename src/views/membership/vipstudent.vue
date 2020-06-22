@@ -114,9 +114,9 @@
           label="状态"
           prop="status"
         >
-          <template slot-scope="scope">{{
-            scope.row.status === 0 ? '正常' : '禁用'
-          }}</template>
+          <template slot-scope="scope">
+            <table-status :status="statusFormat(scope.row)" />
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -402,6 +402,12 @@ export default {
     })
   },
   methods: {
+    statusFormat(item) {
+      return {
+        label: item.status === 0 ? '正常' : '禁用',
+        type: item.status === 0 ? 'primary' : 'danger'
+      }
+    },
     getData() {
       this.$http({
         url: this.$urlPath.queryStudentList,
