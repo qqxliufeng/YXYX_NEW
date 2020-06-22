@@ -1,66 +1,76 @@
 <template>
   <div class="login-container">
-    <div class="left-wrapper flex-sub">
-      <img
-        class="bg-images"
-        src="@/assets/custom-theme/images/login-bg.jpeg"
-      >
-    </div>
-    <div class="right-wrapper">
-      <el-form
-        ref="loginForm"
-        :model="loginForm"
-        class="login-form"
-        autocomplete="on"
-        label-position="left"
-      >
-        <div class="title-container">
-          <h3 class="title">优行后台管理</h3>
-        </div>
-        <el-form-item prop="phone">
-          <el-input
-            ref="phone"
-            v-model="loginForm.phone"
-            placeholder="请输入用户名或者手机号"
-            name="phone"
-            type="text"
-            tabindex="1"
-            autocomplete="on"
-          >
-            <i
-              slot="suffix"
-              class="el-input__icon el-icon-user"
-            />
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="请输入密码"
-            name="password"
-            tabindex="2"
-            autocomplete="on"
-            @keyup.native="checkCapslock"
-            @blur="capsTooltip = false"
-            @keyup.enter.native="handleLogin"
-          >
-            <i
-              slot="suffix"
-              class="el-input__icon el-icon-lock"
-            />
-          </el-input>
-        </el-form-item>
-        <el-button
-          :loading="loading"
-          type="primary"
-          style="width:100%;margin-bottom:30px; margin-top: 40px"
-          @click.native.prevent="handleLogin"
-        >登录
-        </el-button>
-      </el-form>
+    <img
+      class="bg-images"
+      src="@/assets/custom-theme/images/login-bg.jpeg"
+    >
+    <div class="content-wrapper">
+      <div class="left-wrapper flex-sub" />
+      <div class="right-wrapper">
+        <el-form
+          ref="loginForm"
+          :model="loginForm"
+          class="login-form"
+          autocomplete="on"
+          label-position="left"
+        >
+          <div class="title-container">
+            <h3 class="title">优行后台管理</h3>
+          </div>
+          <el-form-item prop="phone">
+            <el-input
+              ref="phone"
+              v-model="loginForm.phone"
+              placeholder="请输入用户名或者手机号"
+              name="phone"
+              type="text"
+              tabindex="1"
+              autocomplete="on"
+            >
+              <i
+                slot="suffix"
+                class="el-input__icon el-icon-user"
+              />
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              :key="passwordType"
+              ref="password"
+              v-model="loginForm.password"
+              :type="passwordType"
+              placeholder="请输入密码"
+              name="password"
+              tabindex="2"
+              autocomplete="on"
+              @keyup.native="checkCapslock"
+              @blur="capsTooltip = false"
+              @keyup.enter.native="handleLogin"
+            >
+              <i
+                slot="suffix"
+                class="el-input__icon el-icon-lock"
+              />
+            </el-input>
+          </el-form-item>
+          <div class="text-right">
+            <el-link
+              :underline="false"
+              style="color: #ffffff"
+            >忘记密码？</el-link>
+          </div>
+          <el-button
+            :loading="loading"
+            type="primary"
+            style="width:100%; margin-top: 80px"
+            @click.native.prevent="handleLogin"
+          >登录
+          </el-button>
+          <div class="hat-wrapper">
+            <img src="@/assets/custom-theme/images/login-hat-icon.png">
+          </div>
+        </el-form>
+      </div>
     </div>
   </div>
 </template>
@@ -89,8 +99,12 @@ export default {
         password: ''
       },
       loginRules: {
-        phone: [{ required: true, trigger: 'change', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        phone: [
+          { required: true, trigger: 'change', validator: validateUsername }
+        ],
+        password: [
+          { required: true, trigger: 'blur', validator: validatePassword }
+        ]
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -122,7 +136,10 @@ export default {
   methods: {
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
-        if ((shiftKey && (key >= 'A' && key <= 'Z')) || (!shiftKey && (key >= 'A' && key <= 'Z'))) {
+        if (
+          (shiftKey && (key >= 'A' && key <= 'Z')) ||
+          (!shiftKey && (key >= 'A' && key <= 'Z'))
+        ) {
           this.capsTooltip = true
         } else {
           this.capsTooltip = false
@@ -148,7 +165,8 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
+          this.$store
+            .dispatch('user/login', this.loginForm)
             .then(() => {
               // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               console.log('THIS IS LOGINVUE')
@@ -196,7 +214,7 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$left_bg: #333;
+$left_bg: #00000000;
 $right_bg: #ffffff;
 $primary_color: #1890ff;
 
@@ -204,27 +222,58 @@ $primary_color: #1890ff;
   min-height: 100%;
   width: 100%;
   overflow: hidden;
-  display: flex;
-  .left-wrapper {
-    background-color: $left_bg;
-    .bg-images {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+  position: relative;
+  .bg-images {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .content-wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 111;
+    display: flex;
+    .left-wrapper {
+      background-color: $left_bg;
+    }
+    .right-wrapper {
+      width: 40%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .login-form {
+        background-color: rgba($color: #ffffff, $alpha: 0.6);
+        border-radius: 10px;
+        border: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
+        position: relative;
+        width: 80%;
+        padding: 40px;
+        margin: 0 auto;
+        .hat-wrapper {
+          position: absolute;
+          top: 0;
+          right: 0;
+          margin-top: -50px;
+          margin-right: -40px;
+          width: 100px;
+          height: 100px;
+          z-index: 999;
+          & img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
     }
   }
-  .right-wrapper {
-    background-color: $right_bg;
-    width: 40%;
-    .login-form {
-      position: relative;
-      width: 80%;
-      padding: 160px 35px 0;
-      margin: 0 auto;
-      overflow: hidden;
-    }
-  }
-
   .tips {
     font-size: 14px;
     color: #fff;
@@ -249,7 +298,7 @@ $primary_color: #1890ff;
 
     .title {
       font-size: 26px;
-      color: $primary_color;
+      color: #ffffff;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
