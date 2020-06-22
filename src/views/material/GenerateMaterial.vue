@@ -100,17 +100,15 @@
             v-if="currentProgressNo === 1 || currentProgressNo === 2"
             class="margin"
           >
-            <div
-              v-if="currentProgressNo === 1"
-              class="margin flex justify-between align-center"
-            >
+            <div class="margin flex justify-between align-center">
               <el-link :underline="false">单词文件压缩包</el-link>
               <el-button
                 :type="currentProgressNo === 1 ? 'primary' : 'success'"
                 size="mini"
                 :loading="downSingleLoading"
+                :disabled="currentProgressNo !== 1"
                 @click="downSingle"
-              >{{ currentProgressNo > 1 ? '已完成' : '点击下载' }}</el-button>
+              >{{ currentProgressNo === 1 ? '点击下载' : '下载成功' }}</el-button>
             </div>
             <div
               v-if="currentProgressNo === 2"
@@ -121,8 +119,9 @@
                 :type="currentProgressNo === 2 ? 'primary' : 'success'"
                 size="mini"
                 :loading="downExampleLoading"
+                :disabled="currentProgressNo !== 2"
                 @click="downExample"
-              >{{ currentProgressNo > 2 ? '已完成' : '点击下载' }}</el-button>
+              >{{ currentProgressNo === 2 ? '点击下载' : '下载成功' }}</el-button>
             </div>
           </div>
           <div
@@ -136,7 +135,7 @@
             v-else
             class="flex justify-center align-center flex-direction padding"
           >
-            <i class="el-icon-error success-icon" />
+            <i class="el-icon-error error-icon" />
             <div class="success-tip">等待下载</div>
           </div>
         </el-card>
@@ -231,7 +230,7 @@
             v-else-if="currentProgressNo < 3"
             class="flex justify-center align-center flex-direction padding"
           >
-            <i class="el-icon-error success-icon" />
+            <i class="el-icon-error error-icon" />
             <div class="success-tip">等待上传</div>
           </div>
           <div
@@ -251,12 +250,37 @@
             class="flex justify-between"
           >
             <span class="title text-bold">生成资源包</span>
+            <el-link
+              v-if="currentProgressNo < 4"
+              :loading="generateResourceLoading"
+              type="danger"
+            >未开始</el-link>
             <el-button
+              v-else-if="currentProgressNo === 4"
               :loading="generateResourceLoading"
               type="primary"
               size="mini"
               @click="generateResourcePackage"
             >生成资源包</el-button>
+            <el-link
+              v-else
+              :loading="generateResourceLoading"
+              type="success"
+            >已完成</el-link>
+          </div>
+          <div
+            v-if="currentProgressNo > 4"
+            class="flex justify-center align-center flex-direction padding"
+          >
+            <i class="el-icon-success success-icon" />
+            <div class="success-tip">教材资源生成成功</div>
+          </div>
+          <div
+            v-if="currentProgressNo < 4"
+            class="flex justify-center align-center flex-direction padding"
+          >
+            <i class="el-icon-error error-icon" />
+            <div class="success-tip">等待生成</div>
           </div>
         </el-card>
       </div>
@@ -303,7 +327,23 @@
 import generateMaterialMixins from '../../mixins/generate-material-mixins'
 export default {
   name: 'GenerateMaterial',
-  mixins: [generateMaterialMixins]
+  mixins: [generateMaterialMixins],
+  mounted() {
+    this.getData()
+  },
+  methods: {
+    getData() {
+      this.$http({
+        url: this.$urlPath.queryTextBookProgressNo,
+        methods: this.HTTP_GET,
+        data: {
+          textbookId: this.$route.params.textbookId
+        }
+      }).then(res => {
+        this.currentProgressNo = res.obj
+      })
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -322,6 +362,10 @@ export default {
       .success-icon {
         font-size: 50px;
         color: #13ce66;
+      }
+      .error-icon {
+        font-size: 50px;
+        color: #ff4949;
       }
       .success-tip {
         font-size: 14px;

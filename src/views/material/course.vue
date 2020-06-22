@@ -88,6 +88,7 @@ export default {
   methods: {
     onChangeValue({ textbookId }) {
       this.page = 0
+      this.loading = true
       this.getData(textbookId)
     },
     getData(textbookId) {

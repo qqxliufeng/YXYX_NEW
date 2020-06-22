@@ -109,15 +109,22 @@ export default {
         this.changeValue()
       } else {
         if (newVal) {
-          this.courseCode = ''
-          this.levelCode = ''
           this.courseList = []
-          this.levelList = []
           this.getCourseList(newVal, _ => {
             if (this.courseList && this.courseList.length > 0) {
-              this.courseCode = this.courseList[0].courseCode
+              // 如果当前的Code 和 新加载的Code值一样，手动触发改变事件
+              if (this.courseCode === this.courseList[0].courseCode) {
+                this.changeValue()
+              } else {
+                this.courseCode = this.courseList[0].courseCode
+              }
+            } else {
+              this.courseCode = ''
             }
           })
+        } else {
+          this.courseCode = ''
+          this.courseList = []
         }
       }
     },
@@ -126,13 +133,22 @@ export default {
         this.changeValue()
       } else {
         if (newVal) {
-          this.levelCode = ''
-          this.levelList = ''
+          this.levelList = []
           this.getLevelList(this.materialId, newVal, _ => {
             if (this.levelList && this.levelList.length > 0) {
-              this.levelCode = this.levelList[0].levelCode
+              // 如果当前的Code 和 新加载的Code值一样，手动触发改变事件
+              if (this.levelCode === this.levelList[0].levelCode) {
+                this.changeValue()
+              } else {
+                this.levelCode = this.levelList[0].levelCode
+              }
+            } else {
+              this.levelCode = ''
             }
           })
+        } else {
+          this.levelCode = ''
+          this.levelList = []
         }
       }
     },

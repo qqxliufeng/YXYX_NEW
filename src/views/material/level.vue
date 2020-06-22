@@ -93,6 +93,12 @@ export default {
   mixins: [tableMixins],
   methods: {
     onChangeValue({ textbookId, courseCode }) {
+      if (!textbookId || !courseCode) {
+        this.$errorMsg('暂无课程信息')
+        this.tableData = []
+        return
+      }
+      this.loading = true
       this.page = 0
       this.getData(textbookId, courseCode)
     },

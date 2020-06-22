@@ -15,7 +15,7 @@ export default [
         }
       },
       {
-        path: '/generatematerial/:textbookId/:progressNo',
+        path: '/generatematerial/:textbookId',
         component: () => import('@/views/material/GenerateMaterial.vue'),
         name: 'GenerateMaterial',
         meta: {

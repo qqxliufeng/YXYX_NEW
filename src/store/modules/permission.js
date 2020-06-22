@@ -5,7 +5,8 @@ import Layout from '@/layout'
 import { menuButtonModel } from '@/utils/app-config'
 
 const hiddenMenuList = [
-  '/system/menuButton'
+  '/system/menuButton',
+  '/material/distribution'
 ]
 
 const affixMenuList = [

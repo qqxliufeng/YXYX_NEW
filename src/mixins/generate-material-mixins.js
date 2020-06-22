@@ -13,7 +13,7 @@ export default {
       postData: {
         textbookId: this.$route.params.textbookId
       },
-      currentProgressNo: Number(this.$route.params.progressNo),
+      currentProgressNo: 0,
       downSingleLoading: false,
       downExampleLoading: false,
       uploadZipLoading: false,

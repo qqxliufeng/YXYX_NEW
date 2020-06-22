@@ -1,9 +1,10 @@
 <template>
   <div class="container">
-    <material-table-header
-      :show-course="false"
-      :show-level="false"
-      @on-change-value="onChangeValue"
+    <table-header
+      title="授权当前教材到某个学校"
+      :show-add="false"
+      :show-delete="false"
+      :show-search="false"
     />
     <el-card :body-style="{ padding: '2px' }">
       <el-table
@@ -118,13 +119,12 @@
 
 <script>
 import tableMixins from '../../mixins/table-mixins'
-import MaterialTableHeader from './components/MaterialTableHeader'
 export default {
   name: 'GrantTextBookToSchool',
-  components: {
-    MaterialTableHeader
-  },
   mixins: [tableMixins],
+  mounted() {
+    this.getData()
+  },
   methods: {
     getAddressInfo(item) {
       if (item.addressDetailList && item.addressDetailList.length > 0) {
@@ -140,9 +140,6 @@ export default {
         return '禁用'
       }
       return '未知'
-    },
-    onChangeValue({ textbookId, courseCode, levelCode }) {
-      this.getData()
     },
     getData() {
       this.$http({
