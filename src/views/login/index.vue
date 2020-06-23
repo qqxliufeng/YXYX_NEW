@@ -5,7 +5,16 @@
       src="@/assets/custom-theme/images/login-bg.jpeg"
     >
     <div class="content-wrapper">
-      <div class="left-wrapper flex-sub" />
+      <div class="left-wrapper flex-sub">
+        <div class="logo-wrapper">
+          <img src="@/assets/custom-theme/images/logo.png">
+        </div>
+        <div class="tip-wrapper">
+          <div>
+            <img src="@/assets/custom-theme/images/img-login-youxing-tip.png">
+          </div>
+        </div>
+      </div>
       <div class="right-wrapper">
         <el-form
           ref="loginForm"
@@ -15,7 +24,7 @@
           label-position="left"
         >
           <div class="title-container">
-            <h3 class="title">优行后台管理</h3>
+            <h3 class="title">优行教育后台管理</h3>
           </div>
           <el-form-item prop="phone">
             <el-input
@@ -54,18 +63,35 @@
             </el-input>
           </el-form-item>
           <div class="text-right">
-            <el-link
-              :underline="false"
-              style="color: #ffffff"
-            >忘记密码？</el-link>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="请联系平台管理员"
+              placement="bottom"
+            >
+              <el-link
+                :underline="false"
+                style="color: #333"
+              >忘记密码？</el-link>
+            </el-tooltip>
           </div>
           <el-button
             :loading="loading"
             type="primary"
-            style="width:100%; margin-top: 80px"
+            style="width:100%; margin-top: 60px"
             @click.native.prevent="handleLogin"
           >登录
           </el-button>
+          <div class="margin-top flex justify-between">
+            <el-link
+              :underline="false"
+              style="color: #333"
+            >建议使用谷歌浏览器</el-link>
+            <el-link
+              type="primary"
+              href="http://jinyouapp.com/download/ChromeStandalone_62.0.3202.94_Setup.exe"
+            >点击下载安装包</el-link>
+          </div>
           <div class="hat-wrapper">
             <img src="@/assets/custom-theme/images/login-hat-icon.png">
           </div>
@@ -232,6 +258,7 @@ $primary_color: #1890ff;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 0.6;
   }
   .content-wrapper {
     position: absolute;
@@ -243,6 +270,35 @@ $primary_color: #1890ff;
     display: flex;
     .left-wrapper {
       background-color: $left_bg;
+      position: relative;
+      .logo-wrapper {
+        position: absolute;
+        top: 5%;
+        left: 5%;
+        width: 100px;
+        height: 125px;
+        & img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .tip-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        & > div {
+          width: 100%;
+          border-top: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
+          border-bottom: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
+          background-color: rgba($color: #ffffff, $alpha: 0.5);
+          padding: 10px 0;
+        }
+      }
     }
     .right-wrapper {
       width: 40%;
@@ -250,13 +306,14 @@ $primary_color: #1890ff;
       justify-content: center;
       align-items: center;
       .login-form {
-        background-color: rgba($color: #ffffff, $alpha: 0.6);
+        background-color: rgba($color: #ffffff, $alpha: 0.8);
         border-radius: 10px;
         border: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
         position: relative;
         width: 80%;
         padding: 40px;
         margin: 0 auto;
+        margin-left: 0;
         .hat-wrapper {
           position: absolute;
           top: 0;
@@ -298,7 +355,7 @@ $primary_color: #1890ff;
 
     .title {
       font-size: 26px;
-      color: #ffffff;
+      color: $primary_color;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;

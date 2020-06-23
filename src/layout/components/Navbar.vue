@@ -20,6 +20,11 @@
           />
           <el-link
             :underline="false"
+            style="margin-right: 20px"
+          >您好，{{ name }}，欢迎来到优行后台管理系统</el-link>
+          <el-link
+            :underline="false"
+            type="danger"
             @click="logout"
           >退出</el-link>
         </div>
@@ -42,7 +47,8 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'name'
     ])
   },
   methods: {
@@ -132,8 +138,8 @@ export default {
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
+          width: 30px;
+          height: 30px;
           border-radius: 50%;
           margin-right: 10px;
         }
