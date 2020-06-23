@@ -246,3 +246,12 @@ export const queryCourseLevelGroup = baseModuleUrl + 'queryCourseLevelGroup'
 
 // ****************课程信息**************** //
 
+// ****************单词信息**************** //
+
+export const queryWordInfoList = baseModuleUrl + 'queryWordInfoList'
+
+export const queryWordInfoListLike = baseModuleUrl + 'queryWordInfoListLike'
+
+export const queryCourseLevelGroup1 = baseModuleUrl + 'queryCourseLevelGroup'
+
+// ****************单词信息**************** //
