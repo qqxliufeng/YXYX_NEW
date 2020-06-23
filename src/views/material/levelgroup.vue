@@ -59,9 +59,10 @@ updateTime: null -->
           align="center"
           label="视频地址"
           prop="groupVideo"
+          show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <div>{{ scope.row.groupVideo === null ? '暂无' : scope.row.groupVideo }}</div>
+            <div class="text-cut">{{ scope.row.groupVideo === null ? '暂无' : scope.row.groupVideo }}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -83,14 +84,7 @@ updateTime: null -->
           prop="status"
         >
           <template slot-scope="scope">
-            <div>
-              <el-link
-                :type="scope.row.status === 0 ? 'primary' : 'danger'"
-                :underline="false"
-              >
-                {{ scope.row.status === 0 ? '正常' : '禁用' }}
-              </el-link>
-            </div>
+            <table-status :status="{label: scope.row.status === 0 ? '正常' : '禁用', type: scope.row.status === 0 ? 'primary' : 'danger'}" />
           </template>
         </el-table-column>
       </el-table>

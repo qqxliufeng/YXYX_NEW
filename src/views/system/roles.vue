@@ -101,8 +101,9 @@
         :default-expanded-keys="menuObj.defalutExpandedKeys"
         :default-checked-keys="menuObj.defalutCheckedKeys"
         :props="menuObj.defaultProps"
+        class="dialog-container"
       />
-      <span
+      <div
         slot="footer"
         class="dialog-footer"
       >
@@ -115,7 +116,7 @@
           type="primary"
           @click="roleMenusConfirm"
         >确认</el-button>
-      </span>
+      </div>
     </el-dialog>
     <el-dialog
       :title="modeObj.mode === 'add' ? '添加角色' : '编辑角色'"
@@ -124,15 +125,13 @@
       <el-form
         ref="dataForm"
         :model="modeObj.temp"
-        label-position="left"
-        label-width="120px"
-        style="width: 400px; margin-left:50px;"
+        class="dialog-container"
       >
         <el-form-item
           label="角色名称"
           prop="roleName"
         >
-          <el-col :span="20">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="modeObj.temp.roleName"
               placeholder="请输入角色名称"
@@ -143,7 +142,7 @@
           label="角色编码"
           prop="roleCode"
         >
-          <el-col :span="20">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="modeObj.temp.roleCode"
               placeholder="请输入角色编码"
@@ -154,7 +153,7 @@
           label="所属部门"
           prop="deptId"
         >
-          <el-col :span="20">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="modeObj.temp.deptId"
               class="filter-item"

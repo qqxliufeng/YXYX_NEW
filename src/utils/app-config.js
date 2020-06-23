@@ -9,5 +9,6 @@ export const menuButtonModel = {
 
 export const style = {
   dialogButtonSize: 'mini',
-  tableButtonSize: 'mini'
+  tableButtonSize: 'mini',
+  dialogColSpan: 20
 }

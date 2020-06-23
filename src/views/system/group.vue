@@ -118,10 +118,11 @@
     <el-dialog
       title="编辑信息"
       :visible.sync="dialogFormVisible"
+      top="10vh"
     >
-      <el-form>
+      <el-form class="dialog-container">
         <el-form-item label="所属部门">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="tempItem.deptId"
               placeholder="请选择所属部门"
@@ -138,7 +139,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="用户角色">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="tempItem.roleId"
               placeholder="请选择用户角色"
@@ -154,7 +155,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="是否校长">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="tempItem.isSchoolLeader">
               <el-radio :label="1">是</el-radio>
               <el-radio :label="0">否</el-radio>
@@ -162,7 +163,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="是否主管">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="tempItem.isSalesLeader">
               <el-radio :label="1">是</el-radio>
               <el-radio :label="0">否</el-radio>
@@ -170,7 +171,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="真实姓名">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="tempItem.userName"
               placeholder="请输入真实姓名（必填）"
@@ -179,7 +180,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="用户昵称">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="tempItem.userNickName"
               placeholder="请输入用户昵称（必填）"
@@ -188,7 +189,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="用户性别">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="tempItem.sex">
               <el-radio :label="1">男</el-radio>
               <el-radio :label="0">女</el-radio>
@@ -196,7 +197,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="手机号码">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="tempItem.phone"
               placeholder="请输入手机号码（必填）"
@@ -205,7 +206,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="登录密码">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-link
               :underline="false"
               type="success"
@@ -218,7 +219,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="详细地址">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="tempItem.address"
               type="textarea"
@@ -228,7 +229,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="备注说明">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="tempItem.note"
               type="textarea"
@@ -238,7 +239,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="用户状态">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="tempItem.isLock">
               <el-radio :label="0">正常</el-radio>
               <el-radio :label="1">禁用</el-radio>
@@ -246,8 +247,11 @@
           </el-col>
         </el-form-item>
         <el-form-item label="集团用户">
-          <el-col :span="10">
-            <el-radio-group v-model="tempItem.isyxuser">
+          <el-col :span="$style.dialogColSpan">
+            <el-radio-group
+              v-model="tempItem.isyxuser"
+              disabled
+            >
               <el-radio :label="0">否</el-radio>
               <el-radio :label="1">是</el-radio>
             </el-radio-group>
@@ -273,9 +277,9 @@
       title="修改密码"
       :visible.sync="dialogResetPasswordVisible"
     >
-      <el-form>
+      <el-form class="dialog-container">
         <el-form-item label="新的密码">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="passwordModel.newPassword"
               maxlength="6"
@@ -284,7 +288,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="确认密码">
-          <el-col :span="10">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="passwordModel.confirmPassword"
               maxlength="6"
@@ -461,9 +465,7 @@ export default {
     resetPassword() {
       this.passwordModel.userId = this.tempItem.userId
       this.dialogFormVisible = false
-      this.$warningConfirm('默认密码为手机号后六位，确定要重置密码吗？', _ => {
-        this.dialogResetPasswordVisible = true
-      })
+      this.dialogResetPasswordVisible = true
     },
     handlePasswordConfirm() {
       if (!this.passwordModel.newPassword) {

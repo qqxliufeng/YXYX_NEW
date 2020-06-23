@@ -203,16 +203,12 @@
     />
     <!-- 增加服务记录对话框 -->
     <el-dialog
-      title="添加服务记录"
+      title="添加服务内容"
       :visible.sync="dialogAddRecordVisible"
-      width="90%"
+      width="80%"
     >
-      <el-form
-        label-position="left"
-        label-width="120px"
-        style="width: 90%; "
-      >
-        <el-form-item label="服务内容">
+      <el-form class="dialog-container">
+        <el-form-item>
           <tinymce
             v-model="recordModel.record"
             :show-upload-image="false"

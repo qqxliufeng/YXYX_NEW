@@ -67,21 +67,24 @@ export default {
       }
     },
     bindFormatter(item) {
-      return item.isBind === 0 ? '未绑定' : '已绑定'
+      return {
+        label: item.isBind === 0 ? '未绑定' : '已绑定',
+        type: item.isBind === 0 ? 'danger' : 'primary'
+      }
     },
     statusFormatter(item) {
       // 0未分配教材 1已分配教材 2未激活 3已激活 4已到期
       switch (item.status) {
         case 0:
-          return '未分配教材'
+          return { label: '未分配教材', type: 'danger' }
         case 1:
-          return '已分配教材'
+          return { label: '已分配教材', type: 'primary' }
         case 2:
-          return '未激活'
+          return { label: '未激活', type: 'danger' }
         case 3:
-          return '已激活'
+          return { label: '已激活', type: 'primary' }
         case 4:
-          return '已到期'
+          return { label: '已到期', type: 'primary' }
       }
     },
     endTimeFormatter(item) {

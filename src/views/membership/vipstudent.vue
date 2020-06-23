@@ -162,14 +162,11 @@
     <el-dialog
       :title="mode === 'add' ? '添加学生' : '编辑学生信息'"
       :visible.sync="dialogFormVisible"
+      top="10vh"
     >
-      <el-form
-        label-position="right"
-        label-width="120px"
-        style="width: 90%; "
-      >
+      <el-form class="dialog-container">
         <el-form-item label="学校名称">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="studentModel.schoolId"
               style="width: 100%"
@@ -186,7 +183,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="班级名称">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="studentModel.classId"
               style="width: 100%"
@@ -203,7 +200,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="学生姓名">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="studentModel.studentName"
               placeholder="请输入学生姓名（必填）"
@@ -212,7 +209,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="手机号码">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="studentModel.studentPhone"
               placeholder="请输入手机号码（必填）"
@@ -221,7 +218,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="登录密码">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-link
               :underline="false"
               type="danger"
@@ -229,7 +226,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="家庭住址">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="studentModel.address"
               type="textarea"
@@ -240,7 +237,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="学生性别">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.sex">
               <el-radio :label="0">男</el-radio>
               <el-radio :label="1">女</el-radio>
@@ -248,7 +245,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="学生属性">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.isTeacher">
               <el-radio :label="0">普通学生</el-radio>
               <el-radio :label="1">老师</el-radio>
@@ -256,7 +253,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="是否线上">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.isOnLine">
               <el-radio :label="1">是</el-radio>
               <el-radio :label="0">否</el-radio>
@@ -264,7 +261,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="学生状态">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.status">
               <el-radio :label="0">正常</el-radio>
               <el-radio :label="1">禁用</el-radio>

@@ -86,15 +86,21 @@
           align="center"
           prop="isBind"
           label="绑定状态"
-          :formatter="bindFormatter"
-        />
+        >
+          <template slot-scope="scope">
+            <table-status :status="bindFormatter(scope.row)" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="status"
           label="状态"
           width="100"
-          :formatter="statusFormatter"
-        />
+        >
+          <template slot-scope="scope">
+            <table-status :status="statusFormatter(scope.row)" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="操作"
@@ -138,16 +144,12 @@
       title="批量生成学习卡"
       :visible.sync="dialogFormVisible"
     >
-      <el-form
-        label-position="left"
-        label-width="120px"
-        style="width: 400px; margin-left:50px;"
-      >
+      <el-form class="dialog-container">
         <el-form-item
           label="学习卡类型"
           prop="parentDeptId"
         >
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="generatorCardObj.cardType"
               style="width: 100%"
@@ -167,7 +169,7 @@
           label="学习卡数量"
           prop="menuSequence"
         >
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input-number
               v-model="generatorCardObj.studyCardNum"
               style="width: 100%"
@@ -176,13 +178,16 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item label="有效期单位（月）">
-          <el-col :span="24">
-            <el-input-number
-              v-model="generatorCardObj.validityMonth"
-              style="width: 100%"
-              :min="1"
-            />
+        <el-form-item label="有效期时间">
+          <el-col :span="$style.dialogColSpan">
+            <div class="flex">
+              <el-input-number
+                v-model="generatorCardObj.validityMonth"
+                class="flex-sub margin-right-lg"
+                :min="1"
+              />
+              <el-link :underline="false">单位：月</el-link>
+            </div>
           </el-col>
         </el-form-item>
       </el-form>
@@ -208,13 +213,9 @@
       title="编辑学习卡信息"
       :visible.sync="dialogEditVisible"
     >
-      <el-form
-        label-position="left"
-        label-width="120px"
-        style="width: 400px; margin-left:50px;"
-      >
+      <el-form class="dialog-container">
         <el-form-item label="到期时间">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-date-picker
               v-model="tempItem.endTime"
               style="width: 100%"
@@ -248,48 +249,50 @@
       title="授权教材列表"
       :visible.sync="dialogGrantTextBookVisible"
     >
-      <el-table
-        v-loading="grantTextBookLoading"
-        :stripe="tableConfig.stripe"
-        :header-cell-style="tableConfig.headerCellStyle"
-        :data="grantTextBookTableData"
-        :border="tableConfig.border"
-        :size="tableConfig.size"
-        :default-sort="tableConfig.defalutSort"
-        :style="tableConfig.style"
-      >
-        <el-table-column
-          align="center"
-          prop="textbookId"
-          label="ID"
-        />
-        <el-table-column
-          align="center"
-          prop="textbookName"
-          label="教材名称"
-        />
-        <el-table-column
-          align="center"
-          prop="textbookVersion"
-          label="教材版本"
-        />
-        <el-table-column
-          align="center"
-          prop="resourceFileUrl"
-          label="资源地址"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          align="center"
-          prop="createTime"
-          label="创建时间"
-          show-overflow-tooltip
+      <div class="dialog-container">
+        <el-table
+          v-loading="grantTextBookLoading"
+          :stripe="tableConfig.stripe"
+          :header-cell-style="tableConfig.headerCellStyle"
+          :data="grantTextBookTableData"
+          :border="tableConfig.border"
+          :size="tableConfig.size"
+          :default-sort="tableConfig.defalutSort"
+          :style="tableConfig.style"
         >
-          <template slot-scope="scope">
-            <span>{{ scope.row.createTime | parseTime }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column
+            align="center"
+            prop="textbookId"
+            label="ID"
+          />
+          <el-table-column
+            align="center"
+            prop="textbookName"
+            label="教材名称"
+          />
+          <el-table-column
+            align="center"
+            prop="textbookVersion"
+            label="教材版本"
+          />
+          <el-table-column
+            align="center"
+            prop="resourceFileUrl"
+            label="资源地址"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            align="center"
+            prop="createTime"
+            label="创建时间"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.createTime | parseTime }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <div
         slot="footer"
         class="dialog-footer"

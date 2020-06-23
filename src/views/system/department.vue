@@ -84,17 +84,14 @@
     >
       <el-form
         ref="dataForm"
-        :rules="rules"
         :model="tempItem"
-        label-position="left"
-        label-width="120px"
-        style="width: 400px; margin-left:50px;"
+        class="dialog-container"
       >
         <el-form-item
           label="部门名称"
           prop="deptName"
         >
-          <el-col :span="20">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="tempItem.deptName"
               placeholder="请输入部门名称"
@@ -106,7 +103,7 @@
           label="部门编码"
           prop="deptCode"
         >
-          <el-col :span="20">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="tempItem.deptCode"
               placeholder="请输入部门编码"
@@ -118,7 +115,7 @@
           label="上级部门"
           prop="parentDeptId"
         >
-          <el-col :span="20">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="tempItem.parentDeptId"
               class="filter-item"
@@ -138,7 +135,7 @@
           label="部门状态"
           prop="status"
         >
-          <el-col :span="20">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="tempItem.status">
               <el-radio :label="0">正常</el-radio>
               <el-radio :label="1">禁用</el-radio>
@@ -179,12 +176,6 @@ export default {
         deptName: '',
         deptCode: '',
         status: 0
-      },
-      rules: {
-        status: [{ required: true, message: '请选择', trigger: 'blur' }],
-        deptName: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        deptCode: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        parentDeptId: [{ required: true, message: '不能为空', trigger: 'blur' }]
       }
     }
   },

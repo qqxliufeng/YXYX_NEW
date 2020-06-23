@@ -59,14 +59,7 @@
           prop="status"
         >
           <template slot-scope="scope">
-            <div>
-              <el-link
-                :type="scope.row.status === 0 ? 'primary' : 'danger'"
-                :underline="false"
-              >
-                {{ scope.row.status === 0 ? '正常' : '禁用' }}
-              </el-link>
-            </div>
+            <table-status :status="{label: scope.row.status === 0 ? '正常' : '禁用', type: scope.row.status === 0 ? 'primary' : 'danger'}" />
           </template>
         </el-table-column>
       </el-table>

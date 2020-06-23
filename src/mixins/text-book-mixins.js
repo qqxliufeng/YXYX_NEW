@@ -37,7 +37,10 @@ export default {
       return item.isOpenUser === 0 ? '是' : '否'
     },
     statusFormatter(item) {
-      return item.status === 0 ? '正常' : '禁用'
+      return {
+        label: item.status === 0 ? '正常' : '禁用',
+        type: item.status === 0 ? 'primary' : 'danger'
+      }
     }
   }
 }

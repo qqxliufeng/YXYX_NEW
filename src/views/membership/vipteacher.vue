@@ -176,14 +176,11 @@
     <el-dialog
       :title="mode === 'add' ? '添加老师' : '编辑老师信息'"
       :visible.sync="dialogFormVisible"
+      top="10vh"
     >
-      <el-form
-        label-position="right"
-        label-width="120px"
-        style="width: 90%; "
-      >
+      <el-form class="dialog-container">
         <el-form-item label="学校名称">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="teacherModel.schoolId"
               style="width: 100%"
@@ -200,7 +197,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="老师角色">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="teacherModel.roleId"
               style="width: 100%"
@@ -217,7 +214,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="老师名称">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="teacherModel.userName"
               placeholder="请输入老师姓名（必填）"
@@ -226,7 +223,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="老师昵称">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="teacherModel.userNickName"
               placeholder="请输入老师昵称"
@@ -235,7 +232,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="手机号码">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="teacherModel.phone"
               placeholder="请输入老师手机号码（必填）"
@@ -244,7 +241,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="登录密码">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-link
               :underline="false"
               type="danger"
@@ -252,7 +249,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="家庭住址">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="teacherModel.address"
               type="textarea"
@@ -263,7 +260,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="是否校长">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="teacherModel.isSchoolLeader">
               <el-radio :label="0">否</el-radio>
               <el-radio :label="1">是</el-radio>
@@ -271,7 +268,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="老师性别">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="teacherModel.sex">
               <el-radio :label="1">男</el-radio>
               <el-radio :label="0">女</el-radio>
@@ -279,7 +276,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="用户状态">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="teacherModel.isLock">
               <el-radio :label="0">正常</el-radio>
               <el-radio :label="1">禁用</el-radio>
@@ -290,7 +287,7 @@
           v-if="mode === 'edit'"
           label="备注说明"
         >
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="teacherModel.note"
               type="textarea"

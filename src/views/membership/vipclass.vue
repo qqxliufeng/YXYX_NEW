@@ -108,13 +108,9 @@
       :visible.sync="dialogFormVisible"
       top="10vh"
     >
-      <el-form
-        label-position="right"
-        label-width="120px"
-        style="width: 90%; "
-      >
+      <el-form class="dialog-container">
         <el-form-item label="学校名称">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="classModel.schoolId"
               style="width: 100%"
@@ -131,7 +127,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="年级名称">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="classModel.classLevel"
               placeholder="请输入年级名称（必填）"
@@ -140,7 +136,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="班级名称">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="classModel.className"
               placeholder="请输入班级名称（必填）"
@@ -149,7 +145,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="班级负责人">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="classModel.classLeaderId"
               style="width: 100%"
@@ -167,7 +163,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="负责人姓名">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="classModel.classLeaderName"
               maxlength="6"
@@ -176,7 +172,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="班级状态">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="classModel.status">
               <el-radio :label="0">正常</el-radio>
               <el-radio :label="1">禁用</el-radio>
@@ -184,7 +180,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="备注说明">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="classModel.note"
               type="textarea"

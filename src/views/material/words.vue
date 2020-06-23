@@ -31,15 +31,17 @@
           <el-divider direction="vertical" />
         </el-col>
         <el-col :span="15">
-          <div class="flex">
+          <div class="flex align-center">
             <el-link :underline="false">单词内容</el-link>
             <el-input
+              v-model="searchContent"
               placeholder="单词内容"
               class="flex-sub margin-lr-lg"
             />
             <el-button
+              style="height: 30px"
               type="primary"
-              size="mini"
+              :size="$style.tableButtonSize"
               @click="searchWord"
             >搜索</el-button>
           </div>
@@ -201,7 +203,8 @@ export default {
     return {
       baseIp,
       materialId: '',
-      materialList: []
+      materialList: [],
+      searchContent: ''
     }
   },
   watch: {
@@ -261,7 +264,19 @@ export default {
       const audio = document.getElementById(item.audioAddr)
       audio.play()
     },
-    searchWord() { },
+    searchWord() {
+      this.page = 0
+      this.$http({
+        url: this.$urlPath.queryWordInfoListLike,
+        data: {
+          wordCode: this.searchContent,
+          pageNum: this.page,
+          pageSize: this.pageSize
+        }
+      }).then(res => {
+        this.onSuccess(res.obj)
+      })
+    },
     handlerUpdate(item) { },
     wordInfo(item) { },
     handleWordCommand() {

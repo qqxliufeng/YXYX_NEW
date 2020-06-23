@@ -95,8 +95,11 @@
           align="center"
           prop="status"
           label="状态"
-          :formatter="statusFormatter"
-        />
+        >
+          <template slot-scope="scope">
+            <table-status :status="statusFormatter(scope.row)" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="resourceFileUrl"
@@ -156,22 +159,19 @@
     <el-dialog
       :title="mode === 'add' ? '添加教材' : '编辑教材信息'"
       :visible.sync="dialogFormVisible"
+      top="10vh"
     >
-      <el-form
-        label-position="right"
-        label-width="120px"
-        style="width: 90%; "
-      >
+      <el-form class="dialog-container">
         <el-form-item label="教材名称">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="materialModel.textbookName"
               placeholder="请输入教材名称"
             />
           </el-col>
         </el-form-item>
-        <el-form-item label="解锁所需优钻">
-          <el-col :span="24">
+        <el-form-item label="所需优钻">
+          <el-col :span="$style.dialogColSpan">
             <el-input-number
               v-model="materialModel.unLockCoins"
               :min="1"
@@ -181,7 +181,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="教材类型">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="materialModel.textbookType"
               style="width: 100%"
@@ -197,7 +197,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="教材类别">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="materialModel.textbookCategory"
               style="width: 100%"
@@ -213,7 +213,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="教材版本">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="materialModel.textbookVersion"
               style="width: 100%"
@@ -228,24 +228,24 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="是否对用户开放">
-          <el-col :span="24">
+        <el-form-item label="用户开放">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="materialModel.isOpenUser">
-              <el-radio :label="0">是</el-radio>
-              <el-radio :label="1">否</el-radio>
+              <el-radio :label="0">开放</el-radio>
+              <el-radio :label="1">不开放</el-radio>
             </el-radio-group>
           </el-col>
         </el-form-item>
-        <el-form-item label="是否有视频">
-          <el-col :span="24">
+        <el-form-item label="有无视频">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="materialModel.isHasVideo">
               <el-radio :label="0">有</el-radio>
               <el-radio :label="1">没有</el-radio>
             </el-radio-group>
           </el-col>
         </el-form-item>
-        <el-form-item label="是否有配对练习">
-          <el-col :span="24">
+        <el-form-item label="配对练习">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="materialModel.isHasExercises">
               <el-radio :label="0">有</el-radio>
               <el-radio :label="1">没有</el-radio>
@@ -253,7 +253,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="用户状态">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="materialModel.status">
               <el-radio :label="0">正常</el-radio>
               <el-radio :label="1">禁用</el-radio>
@@ -281,113 +281,116 @@
     <el-dialog
       title="授权学校列表"
       :visible.sync="dialogGrantSchoolVisible"
+      top="10vh"
     >
-      <el-table
-        v-loading="grantSchoolLoading"
-        :stripe="tableConfig.stripe"
-        :header-cell-style="tableConfig.headerCellStyle"
-        :data="grantSchoolTableData"
-        :border="tableConfig.border"
-        :size="tableConfig.size"
-        :default-sort="tableConfig.defalutSort"
-        :style="tableConfig.style"
-      >
-        <el-table-column
-          align="center"
-          label="学校名称"
-          prop="schoolName"
-          width="120"
-          fixed="left"
-        />
-        <el-table-column
-          align="center"
-          label="账号"
-          prop="schoolTel"
-          min-width="120"
-          fixed="left"
-        />
-        <el-table-column
-          align="center"
-          label="在线状态"
-          prop="schoolTel"
-          min-width="120"
+      <div class="dialog-container">
+        <el-table
+          v-loading="grantSchoolLoading"
+          :stripe="tableConfig.stripe"
+          :header-cell-style="tableConfig.headerCellStyle"
+          :data="grantSchoolTableData"
+          :border="tableConfig.border"
+          :size="tableConfig.size"
+          :default-sort="tableConfig.defalutSort"
+          :style="tableConfig.style"
         >
-          <template slot-scope="scope">
-            <div>
-              <el-link
-                v-if="scope.row.isOnLine === 0"
-                :underline="false"
-                type="warning"
-              >线下</el-link>
-              <el-link
-                v-else
-                :underline="false"
-                type="primary"
-              >线上</el-link>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="管理员"
-        >
-          <template slot-scope="scope">{{
-            scope.row.schoolLeaderName | emptyFormat
-          }}</template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="联系方式"
-          prop="schoolTel"
-          min-width="120"
-        />
-        <el-table-column
-          align="center"
-          label="地区"
-          min-width="150"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <span class="text-cut">{{
-              scope.row.province + "/" + scope.row.city + "/" + scope.row.area
-            }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="详细地址"
-          width="200"
-          prop="addressDetail"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <span class="text-cut">{{ getAddressInfo(scope.row) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="创建时间"
-          prop="createTime"
-          min-width="180"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <div class="text-cut">
-              {{ scope.row.createTime | parseTime }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="到期时间"
-          min-width="180"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <div class="text-cut">{{ scope.row.endTime | parseTime }}</div>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column
+            align="center"
+            label="学校名称"
+            prop="schoolName"
+            width="120"
+            fixed="left"
+          />
+          <el-table-column
+            align="center"
+            label="账号"
+            prop="schoolTel"
+            min-width="120"
+            fixed="left"
+          />
+          <el-table-column
+            align="center"
+            label="在线状态"
+            prop="schoolTel"
+            min-width="120"
+          >
+            <template slot-scope="scope">
+              <div>
+                <el-link
+                  v-if="scope.row.isOnLine === 0"
+                  :underline="false"
+                  type="warning"
+                >线下</el-link>
+                <el-link
+                  v-else
+                  :underline="false"
+                  type="primary"
+                >线上</el-link>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="管理员"
+          >
+            <template slot-scope="scope">{{
+              scope.row.schoolLeaderName | emptyFormat
+            }}</template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="联系方式"
+            prop="schoolTel"
+            min-width="120"
+          />
+          <el-table-column
+            align="center"
+            label="地区"
+            min-width="150"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <span class="text-cut">{{
+                scope.row.province + "/" + scope.row.city + "/" + scope.row.area
+              }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="详细地址"
+            width="200"
+            prop="addressDetail"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <span class="text-cut">{{ getAddressInfo(scope.row) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="创建时间"
+            prop="createTime"
+            min-width="180"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <div class="text-cut">
+                {{ scope.row.createTime | parseTime }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="到期时间"
+            min-width="180"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <div class="text-cut">{{ scope.row.endTime | parseTime }}</div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <div
         slot="footer"
         class="dialog-footer"
@@ -623,6 +626,7 @@ export default {
         this.$errorMsg('请输入教材名称')
         return
       }
+      this.dialogFormVisible = false
       this.$showLoading(closeLoading => {
         if (this.mode === 'add') {
           this.$http({

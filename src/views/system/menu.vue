@@ -75,15 +75,13 @@
     >
       <el-form
         :model="tempItem"
-        label-position="left"
-        label-width="180px"
-        style="width: 400px; margin-left:50px;"
+        class="dialog-container"
       >
         <el-form-item
           label="父级菜单"
           prop="parentDeptId"
         >
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="tempItem.parentMenuId"
               style="width: 100%"
@@ -104,7 +102,7 @@
           label="菜单名称"
           prop="menuName"
         >
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="tempItem.menuName"
               maxlength="15"
@@ -117,7 +115,7 @@
           label="菜单序号"
           prop="menuSequence"
         >
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input-number
               v-model="tempItem.menuSequence"
               style="width: 100%"
@@ -127,7 +125,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="菜单地址">
-          <el-col :span="24">
+          <el-col :span="$style.dialogColSpan">
             <el-input
               v-model="tempItem.menuUrl"
               placeholder="请输入菜单地址"
