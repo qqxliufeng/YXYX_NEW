@@ -73,6 +73,7 @@
     <table-foot
       :total="total"
       :page-size="pageSize"
+      :page-num="page"
       @prev-click="prevClick"
       @next-click="nextClick"
       @current-change="currentChange"
