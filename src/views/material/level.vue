@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <material-table-header
+      ref="tableHeader"
       :show-course="true"
       :show-level="false"
       @on-change-value="onChangeValue"
@@ -13,7 +14,11 @@
         >更改视频地址</el-button>
       </div>
     </material-table-header>
-    <el-card :body-style="{ padding: '2px' }">
+    <el-card
+      :body-style="{ padding: '0' }"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"

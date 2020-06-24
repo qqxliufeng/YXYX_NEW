@@ -1,11 +1,16 @@
 <template>
   <div class="container">
     <material-table-header
+      ref="tableHeader"
       :show-course="true"
       :show-level="true"
       @on-change-value="onChangeValue"
     />
-    <el-card :body-style="{ padding: '2px' }">
+    <el-card
+      :body-style="{ padding: '0' }"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -16,19 +21,6 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <!-- courseCode: "1"
-createId: 1
-createTime: 1585124434000
-dr: 0
-groupCode: "1-1-1"
-groupName: "第1组"
-groupVideo: null
-levelCode: "1-1"
-levelgroupId: 1
-status: 0
-textbookId: 1
-updateId: null
-updateTime: null -->
         <el-table-column
           align="center"
           label="ID"

@@ -1,7 +1,13 @@
 <template>
   <div class="container">
-    <el-card :body-style="{padding: 0}">
-      <div slot="header">
+    <el-card
+      ref="tableHeader"
+      :body-style="{padding: 0}"
+    >
+      <div
+        slot="header"
+        class="title text-bold text-sm"
+      >
         请选择教材
       </div>
       <el-row style="padding: 10px">
@@ -49,7 +55,11 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-card :body-style="{padding: 0}">
+    <el-card
+      :body-style="{padding: 0}"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -171,32 +181,6 @@
       :visible.sync="dialogInfoVisible"
       top="10vh"
     >
-      <!-- 单词	音标	解释	易混词	发音	例句	例句解释	操作 -->
-      <!-- audioAddr: "/home/books/10/mp3//1.mp3"
-        confWord1: "in"
-        confWord2: "white"
-        confWord3: "the"
-        confWordList: null
-        courseCode: "1"
-        createId: 1
-        createTime: 1585124434000
-        dr: 0
-        exampAudioAddr: "/home/books/10/egs//1.mp3"
-        exampExplanation: "嗨，辛迪！你好吗？"
-        exampSentence: "Hi, Cindy! How are you?"
-        groupCode: "1-1-1"
-        levelCode: "1-1"
-        spellAnswer: "Hi"
-        spellQuestion: "________, Cindy! How are you?"
-        status: 0
-        textbookId: 1
-        updateId: null
-        updateTime: null
-        wordCode: "hi"
-        wordExplain: "interj.(用于打招呼)嗨；喂"
-        wordId: 1
-        wordImageAddr: "/home/books/10/image//1"
-        wordSounds: "[haɪ]" -->
       <el-form class="dialog-container">
         <el-form-item label="单词名称">
           <el-col

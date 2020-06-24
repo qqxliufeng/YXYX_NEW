@@ -1,11 +1,16 @@
 <template>
   <div class="container">
     <table-header
+      ref="tableHeader"
       title="基本操作"
       :show-delete="false"
       @onadd="onAdd"
     />
-    <el-card :body-style="{padding: 0}">
+    <el-card
+      :body-style="{padding: 0}"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"

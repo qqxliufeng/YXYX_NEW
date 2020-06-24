@@ -194,13 +194,8 @@ export default {
           this.$store
             .dispatch('user/login', this.loginForm)
             .then(() => {
-              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              console.log('THIS IS LOGINVUE')
-              console.log(this.otherQuery)
-              // this.$store.dispatch('user/getMenus')
-
-              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.$router.push({ path: '/system/group' })
+              this.$router.push({ path: this.redirect || '/system/group', query: this.otherQuery })
+              // this.$router.push({ path: '/system/group' })
               this.loading = false
             })
             .catch(() => {

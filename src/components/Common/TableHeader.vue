@@ -21,11 +21,10 @@
         >批量删除</el-button>
         <slot name="other" />
       </div>
-      <div>
+      <div v-if="showSearch && formModelArray.length > 0">
         <el-row>
           <el-col :span="22">
             <el-form
-              v-if="showSearch && formModelArray.length > 0"
               :inline="true"
               size="small"
               :gutter="5"

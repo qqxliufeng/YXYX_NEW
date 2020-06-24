@@ -54,11 +54,21 @@ body {
 }
 
 .container {
+  position: relative;
   border-radius: 5px;
   height: calc(100vh - 100px);
   background-color: #fff;
   margin: 5px;
   padding: 5px;
+  overflow-y: scroll;
+}
+
+.table-container {
+  position: absolute;
+  top: 0;
+  left: 5px;
+  right: 5px;
+  bottom: 50px;
   overflow-y: scroll;
 }
 

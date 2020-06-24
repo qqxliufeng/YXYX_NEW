@@ -9,6 +9,7 @@
 <template>
   <div class="container">
     <table-header
+      ref="tableHeader"
       title="查询内容"
       :form-model-array="formModelArray"
       :show-search="true"
@@ -17,7 +18,11 @@
       @onadd="onAdd"
       @onsearch="onSearch"
     />
-    <el-card :body-style="{ padding: '2px' }">
+    <el-card
+      :body-style="{ padding: '2px' }"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"

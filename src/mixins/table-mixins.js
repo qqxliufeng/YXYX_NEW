@@ -19,8 +19,11 @@ export default {
         }
       },
       tableData: [],
+      tableCardStyle: {
+        top: '0'
+      },
       page: 1,
-      pageSize: 5,
+      pageSize: 10,
       total: 0,
       loading: true,
       multipleSelection: [],
@@ -36,6 +39,7 @@ export default {
     }
   },
   mounted() {
+    this.tableCardStyle.top = this.$refs.tableHeader ? (this.$refs.tableHeader.$el.offsetHeight + 10 + 'px') : '0'
     if (this.initData) {
       this.initData()
     }
@@ -167,21 +171,35 @@ export default {
      * 生成搜索对象
      */
     generatorFormObj(formModelArray = []) {
-      const form = {}
-      form['pageNum'] = this.page
-      form['pageSize'] = this.pageSize
-      formModelArray.forEach(it => {
-        const name = it.name
-        const value = it.value
-        if (value instanceof Array) {
-          value.forEach((i, index) => {
-            form[it.name[index]] = i
-          })
+      // const form = {}
+      // form['pageNum'] = this.page
+      // form['pageSize'] = this.pageSize
+      // formModelArray.forEach(it => {
+      //   const name = it.name
+      //   const value = it.value
+      //   if (value instanceof Array) {
+      //     value.forEach((i, index) => {
+      //       form[it.name[index]] = i
+      //     })
+      //   } else {
+      //     form[name] = value
+      //   }
+      // })
+      // return form
+      return formModelArray.reduce((acc, cur) => {
+        if (cur.name instanceof Array) {
+          cur.name.reduce((a, c, index) => {
+            a[c] = cur.value[index] || ''
+            return a
+          }, acc)
         } else {
-          form[name] = value
+          acc[cur.name] = cur.value
         }
+        return acc
+      }, {
+        pageNum: this.page,
+        pageSize: this.pageSize
       })
-      return form
     },
     onSearch() {
       this.page = 1

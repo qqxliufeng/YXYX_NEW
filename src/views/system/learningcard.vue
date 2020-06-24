@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <table-header
+      ref="tableHeader"
       title="基本操作"
       :form-model-array="formModelArray"
       :show-delete="false"
@@ -20,7 +21,11 @@
         >批量下载学习卡</el-button>
       </template>
     </table-header>
-    <el-card :body-style="{ padding: 0 }">
+    <el-card
+      :body-style="{ padding: 0 }"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -43,7 +48,7 @@
           prop="cardCode"
           label="学习卡编码"
           fixed="left"
-          width="90"
+          width="100"
         />
         <el-table-column
           align="center"

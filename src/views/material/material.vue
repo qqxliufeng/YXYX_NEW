@@ -5,6 +5,7 @@
     style="padding: 1px"
   >
     <table-header
+      ref="tableHeader"
       title="基本操作"
       :form-model-array="formModelArray"
       :show-delete="false"
@@ -21,7 +22,11 @@
         >下载Excel模板</el-button>
       </template>
     </table-header>
-    <el-card :body-style="{padding: 0}">
+    <el-card
+      :body-style="{padding: 0}"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"

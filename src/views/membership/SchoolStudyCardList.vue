@@ -1,12 +1,17 @@
 <template>
   <div class="container">
     <table-header
+      ref="tableHeader"
       :title="$route.params.schoolName + ' 下'+ (Number($route.params.type) === 1 ? '已分配' : '未分配') +'的学习卡信息'"
       :show-add="false"
       :show-delete="false"
       :show-search="false"
     />
-    <el-card :body-style="{padding: 0}">
+    <el-card
+      :body-style="{padding: 0}"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -29,7 +34,7 @@
           prop="cardCode"
           label="学习卡编码"
           fixed="left"
-          width="90"
+          width="100"
         />
         <el-table-column
           align="center"
@@ -72,15 +77,21 @@
           align="center"
           prop="isBind"
           label="绑定状态"
-          :formatter="bindFormatter"
-        />
+        >
+          <template slot-scope="scope">
+            <table-status :status="bindFormatter(scope.row)" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="status"
           label="状态"
           width="100"
-          :formatter="statusFormatter"
-        />
+        >
+          <template slot-scope="scope">
+            <table-status :status="statusFormatter(scope.row)" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="操作"

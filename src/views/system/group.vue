@@ -4,6 +4,7 @@
     style="padding: 2px"
   >
     <table-header
+      ref="tableHeader"
       :form-model-array="formModelArray"
       :show-search="true"
       :show-add="true"
@@ -12,7 +13,11 @@
       @onadd="onAdd"
       @ondelete="onDelete"
     />
-    <el-card :body-style="{padding: 0}">
+    <el-card
+      :body-style="{padding: 0}"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"

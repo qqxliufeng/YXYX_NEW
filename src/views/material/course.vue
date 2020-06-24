@@ -1,11 +1,16 @@
 <template>
   <div class="container">
     <material-table-header
+      ref="tableHeader"
       :show-course="false"
       :show-level="false"
       @on-change-value="onChangeValue"
     />
-    <el-card :body-style="{ padding: '2px' }">
+    <el-card
+      :body-style="{ padding: '2px' }"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"

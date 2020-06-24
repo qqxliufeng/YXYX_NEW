@@ -7,11 +7,9 @@
  * @LastEditTime: 2020-06-13 17:17:31
 -->
 <template>
-  <div
-    class="container"
-    style="padding: 0"
-  >
+  <div class="container">
     <table-header
+      ref="tableHeader"
       :form-model-array="formModelArray"
       :show-add="true"
       :show-delete="false"
@@ -19,7 +17,11 @@
       @onadd="onAdd"
       @onsearch="onSearch"
     />
-    <el-card :body-style="{ padding: '2px' }">
+    <el-card
+      :body-style="{ padding: '2px' }"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"

@@ -64,7 +64,11 @@ export default {
 </script>
 <style scoped>
 .footer-wrapper {
-  width: 100%;
   margin-top: 10px;
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 0;
+  box-sizing: border-box;
 }
 </style>
