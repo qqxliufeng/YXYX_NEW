@@ -464,4 +464,7 @@ export default {
 >>> .el-divider--vertical {
   height: 2em;
 }
+>>> .el-card__header {
+  padding: 10px;
+}
 </style>

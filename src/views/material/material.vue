@@ -2,7 +2,6 @@
   <div
     id="content-wrapper"
     class="container"
-    style="padding: 1px"
   >
     <table-header
       ref="tableHeader"

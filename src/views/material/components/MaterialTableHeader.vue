@@ -5,12 +5,12 @@
         slot="header"
         class="flex align-center"
       >
-        <span class="title text-bold text-sm">{{ title }}</span>
+        <span class="text-bold text-sm">{{ title }}</span>
         <div class="flex-sub" />
         <slot name="other" />
       </div>
       <el-row
-        style="margin: 10px"
+        style="padding: 10px"
         :gutter="20"
       >
         <el-col :span="8">
@@ -181,6 +181,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 >>> .el-card__header {
-  padding: 10px 20px;
+  padding: 10px;
 }
 </style>
