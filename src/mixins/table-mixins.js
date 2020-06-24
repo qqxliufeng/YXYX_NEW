@@ -19,7 +19,7 @@ export default {
         }
       },
       tableData: [],
-      page: 0,
+      page: 1,
       pageSize: 10,
       total: 0,
       loading: true,
@@ -46,7 +46,7 @@ export default {
   methods: {
     resetData() {
       this.tableData = []
-      this.page = 0
+      this.page = 1
       this.total = 0
     },
     reloadData() {

@@ -34,7 +34,7 @@
           <div class="flex align-center">
             <el-link :underline="false">单词内容</el-link>
             <el-input
-              v-model="searchContent"
+              v-model="formModelArray[0].value"
               placeholder="单词内容"
               class="flex-sub margin-lr-lg"
             />
@@ -42,7 +42,7 @@
               style="height: 30px"
               type="primary"
               :size="$style.tableButtonSize"
-              @click="searchWord"
+              @click="onSearch"
             >搜索</el-button>
           </div>
         </el-col>
@@ -184,6 +184,7 @@
     <table-foot
       :total="total"
       :page-size="pageSize"
+      :current-page.sync="page"
       @prev-click="prevClick"
       @next-click="nextClick"
       @current-change="currentChange"
@@ -204,7 +205,16 @@ export default {
       baseIp,
       materialId: '',
       materialList: [],
-      searchContent: ''
+      formModelArray: [
+        {
+          id: 1,
+          value: '',
+          label: '单词内容',
+          name: 'wordCode',
+          span: 5,
+          type: 'input'
+        }
+      ]
     }
   },
   watch: {
@@ -234,7 +244,6 @@ export default {
         this.materialList = res.obj.list
         if (this.materialList && this.materialList.length > 0) {
           this.materialId = this.materialList[0].textbookId
-          this.getData(this.materialId)
         }
       }).catch(error => {
         console.log(error)
@@ -264,18 +273,22 @@ export default {
       const audio = document.getElementById(item.audioAddr)
       audio.play()
     },
-    searchWord() {
-      this.page = 0
-      this.$http({
-        url: this.$urlPath.queryWordInfoListLike,
-        data: {
-          wordCode: this.searchContent,
-          pageNum: this.page,
-          pageSize: this.pageSize
-        }
-      }).then(res => {
-        this.onSuccess(res.obj)
-      })
+    onSearch() {
+      if (this.formModelArray[0].value === '') {
+        this.getData()
+      } else {
+        this.$http({
+          url: this.$urlPath.queryWordInfoListLike,
+          methods: this.HTTP_GET,
+          data: {
+            wordCode: this.formModelArray[0].value,
+            pageNum: this.page,
+            pageSize: this.pageSize
+          }
+        }).then(res => {
+          this.onSuccess(res.obj)
+        })
+      }
     },
     handlerUpdate(item) { },
     wordInfo(item) { },

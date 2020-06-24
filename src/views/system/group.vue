@@ -66,7 +66,9 @@
           label="是否校长"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">{{ scope.row.isSchoolLeader === 1 ? '是' : '否' }}</template>
+          <template slot-scope="scope">
+            <table-status :status="{label: scope.row.isSchoolLeader === 1 ? '是' : '否', type: scope.row.isSchoolLeader === 1 ? 'primary' : 'danger'}" />
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -74,14 +76,15 @@
           label="是否主管"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">{{ scope.row.isSalesLeader===1?'是':'否' }}</template>
+          <template slot-scope="scope">
+            <table-status :status="{label: scope.row.isSchoolLeader === 1 ? '是' : '否', type: scope.row.isSchoolLeader === 1 ? 'primary' : 'danger'}" />
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
           label="状态"
           show-overflow-tooltip
         >
-
           <template slot-scope="scope">
             <table-status :status="{ label: scope.row.accountNonLocked ? '正常' : '禁用', type: scope.row.accountNonLocked ? 'primary' : 'danger' }" />
           </template>

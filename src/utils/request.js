@@ -20,6 +20,9 @@ service.interceptors.request.use(
     if (!config.headers['Content-Type'] || config.headers['Content-Type'] === 'application/x-www-form-urlencoded;charset=UTF-8') {
       config.data = qs.stringify(config.data)
     }
+    // if (config.params && config.params.hasOwnProperty('pageNum')) {
+    //   config.params.pageNum = Math.max(0, config.params.pageNum - 1)
+    // }
     return config
   },
   error => {
