@@ -4,7 +4,15 @@
       :show-course="true"
       :show-level="false"
       @on-change-value="onChangeValue"
-    />
+    >
+      <div slot="other">
+        <el-button
+          size="mini"
+          type="danger"
+          @click="changeVideoUrl"
+        >更改视频地址</el-button>
+      </div>
+    </material-table-header>
     <el-card :body-style="{ padding: '2px' }">
       <el-table
         v-loading="loading"
@@ -85,6 +93,11 @@ export default {
     MaterialTableHeader
   },
   mixins: [tableMixins],
+  data() {
+    return {
+      textbookId: ''
+    }
+  },
   methods: {
     onChangeValue({ textbookId, courseCode }) {
       if (!textbookId || !courseCode) {
@@ -93,7 +106,8 @@ export default {
         return
       }
       this.loading = true
-      this.page = 0
+      this.page = 1
+      this.textbookId = textbookId
       this.getData(textbookId, courseCode)
     },
     getData(textbookId, courseCode) {
@@ -108,6 +122,27 @@ export default {
         }
       }).then(res => {
         this.onSuccess(res.obj)
+      })
+    },
+    changeVideoUrl() {
+      if (!this.textbookId) {
+        this.$errorMsg('参数错误')
+        return
+      }
+      this.$showLoading(closeLoading => {
+        this.$warningConfirm('是否要更改视频地址？', _ => {
+          this.$http({
+            url: this.$urlPath.udpateGroupVideoUrl,
+            data: {
+              textbookId: this.textbookId
+            }
+          }).then(res => {
+            closeLoading()
+            this.$successMsg(res.msg)
+          }).catch(_ => {
+            closeLoading()
+          })
+        })
       })
     }
   }

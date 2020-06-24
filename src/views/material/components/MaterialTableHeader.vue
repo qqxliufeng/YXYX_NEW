@@ -5,11 +5,12 @@
         slot="header"
         class="flex align-center"
       >
-        <span class="text-bold text-sm">{{ title }}</span>
+        <span class="title text-bold text-sm">{{ title }}</span>
         <div class="flex-sub" />
+        <slot name="other" />
       </div>
       <el-row
-        style="margin: 8px 0"
+        style="margin: 10px"
         :gutter="20"
       >
         <el-col :span="8">
@@ -37,16 +38,16 @@
           <div class="flex">
             <el-link :underline="false">选择课程</el-link>
             <el-select
-              v-model="courseCode"
+              v-model="courseId"
               class="flex-sub"
               style="margin-left: 10px"
               placeholder="请选择课程"
             >
               <el-option
                 v-for="item of courseList"
-                :key="item.courseCode"
+                :key="item.courseId"
                 :label="item.courseName"
-                :value="item.courseCode"
+                :value="item.courseId"
               />
             </el-select>
           </div>
@@ -58,16 +59,16 @@
           <div class="flex">
             <el-link :underline="false">选择关卡</el-link>
             <el-select
-              v-model="levelCode"
+              v-model="courseLevelId"
               class="flex-sub"
               style="margin-left: 10px"
               placeholder="请选择关卡"
             >
               <el-option
                 v-for="item of levelList"
-                :key="item.levelCode"
+                :key="item.courseLevelId"
                 :label="item.levelName"
-                :value="item.levelCode"
+                :value="item.courseLevelId"
               />
             </el-select>
           </div>
@@ -99,8 +100,8 @@ export default {
   data() {
     return {
       materialId: '',
-      courseCode: '',
-      levelCode: ''
+      courseId: '',
+      courseLevelId: ''
     }
   },
   watch: {
@@ -113,22 +114,22 @@ export default {
           this.getCourseList(newVal, _ => {
             if (this.courseList && this.courseList.length > 0) {
               // 如果当前的Code 和 新加载的Code值一样，手动触发改变事件
-              if (this.courseCode === this.courseList[0].courseCode) {
+              if (this.courseId === this.courseList[0].courseId) {
                 this.changeValue()
               } else {
-                this.courseCode = this.courseList[0].courseCode
+                this.courseId = this.courseList[0].courseId
               }
             } else {
-              this.courseCode = ''
+              this.courseId = ''
             }
           })
         } else {
-          this.courseCode = ''
+          this.courseId = ''
           this.courseList = []
         }
       }
     },
-    courseCode(newVal, oldVal) {
+    courseId(newVal, oldVal) {
       if (!this.showLevel) {
         this.changeValue()
       } else {
@@ -137,22 +138,22 @@ export default {
           this.getLevelList(this.materialId, newVal, _ => {
             if (this.levelList && this.levelList.length > 0) {
               // 如果当前的Code 和 新加载的Code值一样，手动触发改变事件
-              if (this.levelCode === this.levelList[0].levelCode) {
+              if (this.courseLevelId === this.levelList[0].courseLevelId) {
                 this.changeValue()
               } else {
-                this.levelCode = this.levelList[0].levelCode
+                this.courseLevelId = this.levelList[0].courseLevelId
               }
             } else {
-              this.levelCode = ''
+              this.courseLevelId = ''
             }
           })
         } else {
-          this.levelCode = ''
+          this.courseLevelId = ''
           this.levelList = []
         }
       }
     },
-    levelCode(newVal, oldVal) {
+    courseLevelId(newVal, oldVal) {
       if (newVal) {
         this.changeValue()
       }
@@ -167,12 +168,19 @@ export default {
   },
   methods: {
     changeValue() {
+      const courseCode = this.courseId ? this.courseList.find(it => it.courseId === this.courseId).courseCode : ''
+      const levelCode = this.courseLevelId ? this.levelList.find(it => it.courseLevelId === this.courseLevelId).levelCode : ''
       this.$emit('on-change-value', {
         textbookId: this.materialId,
-        courseCode: this.courseCode,
-        levelCode: this.levelCode
+        courseCode: courseCode,
+        levelCode: levelCode
       })
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+>>> .el-card__header {
+  padding: 10px 20px;
+}
+</style>

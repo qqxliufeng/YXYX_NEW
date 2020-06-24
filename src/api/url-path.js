@@ -244,6 +244,8 @@ export const queryCourseLevel = baseModuleUrl + 'queryCourseLevel'
 
 export const queryCourseLevelGroup = baseModuleUrl + 'queryCourseLevelGroup'
 
+export const udpateGroupVideoUrl = baseModuleUrl + 'udpateGroupVideoUrl'
+
 // ****************课程信息**************** //
 
 // ****************单词信息**************** //

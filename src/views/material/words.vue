@@ -37,6 +37,7 @@
               v-model="formModelArray[0].value"
               placeholder="单词内容"
               class="flex-sub margin-lr-lg"
+              clearable
             />
             <el-button
               style="height: 30px"
@@ -59,32 +60,6 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <!-- 单词	音标	解释	易混词	课程	发音	例句	例句解释	操作 -->
-        <!-- audioAddr: "/home/books/10/mp3//1.mp3"
-        confWord1: "in"
-        confWord2: "white"
-        confWord3: "the"
-        confWordList: null
-        courseCode: "1"
-        createId: 1
-        createTime: 1585124434000
-        dr: 0
-        exampAudioAddr: "/home/books/10/egs//1.mp3"
-        exampExplanation: "嗨，辛迪！你好吗？"
-        exampSentence: "Hi, Cindy! How are you?"
-        groupCode: "1-1-1"
-        levelCode: "1-1"
-        spellAnswer: "Hi"
-        spellQuestion: "________, Cindy! How are you?"
-        status: 0
-        textbookId: 1
-        updateId: null
-        updateTime: null
-        wordCode: "hi"
-        wordExplain: "interj.(用于打招呼)嗨；喂"
-        wordId: 1
-        wordImageAddr: "/home/books/10/image//1"
-        wordSounds: "[haɪ]" -->
         <el-table-column
           align="center"
           prop="wordCode"
@@ -190,6 +165,213 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
+    <!-- 单词详情对话框 -->
+    <el-dialog
+      title="单词详情"
+      :visible.sync="dialogInfoVisible"
+      top="10vh"
+    >
+      <!-- 单词	音标	解释	易混词	发音	例句	例句解释	操作 -->
+      <!-- audioAddr: "/home/books/10/mp3//1.mp3"
+        confWord1: "in"
+        confWord2: "white"
+        confWord3: "the"
+        confWordList: null
+        courseCode: "1"
+        createId: 1
+        createTime: 1585124434000
+        dr: 0
+        exampAudioAddr: "/home/books/10/egs//1.mp3"
+        exampExplanation: "嗨，辛迪！你好吗？"
+        exampSentence: "Hi, Cindy! How are you?"
+        groupCode: "1-1-1"
+        levelCode: "1-1"
+        spellAnswer: "Hi"
+        spellQuestion: "________, Cindy! How are you?"
+        status: 0
+        textbookId: 1
+        updateId: null
+        updateTime: null
+        wordCode: "hi"
+        wordExplain: "interj.(用于打招呼)嗨；喂"
+        wordId: 1
+        wordImageAddr: "/home/books/10/image//1"
+        wordSounds: "[haɪ]" -->
+      <el-form class="dialog-container">
+        <el-form-item label="单词名称">
+          <el-col
+            :span="$style.dialogColSpan"
+            class="text-right"
+          >
+            <el-link
+              type="primary"
+              :underline="false"
+            >
+              {{ tempWord.wordCode }}
+            </el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="单词音标"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-button
+              type="text"
+              size="mini"
+              style="font-size: 16px"
+              icon="el-icon-video-play"
+              @click="playAudio(tempWord)"
+            >
+              <audio
+                :id="tempWord.audioAddr"
+                :src="baseIp + tempWord.audioAddr"
+              />
+              {{ tempWord.wordSounds }}
+            </el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="单词解释"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-link
+              type="primary"
+              :underline="false"
+            >
+              {{ tempWord.wordExplain }}
+            </el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="易混词"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-link
+              type="primary"
+              :underline="false"
+            >
+              {{ tempWord.confWord1 + '，' + tempWord.confWord2 + '，' + tempWord.confWord3 }}
+            </el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="单词例句"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-button
+              type="text"
+              size="mini"
+              style="font-size: 16px"
+              icon="el-icon-video-play"
+              @click="playExampleAudio(tempWord)"
+            >
+              <audio
+                id="dialog-audio-player"
+                :src="baseIp + tempWord.exampAudioAddr"
+              />
+              <!-- <audio
+                id="dialog-audio-player"
+                src="http://47.96.184.34/youcan//resources/book/1/egs/make.mp3"
+              /> -->
+              {{ tempWord.exampSentence }}
+            </el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="例句解释"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-link
+              type="primary"
+              :underline="false"
+            >
+              {{ tempWord.exampExplanation }}
+            </el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="拼写问题"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-link
+              type="primary"
+              :underline="false"
+            >
+              {{ tempWord.spellQuestion }}
+            </el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="拼写答案"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-link
+              type="primary"
+              :underline="false"
+            >
+              {{ tempWord.spellAnswer }}
+            </el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="所属关卡"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-link
+              type="primary"
+              :underline="false"
+            >
+              {{ tempWord.levelCode }}
+            </el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="所属分组"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-link
+              type="primary"
+              :underline="false"
+            >
+              {{ tempWord.groupCode }}
+            </el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          label="创建时间"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-link
+              type="primary"
+              :underline="false"
+            >
+              {{ tempWord.createTime | parseTime }}
+            </el-link>
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="dialogInfoVisible = false"
+        >知道了</el-button>
+      </div>
+    </el-dialog>
+    <!-- 单词详情对话框 -->
   </div>
 </template>
 
@@ -214,7 +396,9 @@ export default {
           span: 5,
           type: 'input'
         }
-      ]
+      ],
+      dialogInfoVisible: false,
+      tempWord: {}
     }
   },
   watch: {
@@ -226,6 +410,9 @@ export default {
     this.getMaterialList()
   },
   methods: {
+    initData() {
+      this.likeSearchUrl = this.$urlPath.queryWordInfoListLike
+    },
     getMaterialList() {
       const loadingInstance = Loading.service({
         target: document.getElementsByClassName('container')[0]
@@ -273,22 +460,17 @@ export default {
       const audio = document.getElementById(item.audioAddr)
       audio.play()
     },
-    onSearch() {
-      this.page = 1
-      this.$http({
-        url: this.$urlPath.queryWordInfoListLike,
-        methods: this.HTTP_GET,
-        data: {
-          wordCode: this.formModelArray[0].value,
-          pageNum: this.page,
-          pageSize: this.pageSize
-        }
-      }).then(res => {
-        this.onSuccess(res.obj)
-      })
+    playExampleAudio(item) {
+      const audio = document.getElementById('dialog-audio-player')
+      if (audio && audio.paused) {
+        audio.play()
+      }
     },
     handlerUpdate(item) { },
-    wordInfo(item) { },
+    wordInfo(item) {
+      this.tempWord = item
+      this.dialogInfoVisible = true
+    },
     handleWordCommand() {
     }
   }

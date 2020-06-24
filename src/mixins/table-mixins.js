@@ -60,7 +60,11 @@ export default {
     currentChange(currentPage) {
       this.loading = true
       this.page = currentPage
-      this.getData()
+      if (this.canSearch()) {
+        this.likeSearch()
+      } else {
+        this.getData()
+      }
     },
     prevClick(currentPage) {
       this.loading = true
@@ -183,20 +187,24 @@ export default {
       this.page = 1
       this.likeSearch()
     },
-    // onSearch(url) {
-    //   this.loading = true
-    //   const form = this.generatorFormObj(this.formModelArray)
-    //   this.$http({
-    //     url,
-    //     methods: this.HTTP_GET,
-    //     data: form
-    //   }).then(res => {
-    //     this.onSuccess(res.obj)
-    //   }).catch(error => {
-    //     console.log(error)
-    //     this.loading = false
-    //   })
-    // },
+    canSearch() {
+      if (!this.formModelArray) {
+        return false
+      }
+      if (this.formModelArray.length === 0) {
+        return false
+      }
+      const result = this.formModelArray.some(it => {
+        if (it.value !== '') {
+          return true
+        }
+        if (it.value instanceof Array && it.value.length > 0) {
+          return true
+        }
+        return false
+      })
+      return result
+    },
     likeSearch() {
       this.loading = true
       const form = this.generatorFormObj(this.formModelArray)
