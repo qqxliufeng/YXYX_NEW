@@ -15,7 +15,7 @@
       :show-add="true"
       :show-delete="false"
       @onadd="onAdd"
-      @onsearch="onSearch($urlPath.queryTeacherListLike)"
+      @onsearch="onSearch"
     />
     <el-card :body-style="{ padding: '2px' }">
       <el-table
@@ -403,6 +403,9 @@ export default {
     this.getRoleList()
   },
   methods: {
+    initData() {
+      this.likeSearchUrl = this.$urlPath.queryTeacherListLike
+    },
     statusFormat(item) {
       return {
         label: item.isLock === 0 ? '正常' : '禁用',

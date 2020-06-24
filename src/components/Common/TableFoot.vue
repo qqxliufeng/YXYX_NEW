@@ -1,10 +1,14 @@
 <template>
   <div class="flex justify-center footer-wrapper">
-    <el-card :body-style="{padding: '5px'}" style="width: 100%; text-align: center">
+    <el-card
+      :body-style="{padding: '5px'}"
+      style="width: 100%; text-align: center"
+    >
       <el-pagination
         style="width: 100%"
         :total="total"
         :page-size="pageSize"
+        :current-page.sync="currentPage"
         layout="total, prev, pager, next, jumper"
         @current-change="currentChange"
         @prev-click="prevClick"
@@ -23,9 +27,23 @@ export default {
       type: Number,
       default: 0
     },
+    pageNum: {
+      type: Number,
+      default: 1
+    },
     pageSize: {
       type: Number,
       default: 10
+    }
+  },
+  data() {
+    return {
+      currentPage: this.pageNum
+    }
+  },
+  watch: {
+    pageNum(newVal, oldVal) {
+      this.currentPage = newVal
     }
   },
   methods: {
@@ -45,7 +63,7 @@ export default {
 }
 </script>
 <style scoped>
-.footer-wrapper{
+.footer-wrapper {
   width: 100%;
   margin-top: 10px;
 }

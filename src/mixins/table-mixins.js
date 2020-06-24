@@ -20,11 +20,12 @@ export default {
       },
       tableData: [],
       page: 1,
-      pageSize: 10,
+      pageSize: 5,
       total: 0,
       loading: true,
       multipleSelection: [],
       searchInfo: '',
+      likeSearchUrl: '',
       pageInfo: {},
       buttonShowConfig: {
         showAdd: this.$menuButtonModel.checkPermission(this.$route.name, 'add'),
@@ -35,6 +36,9 @@ export default {
     }
   },
   mounted() {
+    if (this.initData) {
+      this.initData()
+    }
     this.$root.$on('refresh_table', _ => {
       this.reloadData()
     })
@@ -175,11 +179,29 @@ export default {
       })
       return form
     },
-    onSearch(url) {
+    onSearch() {
+      this.page = 1
+      this.likeSearch()
+    },
+    // onSearch(url) {
+    //   this.loading = true
+    //   const form = this.generatorFormObj(this.formModelArray)
+    //   this.$http({
+    //     url,
+    //     methods: this.HTTP_GET,
+    //     data: form
+    //   }).then(res => {
+    //     this.onSuccess(res.obj)
+    //   }).catch(error => {
+    //     console.log(error)
+    //     this.loading = false
+    //   })
+    // },
+    likeSearch() {
       this.loading = true
       const form = this.generatorFormObj(this.formModelArray)
       this.$http({
-        url,
+        url: this.likeSearchUrl,
         methods: this.HTTP_GET,
         data: form
       }).then(res => {

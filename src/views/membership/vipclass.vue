@@ -15,7 +15,7 @@
       :show-add="true"
       :show-delete="false"
       @onadd="onAdd"
-      @onsearch="onSearch($urlPath.querySchoolClassLike)"
+      @onsearch="onSearch"
     />
     <el-card :body-style="{ padding: '2px' }">
       <el-table
@@ -292,6 +292,9 @@ export default {
     this.getTeacherList()
   },
   methods: {
+    initData() {
+      this.likeSearchUrl = this.$urlPath.querySchoolClassLike
+    },
     statusFormat(item) {
       return {
         label: item.status === 0 ? '正常' : '禁用',

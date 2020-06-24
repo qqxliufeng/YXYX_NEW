@@ -17,7 +17,7 @@
       :show-delete="false"
       :show-search="true"
       @onadd="onAdd"
-      @onsearch="onSearch($urlPath.querySchoolListLike)"
+      @onsearch="onSearch"
     />
     <el-card :body-style="{ padding: '2px' }">
       <el-table
@@ -295,6 +295,9 @@ export default {
     this.getData()
   },
   methods: {
+    initData() {
+      this.likeSearchUrl = this.$urlPath.querySchoolListLike
+    },
     getAddressInfo(item) {
       if (item.addressDetailList && item.addressDetailList.length > 0) {
         return item.addressDetailList.map(it => it.address).join(',')

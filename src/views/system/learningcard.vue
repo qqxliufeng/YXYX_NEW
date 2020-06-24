@@ -378,16 +378,8 @@ export default {
     this.getData()
   },
   methods: {
-    onSearch() {
-      this.loading = true
-      const form = this.generatorFormObj(this.formModelArray)
-      this.$http({
-        url: this.$urlPath.queryStudyCardLike,
-        methods: this.HTTP_GET,
-        data: form
-      }).then(res => {
-        this.onSuccess(res.obj)
-      })
+    initData() {
+      this.likeSearchUrl = this.$urlPath.queryStudyCardLike
     },
     generatorCards() {
       this.dialogFormVisible = true

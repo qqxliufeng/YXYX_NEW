@@ -184,7 +184,7 @@
     <table-foot
       :total="total"
       :page-size="pageSize"
-      :current-page.sync="page"
+      :page-num="page"
       @prev-click="prevClick"
       @next-click="nextClick"
       @current-change="currentChange"
@@ -274,21 +274,18 @@ export default {
       audio.play()
     },
     onSearch() {
-      if (this.formModelArray[0].value === '') {
-        this.getData()
-      } else {
-        this.$http({
-          url: this.$urlPath.queryWordInfoListLike,
-          methods: this.HTTP_GET,
-          data: {
-            wordCode: this.formModelArray[0].value,
-            pageNum: this.page,
-            pageSize: this.pageSize
-          }
-        }).then(res => {
-          this.onSuccess(res.obj)
-        })
-      }
+      this.page = 1
+      this.$http({
+        url: this.$urlPath.queryWordInfoListLike,
+        methods: this.HTTP_GET,
+        data: {
+          wordCode: this.formModelArray[0].value,
+          pageNum: this.page,
+          pageSize: this.pageSize
+        }
+      }).then(res => {
+        this.onSuccess(res.obj)
+      })
     },
     handlerUpdate(item) { },
     wordInfo(item) { },

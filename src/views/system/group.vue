@@ -367,6 +367,9 @@ export default {
     this.getDept()
   },
   methods: {
+    initData() {
+      this.likeSearchUrl = this.$urlPath.queryYouXingUserListByLike
+    },
     onAdd() {
       this.$router.push({ name: 'AddGroupInfo' })
     },
@@ -384,15 +387,6 @@ export default {
           })
         })
       }
-    },
-    onSearch() {
-      this.$http({
-        url: this.$urlPath.queryYouXingUserListByLike,
-        methods: this.HTTP_GET,
-        data: this.generatorFormObj(this.formModelArray)
-      }).then(res => {
-        this.onSuccess(res.obj)
-      })
     },
     handleUpdate(item) {
       this.dialogFormVisible = true

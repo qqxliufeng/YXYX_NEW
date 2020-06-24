@@ -552,6 +552,9 @@ export default {
     this.getData()
   },
   methods: {
+    initData() {
+      this.likeSearchUrl = this.$urlPath.queryTextBookListLike
+    },
     getAddressInfo(item) {
       if (item.addressDetailList && item.addressDetailList.length > 0) {
         return item.addressDetailList.map(it => it.address).join(',')
@@ -573,15 +576,6 @@ export default {
         isHasExercises: 0, // 是否有配对练习 0是 1否
         status: 0// 教材状态 0正常 1禁用
       }
-    },
-    onSearch() {
-      this.$http({
-        url: this.$urlPath.queryTextBookListLike,
-        methods: this.HTTP_GET,
-        data: this.generatorFormObj(this.formModelArray)
-      }).then(res => {
-        this.onSuccess(res.obj)
-      })
     },
     getData() {
       this.$http({
