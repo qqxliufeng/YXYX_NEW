@@ -48,7 +48,7 @@ export default {
   },
   data() {
     return {
-      title: '优行教育后台管理系统',
+      title: '优行教育管理系统',
       logo: '@/assets/custom-theme/images/logo.png'
     }
   }

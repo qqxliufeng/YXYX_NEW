@@ -37,3 +37,11 @@ export function setRoleId(roleId1) {
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }
+
+export function removeAll() {
+  Cookies.remove(TokenKey)
+  Cookies.remove(userId)
+  Cookies.remove(roleId)
+  Cookies.remove(phone)
+  Cookies.remove(userNickName)
+}
