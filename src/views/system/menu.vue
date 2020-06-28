@@ -130,7 +130,6 @@
               v-model="tempItem.menuUrl"
               placeholder="请输入菜单地址"
               maxlength="15"
-              :disabled="mode === 'edit'"
             >
               <template slot="prepend">{{ prefixUrl }}</template>
             </el-input>

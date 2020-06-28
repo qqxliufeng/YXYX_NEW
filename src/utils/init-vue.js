@@ -16,7 +16,7 @@ Vue.prototype.$privinceData = level
 Vue.prototype.HTTP_GET = HTTP_GET
 Vue.prototype.HTTP_POST = HTTP_POST
 Vue.prototype.$urlPath = urlPath
-Vue.prototype.$roles = localStorage.getItem('roles') ? JSON.parse(localStorage.getItem('roles'))[0] : ''
+Vue.prototype.$roles = sessionStorage.getItem('userRoles') ? JSON.parse(sessionStorage.getItem('userRoles'))[0] : ''
 Vue.prototype.$style = style
 Vue.prototype.$menuButtonModel = menuButtonModel
 

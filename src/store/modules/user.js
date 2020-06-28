@@ -64,7 +64,7 @@ const actions = {
         localStorage.setItem('username', data.username)
         localStorage.setItem('roleId', data.roleId)
         localStorage.setItem('userId', data.userId)
-        localStorage.setItem('roles', JSON.stringify(roles))
+        sessionStorage.setItem('userRoles', JSON.stringify(roles))
         resolve()
       }).catch(error => {
         reject(error)

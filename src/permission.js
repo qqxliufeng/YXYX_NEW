@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import router from './router'
 import store from './store'
 import NProgress from 'nprogress' // progress bar
@@ -8,6 +9,20 @@ import getPageTitle from '@/utils/get-page-title'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+
+function includesPath(accessRoutes) {
+  return accessRoutes.reduce((acc, cur) => {
+    if (cur.children) {
+      cur.children.reduce((a, c) => {
+        a.push(c.path)
+        return acc
+      }, acc)
+    } else {
+      acc.push(cur.path)
+    }
+    return acc
+  }, [])
+}
 
 // eslint-disable-next-line space-before-function-paren
 router.beforeEach(async (to, from, next) => {
@@ -22,42 +37,27 @@ router.beforeEach(async (to, from, next) => {
 
   if (hasToken) {
     if (to.path === '/login') {
-      // if is logged in, redirect to the home page
       next()
       NProgress.done()
     } else {
-      // determine whether the user has obtained his permission roles through getInfo
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
       if (hasRoles) {
         next()
       } else {
-        // try {
-        // get user info
-        // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-        // const { roles } = await store.dispatch('user/login')
-
-        // generate accessible routes map based on roles
         const accessRoutes = await store.dispatch('permission/generateRoutes')
-
-        // dynamically add accessible routes
+        Vue.prototype.$roles = sessionStorage.getItem('userRoles') ? JSON.parse(sessionStorage.getItem('userRoles'))[0] : ''
         router.addRoutes(accessRoutes)
-
-        next({ ...to, replace: true })// hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-
-        // next();
-
-        // hack method to ensure that addRoutes is complete
-        // set the replace: true, so the navigation will not leave a history record
-        // next({ ...to, replace: true })
-        // } catch (error) {
-
-        //   debugger
-        //   // remove token and go to login page to re-login
-        //   await store.dispatch('user/resetToken')
-        //   Message.error(error || 'Has Error')
-        //   next(`/login?redirect=${to.path}`)
-        //   NProgress.done()
-        // }
+        const paths = includesPath(accessRoutes)
+        if (accessRoutes && accessRoutes.length > 1) {
+          // 判断要去的页面是否包含在动态路由中，如果包含，则直接跳转过去
+          if (paths.includes(to.path)) {
+            next({ ...to, replace: true })// hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+          } else { // 如果没有包含则取动态中路由的第一条（非404页面） 当做当前路由跳转
+            next({ path: accessRoutes[1].children[0].path, replace: true })
+          }
+        } else {
+          next({ path: '/404' })
+        }
       }
       next()
     }

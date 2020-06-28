@@ -55,12 +55,18 @@ pathMapName.set('menuButton', 'MenuButton')
 pathMapName.set('learningcard', 'StudyCard')
 pathMapName.set('feedback', 'feedback')
 pathMapName.set('logmanagement', 'logmanagement')
+pathMapName.set('groupmessage', 'GroupMessage')
+pathMapName.set('schoolmessage', 'SchoolMessage')
 pathMapName.set('vipshcool', 'VIPShcool')
 pathMapName.set('vipteacher', 'VIPTeacher')
 pathMapName.set('vipclass', 'VIPClass')
 pathMapName.set('vipstudent', 'VIPStudent')
 pathMapName.set('material', 'Material')
 pathMapName.set('distribution', 'Distribution')
+
+const pathToFileName = new Map()
+pathToFileName.set('/message/groupmessage', '/message/GroupMessage')
+pathToFileName.set('/message/schoolmessage', '/message/SchoolMessage')
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -101,7 +107,7 @@ export function filterAsyncRoutes(routes, roles) {
 function getViews(path) {
   return resolve => {
     require.ensure([], (require) => {
-      resolve(require('@/views' + path))
+      resolve(require('@/views' + (pathToFileName.has(path) ? pathToFileName.get(path) : path)))
     })
   }
 }

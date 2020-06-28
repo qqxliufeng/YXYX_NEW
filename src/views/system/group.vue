@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="container"
-    style="padding: 2px"
-  >
+  <div class="container">
     <table-header
       ref="tableHeader"
       :form-model-array="formModelArray"
