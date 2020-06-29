@@ -114,6 +114,14 @@ export const editStudyCardInfo = baseModuleUrl + 'editStudyCardInfo'
 
 // ****************系统管理 --- 学习卡管理 **************** //
 
+// ****************系统管理 --- 学习卡管理 **************** //
+
+export const queryUserLogs = baseModuleUrl + 'queryUserLogs'
+
+export const queryUserLogsByUserId = baseModuleUrl + 'queryUserLogsByUserId'
+
+// ****************系统管理 --- 学习卡管理 **************** //
+
 // ****************会员管理 --- 学校管理 **************** //
 
 export const querySchoolList = baseModuleUrl + 'querySchoolList'

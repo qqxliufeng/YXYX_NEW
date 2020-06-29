@@ -36,30 +36,25 @@ service.interceptors.response.use(
     if (res instanceof Blob) {
       return res
     }
-    if (res.status !== 200) {
-      const errMsg = res.msg || '请求失败'
-      Message({
-        message: errMsg,
-        type: 'error',
-        duration: 5 * 1000
-      })
-      if (res.status === 500) {
-        // MessageBox.confirm('Token 已失效，是否重新登录', '确认登出', {
-        //   confirmButtonText: '重新登录',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // }).then(() => {
-        //   store.dispatch('user/resetToken').then(() => {
-        //     location.reload()
-        //   })
-        // })
-        if (errMsg === '登录已过期,请重新登陆') {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
+    if (res.hasOwnProperty('status')) {
+      if (res.status !== 200) {
+        const errMsg = res.msg || '请求失败'
+        Message({
+          message: errMsg,
+          type: 'error',
+          duration: 5 * 1000
+        })
+        if (res.status === 500) {
+          if (errMsg === '登录已过期,请重新登陆') {
+            store.dispatch('user/resetToken').then(() => {
+              location.reload()
+            })
+          }
         }
+        return Promise.reject(new Error(errMsg))
+      } else {
+        return res
       }
-      return Promise.reject(new Error(errMsg))
     } else {
       return res
     }
