@@ -94,6 +94,9 @@ export default {
      * 延长学习卡的到期时间
      */
     addEndTime(item) {
+      if (!this.checkButtonPermission('delay_time')) {
+        return
+      }
       this.dialogEditVisible = true
       this.tempItem.studyCardId = item.studyCardId
       this.tempItem.status = item.status
@@ -114,6 +117,9 @@ export default {
       })
     },
     textBookList(item) {
+      if (!this.checkButtonPermission('grant_material')) {
+        return
+      }
       this.$router.push({
         name: 'TextBookList',
         params: {
@@ -124,6 +130,9 @@ export default {
       })
     },
     grantTextBookList(item) {
+      if (!this.checkButtonPermission('search_material')) {
+        return
+      }
       this.dialogGrantTextBookVisible = true
       this.grantTextBookLoading = true
       this.$http({

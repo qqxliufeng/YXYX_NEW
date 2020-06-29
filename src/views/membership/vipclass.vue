@@ -322,6 +322,9 @@ export default {
       })
     },
     onAdd() {
+      if (!this.checkButtonPermission('add')) {
+        return
+      }
       this.dialogFormVisible = true
       this.mode = 'add'
       this.classModel = {
@@ -335,6 +338,9 @@ export default {
       }
     },
     handlerUpdate(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
       this.dialogFormVisible = true
       this.mode = 'edit'
       this.classModel.classId = item.classId

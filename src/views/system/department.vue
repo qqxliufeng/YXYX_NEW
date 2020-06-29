@@ -64,6 +64,7 @@
         <el-table-column
           align="center"
           label="操作"
+          width="180"
         >
           <template slot-scope="scope">
             <el-button
@@ -71,6 +72,11 @@
               :size="$style.tableButtonSize"
               @click="handleUpdate(scope.row)"
             >编辑</el-button>
+            <el-button
+              type="danger"
+              :size="$style.tableButtonSize"
+              @click="deleteItem(scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -218,6 +224,9 @@ export default {
       })
     },
     onAdd() {
+      if (!this.checkButtonPermission('add')) {
+        return
+      }
       this.mode = 'add'
       this.dialogFormVisible = true
       this.tempItem = {
@@ -228,6 +237,9 @@ export default {
       }
     },
     onDelete() {
+      if (!this.checkButtonPermission('delete')) {
+        return
+      }
       if (this.canDeleteItems()) {
         this.confirmDelete('deptId', ids => {
           this.$http({
@@ -242,7 +254,31 @@ export default {
         })
       }
     },
+    deleteItem(item) {
+      if (!this.checkButtonPermission('delete')) {
+        return
+      }
+      this.$warningConfirm('是否要删除此部门，删除后不可恢复。', _ => {
+        this.$showLoading(closeDialog => {
+          this.$http({
+            url: this.$urlPath.deleteDepts,
+            data: {
+              deptIds: item.deptId
+            }
+          }).then(res => {
+            closeDialog()
+            this.$successMsg(res.msg)
+            this.getData()
+          }).catch(_ => {
+            closeDialog()
+          })
+        })
+      })
+    },
     handleUpdate(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
       this.mode = 'edit'
       this.dialogFormVisible = true
       this.tempItem = {

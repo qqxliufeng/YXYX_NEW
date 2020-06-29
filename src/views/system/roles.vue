@@ -233,6 +233,9 @@ export default {
       return item.dr === 0 ? '未删除' : '已删除'
     },
     onAdd() {
+      if (!this.checkButtonPermission('add')) {
+        return
+      }
       this.dialogFormVisible = true
       this.modeObj.mode = 'add'
       this.modeObj.temp = {
@@ -240,6 +243,56 @@ export default {
         roleCode: '',
         deptId: ''
       }
+    },
+    handleUpdate(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
+      this.tempItem = item
+      this.dialogFormVisible = true
+      this.modeObj.mode = 'edit'
+      this.modeObj.temp = {
+        roleName: item.roleName,
+        roleCode: item.roleCode,
+        deptId: item.deptId
+      }
+    },
+    handleDelete(item) {
+      if (!this.checkButtonPermission('delete')) {
+        return
+      }
+      this.confirmDeleteSingle(_ => {
+        this.$http({
+          url: this.$urlPath.deleteRole,
+          data: {
+            roleId: item.roleId
+          }
+        }).then(res => {
+          this.$successMsg('删除成功')
+          this.getData()
+        })
+      })
+    },
+    handleRoleMenus(item) {
+      if (!this.checkButtonPermission('menu_per')) {
+        return
+      }
+      this.tempItem = item
+      this.$http({
+        url: this.$urlPath.queryAllMenuByRole,
+        methods: this.HTTP_GET,
+        data: {
+          roleId: item.roleId
+        }
+      }).then(res => {
+        this.menuObj.roleMenus = res.obj
+        if (this.menuObj.roleMenus && this.menuObj.roleMenus.length > 0) {
+          this.menuObj.defalutCheckedKeys = []
+          this.menuObj.defalutExpandedKeys = []
+          this.handleRoleMenusSelected(this.menuObj.roleMenus)
+          this.dialogMenuVisible = true
+        }
+      })
     },
     getData() {
       this.$http({
@@ -283,24 +336,6 @@ export default {
         }
       })
     },
-    handleRoleMenus(item) {
-      this.tempItem = item
-      this.$http({
-        url: this.$urlPath.queryAllMenuByRole,
-        methods: this.HTTP_GET,
-        data: {
-          roleId: item.roleId
-        }
-      }).then(res => {
-        this.menuObj.roleMenus = res.obj
-        if (this.menuObj.roleMenus && this.menuObj.roleMenus.length > 0) {
-          this.menuObj.defalutCheckedKeys = []
-          this.menuObj.defalutExpandedKeys = []
-          this.handleRoleMenusSelected(this.menuObj.roleMenus)
-          this.dialogMenuVisible = true
-        }
-      })
-    },
     roleMenusConfirm() {
       this.dialogMenuVisible = false
       const halfKeys = this.$refs.menuTree.getHalfCheckedKeys()
@@ -316,7 +351,6 @@ export default {
         this.$successMsg('操作成功')
       })
     },
-
     handleDialogConfirm() {
       if (!this.modeObj.temp.roleName) {
         this.$errorMsg('请输入角色名称')
@@ -349,29 +383,6 @@ export default {
           this.getData()
         })
       }
-    },
-    handleUpdate(item) {
-      this.tempItem = item
-      this.dialogFormVisible = true
-      this.modeObj.mode = 'edit'
-      this.modeObj.temp = {
-        roleName: item.roleName,
-        roleCode: item.roleCode,
-        deptId: item.deptId
-      }
-    },
-    handleDelete(item) {
-      this.confirmDeleteSingle(_ => {
-        this.$http({
-          url: this.$urlPath.deleteRole,
-          data: {
-            roleId: item.roleId
-          }
-        }).then(res => {
-          this.$successMsg('删除成功')
-          this.getData()
-        })
-      })
     }
   }
 }

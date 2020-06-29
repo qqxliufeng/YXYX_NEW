@@ -1,11 +1,3 @@
-<!--
- * @Descripttion: 描述
- * @version: 版本
- * @Author: lf
- * @Date: 2020-06-08 14:35:29
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2020-06-13 17:17:31
--->
 <template>
   <div class="container">
     <table-header
@@ -317,6 +309,9 @@ export default {
       return { label: '未知', type: 'warning' }
     },
     onAdd() {
+      if (!this.checkButtonPermission('add')) {
+        return
+      }
       this.$router.push({ name: 'AddSchool' })
     },
     getData() {
@@ -332,6 +327,9 @@ export default {
       })
     },
     editAccountInfo(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
       this.$router.push({
         name: 'EditSchool',
         params: { schoolId: item.schoolId }
@@ -340,6 +338,9 @@ export default {
     handleSchoolCommand({ tag, item }) {
       switch (tag) {
         case 1:
+          if (!this.checkButtonPermission('grant_card_list')) {
+            return
+          }
           this.$router.push({
             name: 'SchoolStudyCardList',
             params: {
@@ -350,6 +351,9 @@ export default {
           })
           break
         case 2:
+          if (!this.checkButtonPermission('un_card_list')) {
+            return
+          }
           this.$router.push({
             name: 'SchoolStudyCardList',
             params: {
@@ -360,6 +364,9 @@ export default {
           })
           break
         case 3:
+          if (!this.checkButtonPermission('search_record')) {
+            return
+          }
           this.$router.push({
             name: 'SchoolRecordList',
             params: {
@@ -368,6 +375,9 @@ export default {
           })
           break
         case 4:
+          if (!this.checkButtonPermission('add_record')) {
+            return
+          }
           this.recordModel.schoolId = item.schoolId
           this.dialogAddRecordVisible = true
           break
@@ -387,6 +397,9 @@ export default {
       })
     },
     grantToOffSchool(item) {
+      if (!this.checkButtonPermission('dis_off_mat')) {
+        return
+      }
       this.$router.push({
         name: 'GrantTextBookToOffLineSchool',
         params: { schoolId: item.schoolId }

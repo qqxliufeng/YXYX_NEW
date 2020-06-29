@@ -567,6 +567,9 @@ export default {
       return '暂无详细地址'
     },
     onAdd() {
+      if (!this.checkButtonPermission('add')) {
+        return
+      }
       this.dialogFormVisible = true
       this.mode = 'add'
       this.materialModel = {
@@ -597,6 +600,9 @@ export default {
     handleMaterialCommand({ tag, item }) {
       switch (tag) {
         case 1: // 查看授权的学校
+          if (!this.checkButtonPermission('look_grant_stu')) {
+            return
+          }
           this.dialogGrantSchoolVisible = true
           this.grantSchoolLoading = true
           this.$http({
@@ -611,6 +617,9 @@ export default {
           })
           break
         case 2: // 生成教材
+          if (!this.checkButtonPermission('gene_material')) {
+            return
+          }
           this.$router.push({
             name: 'GenerateMaterial',
             params: {
@@ -668,6 +677,9 @@ export default {
       })
     },
     handlerUpdate(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
       this.dialogFormVisible = true
       this.mode = 'edit'
       this.materialModel.textbookId = item.textbookId
@@ -683,6 +695,9 @@ export default {
       this.materialModel.status = item.status// 教材状态 0正常 1禁用
     },
     deleteItem(item) {
+      if (!this.checkButtonPermission('delete')) {
+        return
+      }
       this.$warningConfirm('确定要删除此教材信息，删除后不可恢复。', _ => {
         this.$http({
           url: this.$urlPath.deleteTextBook,
@@ -696,6 +711,9 @@ export default {
       })
     },
     downExcel() {
+      if (!this.checkButtonPermission('down_excel')) {
+        return
+      }
       this.$http({
         url: this.$urlPath.uploadTextBookExcelTemplate,
         methods: this.HTTP_GET,

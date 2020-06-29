@@ -178,6 +178,9 @@ export default {
   },
   methods: {
     onAdd() {
+      if (!this.checkButtonPermission('add')) {
+        return
+      }
       this.mode = 'add'
       this.tempItem = {
         parentMenuId: '',
@@ -189,6 +192,9 @@ export default {
       this.dialogFormVisible = true
     },
     handleUpdate(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
       this.mode = 'edit'
       let url = ''
       const urls = item.menuUrl.split('/')
@@ -209,6 +215,9 @@ export default {
       this.dialogFormVisible = true
     },
     handleDelete(item) {
+      if (!this.checkButtonPermission('delete')) {
+        return
+      }
       if (item.parentMenuId === null) {
         if (item.children && item.children.length > 0) {
           this.$errorMsg('此菜单下包含子菜单，不可以执行删除操作')
@@ -228,6 +237,9 @@ export default {
       })
     },
     buttonManger(item) {
+      if (!this.checkButtonPermission('btn_manager')) {
+        return
+      }
       this.$router.push({
         name: 'MenuButton',
         params: {

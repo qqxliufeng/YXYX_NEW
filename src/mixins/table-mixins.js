@@ -202,6 +202,9 @@ export default {
       })
     },
     onSearch() {
+      if (!this.checkButtonPermission('select')) {
+        return
+      }
       this.page = 1
       this.likeSearch()
     },
@@ -237,11 +240,32 @@ export default {
         this.loading = false
       })
     },
+    checkButtonPermission(btnCode) {
+      if (!btnCode) {
+        this.$errorMsg('按钮编码不能为空')
+        return false
+      }
+      const checkResult = this.$menuButtonModel.checkPermission(this.$route.name, btnCode)
+      if (!checkResult) {
+        this.$errorMsg('当前账号权限不足，无法操作此功能，请联系管理员')
+        return false
+      }
+      return true
+    },
     /**
      * 统一封装禁用、解除用户状态的方法
      * @example: {item: scope.row, statusField: 'status', data: { schoolId: scope.row.schoolId }, lockUrl: $urlPath.lockSchool, unLockUrl: $urlPath.unLockSchool}
      */
     changeLockStatus({ item, statusField = 'isLock', data = {}, lockUrl, unLockUrl, methods = 'POST' }) {
+      if (item[statusField] === 0) {
+        if (!this.checkButtonPermission('lock')) {
+          return
+        }
+      } else {
+        if (!this.checkButtonPermission('unlock')) {
+          return
+        }
+      }
       this.$warningConfirm('是否要' + (item[statusField] === 0 ? '禁用' : '解锁') + '此信息？', _ => {
         this.$http({
           url: item[statusField] === 0 ? lockUrl : unLockUrl,

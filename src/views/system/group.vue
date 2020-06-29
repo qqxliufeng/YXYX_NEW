@@ -374,9 +374,15 @@ export default {
       this.likeSearchUrl = this.$urlPath.queryYouXingUserListByLike
     },
     onAdd() {
+      if (!this.checkButtonPermission('add')) {
+        return
+      }
       this.$router.push({ name: 'AddGroupInfo' })
     },
     onDelete() {
+      if (!this.checkButtonPermission('delete')) {
+        return
+      }
       if (this.canDeleteItems()) {
         this.confirmDelete('userId', ids => {
           this.$http({
@@ -392,6 +398,9 @@ export default {
       }
     },
     handleUpdate(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
       this.dialogFormVisible = true
       this.tempItem = {
         userId: item.userId,

@@ -433,6 +433,9 @@ export default {
         })
     },
     onAdd() {
+      if (!this.checkButtonPermission('add')) {
+        return
+      }
       this.dialogFormVisible = true
       this.mode = 'add'
       this.studentModel = {
@@ -448,6 +451,9 @@ export default {
       }
     },
     handlerUpdate(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
       this.dialogFormVisible = true
       this.mode = 'edit'
       this.studentModel.studentId = item.studentId
@@ -503,6 +509,9 @@ export default {
       }
     },
     initPassword(item) {
+      if (!this.checkButtonPermission('reset_stu_pwd')) {
+        return
+      }
       this.$warningConfirm('是否要重新设置密码为手机号后六位？', _ => {
         this.$http({
           url: this.$urlPath.initStudentPassword,
@@ -516,6 +525,9 @@ export default {
       })
     },
     assginTextbook(item) {
+      if (!this.checkButtonPermission('gra_off_stu_mat')) {
+        return
+      }
       this.$router.push({
         name: 'GrantTextBookToStudent',
         params: {

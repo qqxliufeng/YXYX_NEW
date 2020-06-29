@@ -388,9 +388,15 @@ export default {
       this.likeSearchUrl = this.$urlPath.queryStudyCardLike
     },
     generatorCards() {
+      if (!this.checkButtonPermission('gene_card')) {
+        return
+      }
       this.dialogFormVisible = true
     },
     downCards() {
+      if (!this.checkButtonPermission('down_card')) {
+        return
+      }
       if (this.canHandlerItems()) {
         this.confirmHandlerMultiItems(
           '确定要下载此记录吗？',

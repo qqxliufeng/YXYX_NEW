@@ -130,6 +130,9 @@ export default {
       })
     },
     changeVideoUrl() {
+      if (!this.checkButtonPermission('change_vedio')) {
+        return
+      }
       if (!this.textbookId) {
         this.$errorMsg('参数错误')
         return

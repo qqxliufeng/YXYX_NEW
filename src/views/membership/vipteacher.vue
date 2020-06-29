@@ -437,6 +437,9 @@ export default {
         })
     },
     onAdd() {
+      if (!this.checkButtonPermission('add')) {
+        return
+      }
       this.dialogFormVisible = true
       this.mode = 'add'
       this.teacherModel = {
@@ -452,6 +455,9 @@ export default {
       }
     },
     hanlderUpdate(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
       this.dialogFormVisible = true
       this.mode = 'edit'
       this.teacherModel.schoolId = item.schoolId
@@ -510,9 +516,15 @@ export default {
     handleTeacherCommand({ tag, item }) {
       switch (tag) {
         case 1:
+          if (!this.checkButtonPermission('reset_pwd')) {
+            return
+          }
           this.initPassword(item)
           break
         case 2:
+          if (!this.checkButtonPermission('dis_teacher_btn')) {
+            return
+          }
           this.grantMenuButton(item)
           break
       }
