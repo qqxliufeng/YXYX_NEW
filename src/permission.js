@@ -53,7 +53,9 @@ router.beforeEach(async (to, from, next) => {
           if (paths.includes(to.path)) {
             next({ ...to, replace: true })// hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           } else { // 如果没有包含则取动态中路由的第一条（非404页面） 当做当前路由跳转
-            next({ path: accessRoutes[1].children[0].path, replace: true })
+            const tempRoute = accessRoutes[1].children[0]
+            tempRoute.meta.affix = true // 把当前的路由设置成不可以关闭
+            next({ path: tempRoute.path, replace: true })
           }
         } else {
           next({ path: '/404' })

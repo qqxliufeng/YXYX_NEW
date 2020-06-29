@@ -510,6 +510,9 @@ export default {
       })
     },
     grantMenuButton(item) {
+      if (!this.checkButtonPermission('dis_btn')) {
+        return
+      }
       this.$router.push({
         name: 'GrantMenuButton',
         params: {

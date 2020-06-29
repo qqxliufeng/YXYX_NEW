@@ -135,33 +135,14 @@
         <el-table-column
           align="center"
           label="操作"
-          min-width="250"
           fixed="right"
         >
           <template slot-scope="scope">
-            <el-button
-              type="primary"
-              :size="$style.tableButtonSize"
-              @click="handlerUpdate(scope.row)"
-            >编辑</el-button>
             <el-button
               type="warning"
               :size="$style.tableButtonSize"
               @click="wordInfo(scope.row)"
             >详情</el-button>
-            <el-dropdown
-              style="display: inline-block; margin-left: 10px"
-              :size="$style.tableButtonSize"
-              type="success"
-              split-button
-              @command="handleWordCommand"
-            >
-              更多
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{tag: 1, item: scope.row}">查看已授权的学校</el-dropdown-item>
-                <el-dropdown-item :command="{tag: 2, item: scope.row}">生成/编辑教材</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>

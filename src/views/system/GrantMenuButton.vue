@@ -26,6 +26,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        default-expand-all
       >
         <el-table-column
           type="expand"

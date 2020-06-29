@@ -24,12 +24,20 @@
           prop="menuName"
           label="菜单名称"
           width
-        />
+        >
+          <template slot-scope="scope">
+            <el-link
+              v-if="scope.row.parentMenuId === null"
+              :underline="false"
+              type="primary"
+            >{{ scope.row.menuName }}</el-link>
+            <div v-else>{{ scope.row.menuName }}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="menuSequence"
           label="序号"
-          show-overflow-tooltip
         />
         <el-table-column
           align="center"
@@ -41,7 +49,6 @@
           align="center"
           prop="createTime"
           label="创建时间"
-          show-overflow-tooltip
         />
         <el-table-column
           align="center"

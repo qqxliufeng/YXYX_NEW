@@ -28,14 +28,7 @@
           label="用户名称"
           fixed="left"
           width="100"
-        >
-          <template slot-scope="scope">
-            <el-link
-              type="primary"
-              @click="logUserList(scope.row)"
-            >{{ scope.row.username }}</el-link>
-          </template>
-        </el-table-column>
+        />
         <el-table-column
           align="center"
           prop="phone"
@@ -96,7 +89,7 @@
 <script>
 import tableMixins from '../../mixins/table-mixins'
 export default {
-  name: 'Logmanagement',
+  name: 'LogmanagementUserList',
   mixins: [tableMixins],
   mounted() {
     this.getData()
@@ -104,26 +97,19 @@ export default {
   methods: {
     getData() {
       this.$http({
-        url: this.$urlPath.queryUserLogs,
+        url: this.$urlPath.queryUserLogsByUserId,
         methods: this.HTTP_GET,
         data: {
+          userId: this.$route.params.userId,
           pageNum: this.page,
           pageSize: this.pageSize
         },
-        withUserId: false,
-        withRoleId: false
+        withRoleId: false,
+        withUserId: false
       }).then(res => {
         this.loading = false
         this.tableData = res.content
         this.total = res.totalElements
-      })
-    },
-    logUserList(item) {
-      this.$router.push({
-        name: 'LogmanagementUserList',
-        params: {
-          userId: item.userId
-        }
       })
     }
   }

@@ -18,67 +18,58 @@
       >
         <el-table-column
           align="center"
-          label="用户ID"
-          prop="userId"
+          label="ID"
+          prop="feedbackId"
           fixed="left"
         />
         <el-table-column
           align="center"
-          prop="username"
-          label="用户名称"
+          prop="feedbackUserName"
+          label="反馈人名称"
           fixed="left"
-          width="100"
-        >
-          <template slot-scope="scope">
-            <el-link
-              type="primary"
-              @click="logUserList(scope.row)"
-            >{{ scope.row.username }}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="phone"
-          label="手机号码"
-          width="150"
         />
         <el-table-column
           align="center"
-          prop="moduleName"
-          label="操作模块"
-          width="120"
+          prop="feedbackPhone"
+          label="反馈内容"
+          min-width="100"
         />
-        <el-table-column
-          align="center"
-          prop="optionName"
-          label="具体说明"
-          width="160"
-        />
-        <el-table-column
-          align="center"
-          prop="ip"
-          label="IP地址"
-          width="140"
-        >
-          <template slot-scope="scope">
-            <el-link
-              :underline="false"
-              type="primary"
-            >{{ scope.row.ip }}</el-link>
-          </template>
-        </el-table-column>
         <el-table-column
           align="center"
           prop="createTime"
-          label="操作时间"
+          label="反馈时间"
           width="160"
-        />
+        >
+          <template slot-scope="scope">
+            <div>{{ scope.row.createTime | parseTime }}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="endTime"
-          label="结束时间"
-          width="160"
-        />
+          label="回复状态"
+        >
+          <template slot-scope="scope">
+            <table-status :status="{ label: scope.row.isReply === 0 ? '未回复' : '已回复', type: scope.row.isReply === 0 ? 'warning' : 'success' }" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="操作"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              :size="$style.tableButtonSize"
+              @click="feedBackInfo(scope.row)"
+            >详情</el-button>
+            <el-button
+              type="danger"
+              :size="$style.tableButtonSize"
+              @click="replayFeedBack(scope.row)"
+            >回复</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
     <table-foot
@@ -96,7 +87,7 @@
 <script>
 import tableMixins from '../../mixins/table-mixins'
 export default {
-  name: 'Logmanagement',
+  name: 'FeedBack',
   mixins: [tableMixins],
   mounted() {
     this.getData()
@@ -104,25 +95,35 @@ export default {
   methods: {
     getData() {
       this.$http({
-        url: this.$urlPath.queryUserLogs,
+        url: this.$urlPath.queryAllFeedBackList,
         methods: this.HTTP_GET,
         data: {
           pageNum: this.page,
           pageSize: this.pageSize
-        },
-        withUserId: false,
-        withRoleId: false
+        }
       }).then(res => {
-        this.loading = false
-        this.tableData = res.content
-        this.total = res.totalElements
+        this.onSuccess(res.obj)
       })
     },
-    logUserList(item) {
+    feedBackInfo(item) {
+      if (!this.checkButtonPermission('feed_info')) {
+        return
+      }
       this.$router.push({
-        name: 'LogmanagementUserList',
+        name: 'FeedBackInfo',
         params: {
-          userId: item.userId
+          feedbackId: item.feedbackId
+        }
+      })
+    },
+    replayFeedBack(item) {
+      if (!this.checkButtonPermission('feed_replay')) {
+        return
+      }
+      this.$router.push({
+        name: 'FeedBackReply',
+        params: {
+          feedbackId: item.feedbackId
         }
       })
     }

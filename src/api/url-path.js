@@ -114,13 +114,23 @@ export const editStudyCardInfo = baseModuleUrl + 'editStudyCardInfo'
 
 // ****************系统管理 --- 学习卡管理 **************** //
 
-// ****************系统管理 --- 学习卡管理 **************** //
+// ****************系统管理 --- 日志管理 **************** //
 
 export const queryUserLogs = baseModuleUrl + 'queryUserLogs'
 
 export const queryUserLogsByUserId = baseModuleUrl + 'queryUserLogsByUserId'
 
-// ****************系统管理 --- 学习卡管理 **************** //
+// ****************系统管理 --- 日志管理 **************** //
+
+// ****************系统管理 --- 意见反馈管理 **************** //
+
+export const queryAllFeedBackList = baseModuleUrl + 'queryAllFeedBackList'
+
+export const queryFeedBackReplyList = baseModuleUrl + 'queryFeedBackReplyList'
+
+export const saveFeedBackReply = baseModuleUrl + 'saveFeedBackReply'
+
+// ****************系统管理 --- 意见反馈管理 **************** //
 
 // ****************会员管理 --- 学校管理 **************** //
 

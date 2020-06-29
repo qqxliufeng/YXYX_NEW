@@ -53,8 +53,8 @@ pathMapName.set('roles', 'Roles')
 pathMapName.set('menu', 'Menu')
 pathMapName.set('menuButton', 'MenuButton')
 pathMapName.set('learningcard', 'StudyCard')
-pathMapName.set('feedback', 'feedback')
-pathMapName.set('logmanagement', 'logmanagement')
+pathMapName.set('feedback', 'FeedBack')
+pathMapName.set('logmanagement', 'Logmanagement')
 pathMapName.set('groupmessage', 'GroupMessage')
 pathMapName.set('schoolmessage', 'SchoolMessage')
 pathMapName.set('vipshcool', 'VIPShcool')
@@ -139,7 +139,7 @@ export function generaMenu(routes, data) {
       children: [],
       hidden: hiddenMenuList.includes(item.menuUrl),
       name: pathName,
-      meta: { title: item.menuName, noCache: false, id: item.menuId, roles: ['admin'], icon: isMenu ? 'list' : 'people', affix: affixMenuList.includes(item.menuUrl) }
+      meta: { title: item.menuName, noCache: false, id: item.menuId, roles: ['admin'], icon: isMenu ? 'list' : 'department', affix: affixMenuList.includes(item.menuUrl) }
     }
     menuButtonModel[menu.name] = item.menuButtons
     if (isMenu) {

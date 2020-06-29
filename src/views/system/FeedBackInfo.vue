@@ -16,69 +16,63 @@
         :style="tableConfig.style"
         @selection-change="handleSelectionChange"
       >
+        <!-- dr: 0
+feedbackId: 5
+replyParentId: null
+replySatisfaction: 2 -->
         <el-table-column
           align="center"
-          label="用户ID"
-          prop="userId"
+          label="回复ID"
+          prop="feedbackreplyId"
           fixed="left"
         />
         <el-table-column
           align="center"
-          prop="username"
-          label="用户名称"
+          prop="replyUserName"
+          label="回复人名称"
           fixed="left"
-          width="100"
-        >
-          <template slot-scope="scope">
-            <el-link
-              type="primary"
-              @click="logUserList(scope.row)"
-            >{{ scope.row.username }}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="phone"
-          label="手机号码"
-          width="150"
         />
         <el-table-column
           align="center"
-          prop="moduleName"
-          label="操作模块"
-          width="120"
+          prop="replyContext"
+          label="回复内容"
+          min-width="100"
         />
-        <el-table-column
-          align="center"
-          prop="optionName"
-          label="具体说明"
-          width="160"
-        />
-        <el-table-column
-          align="center"
-          prop="ip"
-          label="IP地址"
-          width="140"
-        >
-          <template slot-scope="scope">
-            <el-link
-              :underline="false"
-              type="primary"
-            >{{ scope.row.ip }}</el-link>
-          </template>
-        </el-table-column>
         <el-table-column
           align="center"
           prop="createTime"
-          label="操作时间"
+          label="回复时间"
           width="160"
-        />
+        >
+          <template slot-scope="scope">
+            <div>{{ scope.row.replyTime | parseTime }}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="endTime"
-          label="结束时间"
-          width="160"
-        />
+          label="评分"
+        >
+          <template slot-scope="scope">
+            <el-rate
+              v-model="scope.row.replySatisfaction"
+              disabled
+              text-color="#ff9900"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="操作"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="danger"
+              :size="$style.tableButtonSize"
+              @click="replayFeedBack(scope.row)"
+            >继续回复</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
     <table-foot
@@ -96,7 +90,7 @@
 <script>
 import tableMixins from '../../mixins/table-mixins'
 export default {
-  name: 'Logmanagement',
+  name: 'FeedBackInfo',
   mixins: [tableMixins],
   mounted() {
     this.getData()
@@ -104,25 +98,25 @@ export default {
   methods: {
     getData() {
       this.$http({
-        url: this.$urlPath.queryUserLogs,
+        url: this.$urlPath.queryFeedBackReplyList,
         methods: this.HTTP_GET,
         data: {
           pageNum: this.page,
-          pageSize: this.pageSize
-        },
-        withUserId: false,
-        withRoleId: false
+          pageSize: this.pageSize,
+          feedbackId: this.$route.params.feedbackId
+        }
       }).then(res => {
-        this.loading = false
-        this.tableData = res.content
-        this.total = res.totalElements
+        this.onSuccess(res.obj)
       })
     },
-    logUserList(item) {
+    replayFeedBack(item) {
+      if (!this.checkButtonPermission('feed_replay')) {
+        return
+      }
       this.$router.push({
-        name: 'LogmanagementUserList',
+        name: 'FeedBackReply',
         params: {
-          userId: item.userId
+          feedbackId: item.feedbackId
         }
       })
     }

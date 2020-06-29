@@ -31,11 +31,35 @@ export default [
         }
       },
       {
+        path: '/logmanagementuserlist/:userId',
+        component: () => import('@/views/system/LogmanagementUserList.vue'),
+        name: 'LogmanagementUserList',
+        meta: {
+          title: '用户日志记录'
+        }
+      },
+      {
         path: '/textbooklist/:studyCardId/:studyCardCode/:studyCardErcode',
         component: () => import('@/views/system/TextBookList.vue'),
         name: 'TextBookList',
         meta: {
           title: '教材列表'
+        }
+      },
+      {
+        path: '/feedback/:feedbackId',
+        component: () => import('@/views/system/FeedBackInfo.vue'),
+        name: 'FeedBackInfo',
+        meta: {
+          title: '反馈详情'
+        }
+      },
+      {
+        path: '/feedbackreply/:feedbackId',
+        component: () => import('@/views/system/FeedBackReply.vue'),
+        name: 'FeedBackReply',
+        meta: {
+          title: '回复反馈'
         }
       }
     ]
