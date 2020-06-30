@@ -15,11 +15,13 @@ import Layout from '@/layout'
 import membershipRouter from './membership'
 import systemRouter from './system'
 import materialRouter from './material'
+import luckdrawRouter from './luckdraw'
 
 export const constantRoutes = [
   ...membershipRouter,
   ...systemRouter,
   ...materialRouter,
+  ...luckdrawRouter,
   {
     path: '/',
     component: Layout,

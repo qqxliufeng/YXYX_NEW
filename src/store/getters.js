@@ -10,6 +10,7 @@ const getters = {
   phone: state => state.user.phone,
   roleId: state => state.user.roleId,
   userId: state => state.user.userId,
+  schoolId: state => state.user.schoolId,
   roles: state => state.permission.roles,
   userRoles: state => state.user.roles,
   introduction: state => state.user.introduction,

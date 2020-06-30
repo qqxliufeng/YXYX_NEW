@@ -7,9 +7,11 @@
  * @LastEditTime: 2020-06-08 15:38:21
  */
 
-// export const baseIp = 'http://192.168.0.123:8880'
+export const baseImageIp = 'http://118.190.3.78'
 
-export const baseIp = 'http://118.190.3.78:8881'
+export const baseIp = 'http://192.168.0.123:8880'
+
+// export const baseIp = 'http://118.190.3.78:8881'
 
 /**
  * 基础模块名字
@@ -275,3 +277,21 @@ export const queryWordInfoListLike = baseModuleUrl + 'queryWordInfoListLike'
 export const queryCourseLevelGroup1 = baseModuleUrl + 'queryCourseLevelGroup'
 
 // ****************单词信息**************** //
+
+// ****************奖品管理 抽奖设置**************** //
+
+export const queryPrizeList = baseModuleUrl + 'queryPrizeList'
+
+export const savePrize = baseModuleUrl + 'savePrize'
+
+export const savePrizeDetail = baseModuleUrl + 'savePrizeDetail'
+
+export const setIsEnable = baseModuleUrl + 'setIsEnable'
+
+export const queryPrizeDetailList = baseModuleUrl + 'queryPrizeDetailList'
+
+export const updatePrize = baseModuleUrl + 'updatePrize'
+
+export const deletePrize = baseModuleUrl + 'deletePrize'
+
+// ****************奖品管理 抽奖设置**************** //

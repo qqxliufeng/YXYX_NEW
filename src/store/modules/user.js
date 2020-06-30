@@ -4,11 +4,13 @@ import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  userNickName: '',
   name: '',
   phone: '',
-  userId: '',
-  roleId: '',
+  userId: Number(localStorage.getItem('userId')) || '',
+  roleId: Number(localStorage.getItem('roleId')) || '',
   avatar: '',
+  schoolId: Number(localStorage.getItem('schoolId')) || '',
   introduction: '',
   roles: []
 }
@@ -37,6 +39,9 @@ const mutations = {
   },
   SET_PHONE: (state, phone) => {
     state.phone = phone
+  },
+  SET_SCHOOL_ID: (state, schoolId) => {
+    state.schoolId = schoolId
   }
 }
 
@@ -55,6 +60,7 @@ const actions = {
         commit('SET_ROLEID', data.roleId)
         commit('SET_ROLES', roles)
         commit('SET_userNickName', data.userNickName)
+        commit('SET_SCHOOL_ID', data.schoolId)
         setToken(data.token)
         setUserId(data.userId)
         setRoleId(data.roleId)
@@ -64,6 +70,7 @@ const actions = {
         localStorage.setItem('username', data.username)
         localStorage.setItem('roleId', data.roleId)
         localStorage.setItem('userId', data.userId)
+        localStorage.setItem('schoolId', data.schoolId)
         sessionStorage.setItem('userRoles', JSON.stringify(roles))
         resolve()
       }).catch(error => {
@@ -82,6 +89,7 @@ const actions = {
         localStorage.removeItem('username')
         localStorage.removeItem('roleId')
         localStorage.removeItem('userId')
+        localStorage.removeItem('schoolId')
         sessionStorage.removeItem('userRoles')
         removeAll()
         resetRouter()
