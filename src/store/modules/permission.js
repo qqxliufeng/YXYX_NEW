@@ -119,6 +119,19 @@ function getCharCount(str, char) {
   return count
 }
 
+function getIcon(url) {
+  if (url) {
+    const splits = url.split('/')
+    if (splits.length === 2) {
+      return 'menu'
+    }
+    if (splits.length === 3) {
+      return splits[2]
+    }
+  }
+  return 'menu'
+}
+
 export function generaMenu(routes, data) {
   data.forEach(item => {
     const isMenu = getCharCount(item.menuUrl, '/') === 1
@@ -139,7 +152,7 @@ export function generaMenu(routes, data) {
       children: [],
       hidden: hiddenMenuList.includes(item.menuUrl),
       name: pathName,
-      meta: { title: item.menuName, noCache: false, id: item.menuId, roles: ['admin'], icon: isMenu ? 'list' : 'department', affix: affixMenuList.includes(item.menuUrl) }
+      meta: { title: item.menuName, noCache: false, id: item.menuId, roles: ['admin'], icon: isMenu ? 'list' : getIcon(item.menuUrl), affix: affixMenuList.includes(item.menuUrl) }
     }
     menuButtonModel[menu.name] = item.menuButtons
     if (isMenu) {

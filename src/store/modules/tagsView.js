@@ -1,5 +1,27 @@
+function getVisitedViews() {
+  const jsonViews = sessionStorage.getItem('visitedViews')
+  if (jsonViews) {
+    return JSON.parse(jsonViews)
+  }
+  return []
+}
+
+function setVisitedViews(state) {
+  const tempRoutes = []
+  state.visitedViews.forEach(it => {
+    tempRoutes.push({
+      fullPath: it.fullPath,
+      path: it.path,
+      name: it.name,
+      title: it.title,
+      meta: { ...it.meta }
+    })
+  })
+  sessionStorage.setItem('visitedViews', JSON.stringify(tempRoutes))
+}
+
 const state = {
-  visitedViews: [],
+  visitedViews: getVisitedViews(),
   cachedViews: []
 }
 
@@ -11,6 +33,7 @@ const mutations = {
         title: view.meta.title || 'no-name'
       })
     )
+    setVisitedViews(state)
   },
   ADD_CACHED_VIEW: (state, view) => {
     if (state.cachedViews.includes(view.name)) return
@@ -26,6 +49,7 @@ const mutations = {
         break
       }
     }
+    setVisitedViews(state)
   },
   DEL_CACHED_VIEW: (state, view) => {
     const index = state.cachedViews.indexOf(view.name)
@@ -36,6 +60,7 @@ const mutations = {
     state.visitedViews = state.visitedViews.filter(v => {
       return v.meta.affix || v.path === view.path
     })
+    setVisitedViews(state)
   },
   DEL_OTHERS_CACHED_VIEWS: (state, view) => {
     const index = state.cachedViews.indexOf(view.name)
@@ -51,6 +76,7 @@ const mutations = {
     // keep affix tags
     const affixTags = state.visitedViews.filter(tag => tag.meta.affix)
     state.visitedViews = affixTags
+    setVisitedViews(state)
   },
   DEL_ALL_CACHED_VIEWS: state => {
     state.cachedViews = []
@@ -63,6 +89,7 @@ const mutations = {
         break
       }
     }
+    setVisitedViews(state)
   }
 }
 

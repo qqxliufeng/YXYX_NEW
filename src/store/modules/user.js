@@ -86,6 +86,7 @@ const actions = {
         removeAll()
         resetRouter()
         dispatch('tagsView/delAllViews', null, { root: true })
+        sessionStorage.removeItem('visitedViews')
         resolve()
       } catch (e) {
         reject(e)
