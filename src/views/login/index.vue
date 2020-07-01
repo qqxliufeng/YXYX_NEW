@@ -24,7 +24,7 @@
           label-position="left"
         >
           <div class="title-container">
-            <h3 class="title">优行教育后台管理</h3>
+            <h3 class="title">优行教育后台管理系统</h3>
           </div>
           <el-form-item prop="phone">
             <el-input

@@ -64,7 +64,7 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="管理者姓名">
+        <!-- <el-form-item label="管理者姓名">
           <el-col :span="10">
             <el-input
               v-model="schoolModel.schoolLeaderName"
@@ -72,7 +72,7 @@
               maxlength="10"
             />
           </el-col>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="联系方式">
           <el-col :span="10">
             <el-input

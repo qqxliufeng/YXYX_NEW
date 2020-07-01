@@ -9,96 +9,127 @@
         <table-status :status="statusFormat()" />
       </div>
       <div class="info-wrapper">
-        <div class="item-wrapper">
-          <span class="item-title">学校账号</span>
-          <el-link
-            :underline="false"
-            type="primary"
-            class="item-value"
-          >{{ schoolInfo.schoolTel }}</el-link>
+        <div class="item-container">
+          <div class="item-wrapper">
+            <span class="item-title">学校账号</span>
+            <el-link
+              :underline="false"
+              type="primary"
+              class="item-value"
+            >{{ schoolInfo.schoolTel }}</el-link>
+          </div>
+          <el-divider />
+          <div class="item-wrapper">
+            <span class="item-title">学校类型</span>
+            <el-link
+              :underline="false"
+              type="primary"
+              class="item-value"
+            >{{ getSchoolType() }}</el-link>
+          </div>
+          <el-divider />
+          <div class="item-wrapper">
+            <span class="item-title">管理员</span>
+            <el-link
+              :underline="false"
+              class="item-value"
+            >{{ schoolInfo.schoolLeaderName || '暂无名称' }}</el-link>
+          </div>
+          <el-divider />
+          <div class="item-wrapper">
+            <span class="item-title">在线状态</span>
+            <el-link
+              :underline="false"
+              class="item-value"
+              type="danger"
+            >{{ `${schoolInfo.isOnLine === 0 ? '线下' : '线上'}学校` }}</el-link>
+          </div>
+          <el-divider />
+          <div class="item-wrapper">
+            <span class="item-title">创建时间</span>
+            <el-link
+              :underline="false"
+              class="item-value"
+            >{{ schoolInfo.createTime | parseTime }}</el-link>
+          </div>
+          <el-divider />
+          <div class="item-wrapper">
+            <span class="item-title">到期时间</span>
+            <el-link
+              :underline="false"
+              class="item-value"
+              type="danger"
+            >{{ schoolInfo.endTime | parseTime }}</el-link>
+          </div>
+          <el-divider />
+          <div class="item-wrapper">
+            <span class="item-title">学校地址</span>
+            <el-link
+              :underline="false"
+              class="item-value"
+            >{{ schoolInfo.province + '/' + schoolInfo.city + '/' + schoolInfo.area }}</el-link>
+          </div>
+          <el-divider />
+          <div class="item-wrapper">
+            <span class="item-title">详细地址</span>
+            <ul v-if="schoolInfo.addressDetailList.length > 0">
+              <li
+                v-for="(item, index) of schoolInfo.addressDetailList"
+                :key="index"
+                style="line-height: 25px"
+              >
+                <el-link
+                  :underline="false"
+                  class="item-value"
+                >{{ item || '暂无' }}</el-link>
+              </li>
+            </ul>
+            <el-link
+              v-else
+              :underline="false"
+              class="item-value"
+            >{{ schoolInfo.addressDetail }}</el-link>
+          </div>
+          <el-divider />
+          <div class="item-wrapper">
+            <span class="item-title">备注</span>
+            <el-link
+              :underline="false"
+              class="item-value"
+              type="danger"
+            >{{ schoolInfo.note || '暂无' }}</el-link>
+          </div>
         </div>
-        <el-divider />
-        <div class="item-wrapper">
-          <span class="item-title">学校类型</span>
-          <el-link
-            :underline="false"
-            type="primary"
-            class="item-value"
-          >{{ getSchoolType() }}</el-link>
+        <div class="button-wrapper">
+          <div class="button-item">
+            <el-button
+              type="primary"
+              size="small"
+              @click="editSchoolInfo"
+            >编辑学校信息</el-button>
+          </div>
+          <div class="button-item">
+            <el-button
+              type="warning"
+              size="small"
+              @click="grantedStudyCard"
+            >已分配学习卡</el-button>
+          </div>
+          <div class="button-item">
+            <el-button
+              type="danger"
+              size="small"
+              @click="unGrantedStudyCard"
+            >未分配学习卡</el-button>
+          </div>
+          <div class="button-item">
+            <el-button
+              type="success"
+              size="small"
+              @click="searchServiceRecord"
+            >查看服务记录</el-button>
+          </div>
         </div>
-        <el-divider />
-        <div class="item-wrapper">
-          <span class="item-title">管理员</span>
-          <el-link
-            :underline="false"
-            class="item-value"
-          >{{ schoolInfo.schoolLeaderName || '暂无名称' }}</el-link>
-        </div>
-        <el-divider />
-        <div class="item-wrapper">
-          <span class="item-title">在线状态</span>
-          <el-link
-            :underline="false"
-            class="item-value"
-            type="danger"
-          >{{ `${schoolInfo.isOnLine === 0 ? '线下' : '线上'}学校` }}</el-link>
-        </div>
-        <el-divider />
-        <div class="item-wrapper">
-          <span class="item-title">创建时间</span>
-          <el-link
-            :underline="false"
-            class="item-value"
-          >{{ schoolInfo.createTime | parseTime }}</el-link>
-        </div>
-        <el-divider />
-        <div class="item-wrapper">
-          <span class="item-title">到期时间</span>
-          <el-link
-            :underline="false"
-            class="item-value"
-            type="danger"
-          >{{ schoolInfo.endTime | parseTime }}</el-link>
-        </div>
-        <el-divider />
-        <div class="item-wrapper">
-          <span class="item-title">学校地址</span>
-          <el-link
-            :underline="false"
-            class="item-value"
-          >{{ schoolInfo.province + '/' + schoolInfo.city + '/' + schoolInfo.area }}</el-link>
-        </div>
-        <el-divider />
-        <div class="item-wrapper">
-          <span class="item-title">详细地址</span>
-          <ul v-if="schoolInfo.addressDetailList.length > 0">
-            <li
-              v-for="(item, index) of schoolInfo.addressDetailList"
-              :key="index"
-              style="line-height: 25px"
-            >
-              <el-link
-                :underline="false"
-                class="item-value"
-              >{{ item || '暂无' }}</el-link>
-            </li>
-          </ul>
-          <el-link
-            v-else
-            :underline="false"
-            class="item-value"
-          >{{ schoolInfo.addressDetail }}</el-link>
-        </div>
-        <el-divider />
-        <div class="item-wrapper">
-          <span class="item-title">备注</span>
-          <el-link
-            :underline="false"
-            class="item-value"
-            type="danger"
-          >{{ schoolInfo.note || '暂无' }}</el-link>
-        </div>
-        <el-divider />
       </div>
     </el-card>
   </div>
@@ -154,23 +185,98 @@ export default {
           closeLoading()
         })
       })
+    },
+    editSchoolInfo() {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
+      this.$router.push({
+        name: 'EditSchool',
+        params: { schoolId: this.$store.getters.schoolId }
+      })
+    },
+    grantedStudyCard() {
+      if (!this.checkButtonPermission('grant_card_list')) {
+        return
+      }
+      this.$router.push({
+        name: 'SchoolStudyCardList',
+        params: {
+          schoolId: this.$store.getters.schoolId,
+          schoolName: this.schoolInfo.schoolName,
+          type: 1
+        }
+      })
+    },
+    unGrantedStudyCard() {
+      if (!this.checkButtonPermission('un_card_list')) {
+        return
+      }
+      this.$router.push({
+        name: 'SchoolStudyCardList',
+        params: {
+          schoolId: this.$store.getters.schoolId,
+          schoolName: this.schoolInfo.schoolName,
+          type: 0
+        }
+      })
+    },
+    searchServiceRecord() {
+      if (!this.checkButtonPermission('search_record')) {
+        return
+      }
+      this.$router.push({
+        name: 'SchoolRecordList',
+        params: {
+          schoolId: this.$store.getters.schoolId
+        }
+      })
+    },
+    addServiceRecord() { },
+    checkButtonPermission(btnCode) {
+      if (!btnCode) {
+        this.$errorMsg('按钮编码不能为空')
+        return false
+      }
+      const checkResult = this.$menuButtonModel.checkPermission('VIPShcool', btnCode)
+      if (!checkResult) {
+        this.$errorMsg('当前账号权限不足，无法操作此功能，请联系管理员')
+        return false
+      }
+      return true
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+>>> .el-divider {
+  background-color: #f5f5f5;
+}
 .info-wrapper {
-  width: 60%;
-  margin: 0 auto;
-  .item-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .item-title {
-      font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  .item-container {
+    flex: 2;
+    padding: 0 10px;
+    .item-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .item-title {
+        font-size: 14px;
+      }
+      .item-value {
+        font-size: 16px;
+      }
     }
-    .item-value {
-      font-size: 16px;
+  }
+  .button-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .button-item {
+      margin-top: 20px;
     }
   }
 }
