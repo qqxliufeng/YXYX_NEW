@@ -23,14 +23,6 @@ export default [
         }
       },
       {
-        path: '/vipshcoolinfo/:schoolId',
-        component: () => import('@/views/membership/VipSchoolInfo.vue'),
-        name: 'VipSchoolInfo',
-        meta: {
-          title: '学校详情'
-        }
-      },
-      {
         path: '/schoolrecordlist/:schoolId',
         component: () => import('@/views/membership/SchoolRecordList.vue'),
         name: 'SchoolRecordList',

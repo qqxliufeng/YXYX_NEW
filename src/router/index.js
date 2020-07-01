@@ -18,6 +18,22 @@ import materialRouter from './material'
 import luckdrawRouter from './luckdraw'
 
 export const constantRoutes = [
+  {
+    path: '/shcool',
+    component: Layout,
+    children: [
+      {
+        path: '/index',
+        component: () => import('@/views/membership/VipSchoolInfo.vue'),
+        name: 'VipSchoolInfo',
+        meta: {
+          title: '学校信息',
+          icon: 'vipshcool',
+          affix: true
+        }
+      }
+    ]
+  },
   ...membershipRouter,
   ...systemRouter,
   ...materialRouter,

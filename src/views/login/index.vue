@@ -194,7 +194,11 @@ export default {
           this.$store
             .dispatch('user/login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/system/group', query: this.otherQuery })
+              if (this.redirect) {
+                this.$router.push({ path: this.redirect, query: this.otherQuery })
+              } else {
+                this.$router.push({ name: 'VipSchoolInfo' })
+              }
               // this.$router.push({ path: '/system/group' })
               this.loading = false
             })

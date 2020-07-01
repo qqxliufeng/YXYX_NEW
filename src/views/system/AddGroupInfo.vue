@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <el-card body-style="padding: 0">
+    <el-card :body-style="{padding: 0}">
       <div
         slot="header"
         class="flex justify-between align-center"
@@ -162,7 +162,7 @@
       </el-form>
     </el-card>
     <el-card
-      body-style="padding: 0"
+      :body-style="{padding: 0}"
       style="margin-top: 10px"
     >
       <div
@@ -194,7 +194,7 @@ export default {
         isSalesLeader: 0, // 是否主管 0否 1是
         userName: '', //      用户真实姓名
         userNickName: '', //    用户昵称
-        schoolId: '', //    所属学校ID
+        schoolId: 1, //    所属学校ID
         isLock: 0, //       用户状态：0正常 1禁用
         photo: '', //       用户头像
         phone: '', //       手机号
@@ -211,7 +211,6 @@ export default {
   },
   methods: {
     saveInfo() {
-      this.$root.$emit('refresh_table')
       if (!this.baseInfo.deptId) {
         this.$errorMsg('请选择所属部门')
         return
@@ -240,13 +239,18 @@ export default {
         this.$errorMsg('请输入详细地址')
         return
       }
-      this.$http({
-        url: this.$urlPath.saveUser,
-        methods: this.HTTP_POST,
-        data: this.baseInfo
-      }).then(res => {
-        this.$successMsg(res.msg)
-        this.$router.back()
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.saveUser,
+          methods: this.HTTP_POST,
+          data: this.baseInfo
+        }).then(res => {
+          this.$successMsg(res.msg)
+          this.$closeCurrentView()
+          closeLoading()
+        }).catch(_ => {
+          closeLoading()
+        })
       })
     },
     queryRoleByDeptId() {

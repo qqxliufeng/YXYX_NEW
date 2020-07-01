@@ -244,6 +244,7 @@ export default {
         isOnLine: '', // 是否线上线下学校，0线下 1线上
         schoolLeaderId: '', //    学校管理者ID
         schoolLeaderName: '', //  管理者姓名
+        schoolId: 1, // 集团用户所属学校的id 是 1
         schoolTel: '', //         学校联系方式
         schoolType: 0, //        加盟校类型 0普通加盟校(集团发展) 1独家加盟(集团发展) 2 独家加盟校代理(独家加盟校自己发展)
         tempProvince: [],
@@ -360,6 +361,7 @@ export default {
         data: postData,
         contentType: 'application/json; charset=UTF-8'
       }).then(res => {
+        this.$closeCurrentView()
         this.$successMsg('学校添加成功')
         this.$nextTick(_ => {
           loadingInstance.close()

@@ -13,7 +13,7 @@ const hiddenMenuList = [
 ]
 
 const affixMenuList = [
-  '/system/group'
+  // '/system/group'
 ]
 
 // /system
