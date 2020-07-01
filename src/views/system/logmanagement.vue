@@ -30,10 +30,11 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-link
-              type="primary"
+            <el-link type="primary">{{ scope.row.username }}</el-link>
+            <div
+              style="font-size: 10px;"
               @click="logUserList(scope.row)"
-            >{{ scope.row.username }}</el-link>
+            >查看更多</div>
           </template>
         </el-table-column>
         <el-table-column

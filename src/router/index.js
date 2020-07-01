@@ -42,7 +42,7 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     hidden: true,
-    redirect: '/login'
+    redirect: '/index'
   },
   {
     path: '/redirect',

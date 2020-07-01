@@ -24,7 +24,13 @@
           label-position="left"
         >
           <div class="title-container">
-            <h3 class="title">优行教育后台管理系统</h3>
+            <div class="title">
+              优行教育后台管理系统
+              <div
+                class="text-right"
+                style="color: #333; font-size: 16px; margin-right: 30px; margin-top: 10px"
+              >--v2.0</div>
+            </div>
           </div>
           <el-form-item prop="phone">
             <el-input
@@ -355,7 +361,7 @@ $primary_color: #1890ff;
     .title {
       font-size: 26px;
       color: $primary_color;
-      margin: 0px auto 40px auto;
+      margin: 0px auto 30px auto;
       text-align: center;
       font-weight: bold;
     }
