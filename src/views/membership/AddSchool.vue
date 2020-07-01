@@ -392,3 +392,9 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+>>> .el-card__header {
+  padding: 10px;
+}
+</style>
+

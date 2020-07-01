@@ -720,7 +720,7 @@ export default {
         data: {},
         responseType: `blob`
       }).then(res => {
-        blobToExecl(res)
+        blobToExecl(res, '教材模板')
       })
     }
   }

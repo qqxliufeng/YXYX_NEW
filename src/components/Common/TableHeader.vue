@@ -11,12 +11,14 @@
           v-if="showAdd"
           type="warning"
           size="mini"
+          icon="el-icon-plus"
           @click="onadd"
         >添加</el-button>
         <el-button
           v-if="showDelete"
           type="danger"
           size="mini"
+          icon="el-icon-delete"
           @click="ondelete"
         >批量删除</el-button>
         <slot name="other" />
@@ -71,6 +73,7 @@
               v-if="showSearch && formModelArray.length > 0"
               type="primary"
               size="mini"
+              icon="el-icon-search"
               @click="onsearch"
             >查询</el-button>
           </el-col>

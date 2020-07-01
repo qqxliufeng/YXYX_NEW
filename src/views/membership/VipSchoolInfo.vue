@@ -28,7 +28,7 @@
         </div>
         <el-divider />
         <div class="item-wrapper">
-          <span class="item-title">在线状态</span>
+          <span class="item-title">管理员</span>
           <el-link
             :underline="false"
             class="item-value"
@@ -36,7 +36,7 @@
         </div>
         <el-divider />
         <div class="item-wrapper">
-          <span class="item-title">管理员</span>
+          <span class="item-title">在线状态</span>
           <el-link
             :underline="false"
             class="item-value"

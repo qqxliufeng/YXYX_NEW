@@ -12,11 +12,13 @@
         <el-button
           type="warning"
           size="mini"
+          icon="el-icon-upload2"
           @click="generatorCards"
         >批量生成学习卡</el-button>
         <el-button
           type="danger"
           size="mini"
+          icon="el-icon-download"
           @click="downCards"
         >批量下载学习卡</el-button>
       </template>
