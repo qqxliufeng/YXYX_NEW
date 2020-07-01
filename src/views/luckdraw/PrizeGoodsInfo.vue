@@ -2,11 +2,11 @@
   <div class="container">
     <el-card
       ref="tableHeader"
-      style="margin-bottom: 10px"
-      :body-style="{padding: 0}"
+      :body-style="{padding: '0px'}"
     >
       <div
         slot="header"
+        style="height: 29px"
         class="flex justify-between"
       >
         <el-link :underline="false">奖品信息</el-link>
@@ -39,7 +39,6 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
-        show-summary
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -51,7 +50,15 @@
           align="center"
           prop="prizeImage"
           label="奖品图片"
-        />
+        >
+          <template slot-scope="scope">
+            <el-image
+              :src="scope.row.prizeImage"
+              fit="cover"
+              style="width: 50px; height: 50px"
+            />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="prizeCount"
@@ -61,7 +68,11 @@
           align="center"
           prop="winweight"
           label="中奖概率"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row.winweight * 100 + '%' }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="prizeNote"
@@ -79,6 +90,11 @@
               :size="$style.tableButtonSize"
               @click="handlerUpdate(scope.row, scope.$index)"
             >编辑</el-button>
+            <el-button
+              type="danger"
+              :size="$style.tableButtonSize"
+              @click="deleteItem(scope.row, scope.$index)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -250,7 +266,7 @@ export default {
         prizeName: '', // 奖品名称
         prizeImage: '', // 奖品图片地址
         prizeCount: '', // 奖品数量
-        winweight: '', // 中奖概率
+        winweight: 10, // 中奖概率
         prizeNote: ''// 奖品说明
       },
       tempSelectValue: '',
@@ -273,13 +289,17 @@ export default {
   },
   methods: {
     addGoodsInfo() {
+      if (this.tableData.length === 8) {
+        this.$errorMsg('只能添加 8 个奖品')
+        return
+      }
       this.mode = 'add'
       this.dialogFormVisible = true
       this.goodsModel = {
         prizeName: '', // 奖品名称
         prizeImage: '', // 奖品图片地址
         prizeCount: '', // 奖品数量
-        winweight: '', // 中奖概率
+        winweight: 10, // 中奖概率
         prizeNote: ''// 奖品说明
       }
     },
@@ -300,31 +320,39 @@ export default {
         return
       }
       const weight = this.tableData.reduce((acc, cur) => {
-        acc += cur.winweight / 100
+        acc += cur.winweight
         return acc
       }, 0)
-      console.log(weight)
-      return
-      // this.$http({
-      //   url: this.$urlPath.savePrizeDetail,
-      //   data: {
-      //     prizeDetailList: this.tableData.map(it => {
-      //       return {
-      //         prizeId: this.$route.params.prizeId,
-      //         prizeCount: it.prizeCount,
-      //         prizeImage: it.prizeImage,
-      //         prizeName: it.prizeName,
-      //         prizeNote: it.prizeNote,
-      //         winweight: it.winweight / 100
-      //       }
-      //     })
-      //   },
-      //   withUserId: false,
-      //   withRoleId: false,
-      //   contentType: 'application/json; charset=UTF-8'
-      // }).then(res => {
-      //   console.log(res)
-      // })
+      if (weight !== 100) {
+        this.$errorMsg('总中奖概率必须等于100%，当前总中奖概率为：' + weight + '%')
+        return
+      }
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.savePrizeDetail,
+          data: {
+            prizeDetailList: this.tableData.map(it => {
+              return {
+                prizeId: this.$route.params.prizeId,
+                prizeCount: it.prizeCount,
+                prizeImage: it.prizeImage,
+                prizeName: it.prizeName,
+                prizeNote: it.prizeNote,
+                winweight: it.winweight / 100
+              }
+            })
+          },
+          withUserId: false,
+          withRoleId: false,
+          contentType: 'application/json; charset=UTF-8'
+        }).then(res => {
+          closeLoading()
+          this.$successMsg('奖品添加成功')
+          this.$closeCurrentView()
+        }).catch(_ => {
+          closeLoading()
+        })
+      })
     },
     handleDialogConfirm() {
       if (!this.tempSelectGoods) {
@@ -365,6 +393,9 @@ export default {
         prizeNote: ''// 奖品说明
       }
     },
+    deleteItem(item, index) {
+      this.tableData.splice(index, 1)
+    },
     getData() {
       this.$http({
         url: this.$urlPath.queryPrizeDetailList,
@@ -385,5 +416,8 @@ export default {
 <style lang="scss" scoped>
 >>> .el-card__header {
   padding: 10px;
+}
+>>> .table-container {
+  bottom: 0;
 }
 </style>

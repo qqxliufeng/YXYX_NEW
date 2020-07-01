@@ -6,7 +6,10 @@ import { menuButtonModel } from '@/utils/app-config'
 
 const hiddenMenuList = [
   '/system/menuButton',
-  '/material/distribution'
+  '/material/distribution',
+  '/message',
+  '/arena',
+  '/integral'
 ]
 
 const affixMenuList = [
