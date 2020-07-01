@@ -56,7 +56,7 @@ body {
 .container {
   position: relative;
   border-radius: 5px;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 95px);
   background-color: #fff;
   margin: 5px;
   padding: 5px;

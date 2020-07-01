@@ -280,11 +280,12 @@ export default {
         this.$errorMsg('请输入学校名称')
         return
       }
+      postData.schoolName = this.schoolModel.schoolName
       if (!this.schoolModel.isOnLine) {
         this.$errorMsg('请选择是线上或者是线下学校，请谨慎选择，后期不可更改')
         return
       }
-      postData.schoolName = this.schoolModel.schoolName
+      postData.isOnLine = this.schoolModel.isOnLine
       if (!this.schoolModel.schoolLeaderId) {
         this.$errorMsg('请选择学校管理员')
         return
@@ -307,7 +308,7 @@ export default {
       postData.province = this.schoolModel.tempProvince[0]
       postData.city = this.schoolModel.tempProvince[1]
       postData.area = this.schoolModel.tempProvince.length === 3 ? this.schoolModel.tempProvince[2] : ''
-      if (this.schoolModel.addressDetailList === 0 || !this.schoolModel.addressDetailList[0].address) {
+      if (this.schoolModel.addressDetailList.length === 0 || !this.schoolModel.addressDetailList[0].address) {
         this.$errorMsg('请至少输入一个详细地址')
         return
       }
@@ -334,24 +335,26 @@ export default {
 
       postData.note = this.schoolModel.note
       postData.schoolType = this.schoolModel.schoolType
-      const { saveType, studyCardParams } = this.$refs.studyCardParams.getStudyCardInfo()
-      if (studyCardParams && studyCardParams.length > 0) {
-        postData.saveType = saveType
-        const filterResult = studyCardParams.some(it => {
-          return it.cardType === '' || it.cardNum === 0 || it.tempTextbookIds.length === 0
-        })
-        if (filterResult) {
-          this.$errorMsg('请输入学习卡的具体信息')
-          return
-        }
-        postData.studyCardParams = studyCardParams.map(it => {
-          return {
-            cardType: it.cardType,
-            cardNum: it.cardNum,
-            cardCode: it.cardCode,
-            textbookIds: it.tempTextbookIds.join(',')
+      if (this.$refs.studyCardParams) {
+        const { saveType, studyCardParams } = this.$refs.studyCardParams.getStudyCardInfo()
+        if (studyCardParams && studyCardParams.length > 0) {
+          postData.saveType = saveType
+          const filterResult = studyCardParams.some(it => {
+            return it.cardType === '' || it.cardNum === 0 || it.tempTextbookIds.length === 0
+          })
+          if (filterResult) {
+            this.$errorMsg('请输入学习卡的具体信息')
+            return
           }
-        })
+          postData.studyCardParams = studyCardParams.map(it => {
+            return {
+              cardType: it.cardType,
+              cardNum: it.cardNum,
+              cardCode: it.cardCode,
+              textbookIds: it.tempTextbookIds.join(',')
+            }
+          })
+        }
       }
       const loadingInstance = Loading.service({
         target: document.getElementById('content-wrapper')
@@ -365,7 +368,6 @@ export default {
         this.$successMsg('学校添加成功')
         this.$nextTick(_ => {
           loadingInstance.close()
-          this.$closeView(this.$route.path)
         })
       }).catch(error => {
         console.log(error)

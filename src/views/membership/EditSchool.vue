@@ -289,14 +289,16 @@ export default {
         this.schoolModel.salesId = res.obj.salesId
         this.schoolModel.note = res.obj.note
         this.schoolModel.endTime = res.obj.endTime
-        this.schoolModel.addressDetailList = res.obj.addressDetailList.map((it, index) => {
-          return {
-            id: it.id,
-            address: it.address,
-            canAdd: true,
-            canDelete: index !== 0
-          }
-        })
+        if (res.obj.addressDetailList && res.obj.addressDetailList.length !== 0) {
+          this.schoolModel.addressDetailList = res.obj.addressDetailList.map((it, index) => {
+            return {
+              id: it.id,
+              address: it.address,
+              canAdd: true,
+              canDelete: index !== 0
+            }
+          })
+        }
         this.provincePlaceHolder = this.schoolModel.tempProvince.join('/')
       })
     },
@@ -332,7 +334,7 @@ export default {
       postData.province = this.schoolModel.tempProvince[0]
       postData.city = this.schoolModel.tempProvince[1]
       postData.area = this.schoolModel.tempProvince.length === 3 ? this.schoolModel.tempProvince[2] : ''
-      if (this.schoolModel.addressDetailList === 0 || !this.schoolModel.addressDetailList[0].address) {
+      if (this.schoolModel.addressDetailList.length === 0 || !this.schoolModel.addressDetailList[0].address) {
         this.$errorMsg('请至少输入一个详细地址')
         return
       }
@@ -359,24 +361,26 @@ export default {
       postData.schoolId = this.schoolModel.schoolId
       postData.note = this.schoolModel.note
       postData.schoolType = this.schoolModel.schoolType
-      const { saveType, studyCardParams } = this.$refs.studyCardParams.getStudyCardInfo()
-      if (studyCardParams && studyCardParams.length > 0) {
-        postData.saveType = saveType
-        const filterResult = studyCardParams.some(it => {
-          return it.cardType === '' || it.cardNum === 0 || it.tempTextbookIds.length === 0
-        })
-        if (filterResult) {
-          this.$errorMsg('请输入学习卡的具体信息')
-          return
-        }
-        postData.studyCardParams = studyCardParams.map(it => {
-          return {
-            cardType: it.cardType,
-            cardNum: it.cardNum,
-            cardCode: it.cardCode,
-            textbookIds: it.tempTextbookIds.join(',')
+      if (this.$refs.studyCardParams) {
+        const { saveType, studyCardParams } = this.$refs.studyCardParams.getStudyCardInfo()
+        if (studyCardParams && studyCardParams.length > 0) {
+          postData.saveType = saveType
+          const filterResult = studyCardParams.some(it => {
+            return it.cardType === '' || it.cardNum === 0 || it.tempTextbookIds.length === 0
+          })
+          if (filterResult) {
+            this.$errorMsg('请输入学习卡的具体信息')
+            return
           }
-        })
+          postData.studyCardParams = studyCardParams.map(it => {
+            return {
+              cardType: it.cardType,
+              cardNum: it.cardNum,
+              cardCode: it.cardCode,
+              textbookIds: it.tempTextbookIds.join(',')
+            }
+          })
+        }
       }
       const loadingInstance = Loading.service({
         target: document.getElementById('content-wrapper')
@@ -387,9 +391,9 @@ export default {
         contentType: 'application/json; charset=UTF-8'
       }).then(res => {
         this.$successMsg('学校信息修改成功')
+        this.$closeCurrentView()
         this.$nextTick(_ => {
           loadingInstance.close()
-          this.$closeView(this.$route.path)
         })
       }).catch(error => {
         console.log(error)

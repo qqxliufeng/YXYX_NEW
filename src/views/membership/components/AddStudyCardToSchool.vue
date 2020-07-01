@@ -236,16 +236,15 @@ export default {
           it.selected = this.tempStudyCardItem.tempTextbookIds.includes(it.textbookId)
         })
       }
+      this.$nextTick(_ => {
+        this.$refs.multiTable.clearSelection()
+      })
       const selectedItems = this.textbookList.filter(it => it.selected)
       if (selectedItems.length > 0) {
         this.$nextTick(_ => {
           selectedItems.forEach(row => {
             this.$refs.multiTable.toggleRowSelection(row, true)
           })
-        })
-      } else {
-        this.$nextTick(_ => {
-          this.$refs.multiTable.clearSelection()
         })
       }
     },
