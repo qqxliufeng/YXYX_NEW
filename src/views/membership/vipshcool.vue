@@ -33,11 +33,11 @@
         />
         <el-table-column
           align="center"
-          label="账号"
-          prop="schoolTel"
-          min-width="120"
-          fixed="left"
-        />
+          label="校长"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.schoolLeaderName | emptyFormat }}</template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="在线状态"
@@ -76,18 +76,14 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="管理员"
-        >
-          <template slot-scope="scope">{{
-            scope.row.schoolLeaderName | emptyFormat
-          }}</template>
-        </el-table-column>
-        <el-table-column
-          align="center"
           label="联系方式"
           prop="schoolTel"
           min-width="120"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row.schoolTel | emptyFormat }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="地区"
@@ -246,22 +242,22 @@ export default {
           span: 5,
           type: 'input'
         },
-        {
-          id: 2,
-          value: '',
-          label: '负责人姓名',
-          name: 'schoolLeaderName',
-          span: 5,
-          type: 'input'
-        },
-        {
-          id: 3,
-          value: '',
-          label: '负责人联系方式',
-          name: 'schoolTel',
-          span: 5,
-          type: 'input'
-        },
+        // {
+        //   id: 2,
+        //   value: '',
+        //   label: '负责人姓名',
+        //   name: 'schoolLeaderName',
+        //   span: 5,
+        //   type: 'input'
+        // },
+        // {
+        //   id: 3,
+        //   value: '',
+        //   label: '负责人联系方式',
+        //   name: 'schoolTel',
+        //   span: 5,
+        //   type: 'input'
+        // },
         {
           id: 4,
           value: '',

@@ -68,7 +68,7 @@
             />
           </el-col>
         </el-form-item> -->
-        <el-form-item label="联系方式">
+        <!-- <el-form-item label="联系方式">
           <el-col :span="10">
             <el-input
               v-model="schoolModel.schoolTel"
@@ -76,7 +76,7 @@
               maxlength="11"
             />
           </el-col>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="加盟类型">
           <el-col :span="10">
             <el-radio-group v-model="schoolModel.schoolType">
@@ -303,7 +303,9 @@ export default {
       })
     },
     changeTeacher(value) {
-      this.schoolModel.schoolLeaderName = this.teacherList.filter(it => it.userId === value)[0].username
+      const tempTeacher = this.teacherList.find(it => it.userId === value)
+      this.schoolModel.schoolLeaderName = tempTeacher.username
+      this.schoolModel.schoolTel = tempTeacher.phone
     },
     addSchoolInfo() {
       const postData = {}

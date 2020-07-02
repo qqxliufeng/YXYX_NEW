@@ -53,12 +53,6 @@
         />
         <el-table-column
           align="center"
-          prop="dr"
-          label="删除状态"
-          :formatter="statusFormatter"
-        />
-        <el-table-column
-          align="center"
           label="操作"
           width="270"
           class-name="small-padding fixed-width"
@@ -231,9 +225,6 @@ export default {
     this.getAllDepts()
   },
   methods: {
-    statusFormatter(item) {
-      return item.dr === 0 ? '未删除' : '已删除'
-    },
     onAdd() {
       if (!this.checkButtonPermission('add')) {
         return

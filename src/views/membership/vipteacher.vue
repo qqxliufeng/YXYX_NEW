@@ -209,6 +209,7 @@
               style="width: 100%"
               class="filter-item"
               placeholder="请选择老师角色"
+              @change="selectTeacher"
             >
               <el-option
                 v-for="item of roleList"
@@ -267,7 +268,10 @@
         </el-form-item>
         <el-form-item label="是否校长">
           <el-col :span="$style.dialogColSpan">
-            <el-radio-group v-model="teacherModel.isSchoolLeader">
+            <el-radio-group
+              v-model="teacherModel.isSchoolLeader"
+              :disabled="selectTeacherId === 12"
+            >
               <el-radio :label="0">否</el-radio>
               <el-radio :label="1">是</el-radio>
             </el-radio-group>
@@ -391,7 +395,8 @@ export default {
         note: ''
       },
       dialogFormVisible: false,
-      mode: 'add'
+      mode: 'add',
+      selectTeacherId: 0
     }
   },
   mounted() {
@@ -452,6 +457,14 @@ export default {
         isSchoolLeader: 0,
         sex: 1,
         isLock: 0
+      }
+    },
+    selectTeacher(val) {
+      this.selectTeacherId = val
+      if (val === 12) { // 12代表着是校长，当选择校长的时候，下面的单选框不能再变了
+        this.teacherModel.isSchoolLeader = 1
+      } else {
+        this.teacherModel.isSchoolLeader = 0
       }
     },
     hanlderUpdate(item) {
