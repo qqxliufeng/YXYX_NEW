@@ -34,6 +34,16 @@
         />
         <el-table-column
           align="center"
+          prop="username"
+          label="耗时级别"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <el-link :type="getWarningLevelName(scope.row)">{{ getWarningName(scope.row) }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           prop="phone"
           label="手机号码"
           width="150"
@@ -95,9 +105,10 @@
 
 <script>
 import tableMixins from '../../mixins/table-mixins'
+import logMixins from '../../mixins/log-mixins'
 export default {
   name: 'LogmanagementUserList',
-  mixins: [tableMixins],
+  mixins: [tableMixins, logMixins],
   mounted() {
     this.getData()
   },

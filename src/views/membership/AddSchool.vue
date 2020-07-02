@@ -229,7 +229,6 @@ export default {
     }
   },
   mounted() {
-    this.getTeacherList()
     this.getYouXingList()
   },
   methods: {

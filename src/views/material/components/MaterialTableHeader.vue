@@ -135,7 +135,8 @@ export default {
       } else {
         if (newVal) {
           this.levelList = []
-          this.getLevelList(this.materialId, newVal, _ => {
+          const temp = this.courseList.find(it => it.courseId === newVal)
+          this.getLevelList(this.materialId, temp.courseCode, _ => {
             if (this.levelList && this.levelList.length > 0) {
               // 如果当前的Code 和 新加载的Code值一样，手动触发改变事件
               if (this.courseLevelId === this.levelList[0].courseLevelId) {
@@ -168,8 +169,12 @@ export default {
   },
   methods: {
     changeValue() {
-      const courseCode = this.courseId ? this.courseList.find(it => it.courseId === this.courseId).courseCode : ''
-      const levelCode = this.courseLevelId ? this.levelList.find(it => it.courseLevelId === this.courseLevelId).levelCode : ''
+      // const courseCode = this.courseId ? this.courseList.find(it => it.courseId === this.courseId).courseCode : ''
+      // const levelCode = this.courseLevelId ? this.levelList.find(it => it.courseLevelId === this.courseLevelId).levelCode : ''
+      const tempCourse = this.courseList.find(it => it.courseId === this.courseId)
+      const courseCode = tempCourse ? tempCourse.courseCode : ''
+      const tempLevel = this.levelList.find(it => it.courseLevelId === this.courseLevelId)
+      const levelCode = tempLevel ? tempLevel.levelCode : ''
       this.$emit('on-change-value', {
         textbookId: this.materialId,
         courseCode: courseCode,

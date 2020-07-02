@@ -232,7 +232,6 @@ export default {
   },
   mounted() {
     this.getData()
-    this.getTeacherList()
     this.getYouXingList()
   },
   methods: {

@@ -47,7 +47,7 @@
           prop="textbookName"
           label="教材名称"
           fixed="left"
-          width="90"
+          width="150"
         />
         <el-table-column
           align="center"
