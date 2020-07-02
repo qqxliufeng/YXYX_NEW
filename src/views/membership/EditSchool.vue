@@ -43,40 +43,12 @@
         </el-form-item>
         <el-form-item label="学校管理者">
           <el-col :span="10">
-            <el-select
-              v-model="schoolModel.schoolLeaderId"
-              placeholder="请选择学校管理者（必填）"
-              style="width: 100%"
-              filterable
-              @change="changeTeacher"
-            >
-              <el-option
-                v-for="item of teacherList"
-                :key="item.userId"
-                :label="item.username"
-                :value="item.userId"
-              />
-            </el-select>
+            <el-link
+              :underline="false"
+              type="primary"
+            >{{ schoolModel.schoolLeaderName | emptyFormat }}</el-link>
           </el-col>
         </el-form-item>
-        <!-- <el-form-item label="管理者姓名">
-          <el-col :span="10">
-            <el-input
-              v-model="schoolModel.schoolLeaderName"
-              placeholder="请输入管理者姓名（必填）"
-              maxlength="10"
-            />
-          </el-col>
-        </el-form-item> -->
-        <!-- <el-form-item label="联系方式">
-          <el-col :span="10">
-            <el-input
-              v-model="schoolModel.schoolTel"
-              placeholder="请输入联系方式（必填）"
-              maxlength="11"
-            />
-          </el-col>
-        </el-form-item> -->
         <el-form-item label="加盟类型">
           <el-col :span="10">
             <el-radio-group v-model="schoolModel.schoolType">
@@ -238,9 +210,6 @@ export default {
         schoolId: '', // 学校ID
         schoolName: '', //        学校名称
         isOnLine: 0, // 学校的在线状态  0 线下 1线上
-        schoolLeaderId: '', //    学校管理者ID
-        schoolLeaderName: '', //  管理者姓名
-        schoolTel: '', //         学校联系方式
         schoolType: 0, //        加盟校类型 0普通加盟校(集团发展) 1独家加盟(集团发展) 2 独家加盟校代理(独家加盟校自己发展)
         tempProvince: [],
         province: '', //          省
@@ -311,21 +280,6 @@ export default {
       const postData = {}
       if (!this.schoolModel.schoolName) {
         this.$errorMsg('请输入学校名称')
-        return
-      }
-      postData.schoolName = this.schoolModel.schoolName
-      if (!this.schoolModel.schoolLeaderId) {
-        this.$errorMsg('请选择学校管理员')
-        return
-      }
-      postData.schoolLeaderId = this.schoolModel.schoolLeaderId
-      if (!this.schoolModel.schoolLeaderName) {
-        this.$errorMsg('请输入管理员姓名')
-        return
-      }
-      postData.schoolLeaderName = this.schoolModel.schoolLeaderName
-      if (!this.schoolModel.schoolTel) {
-        this.$errorMsg('请输入学校电话')
         return
       }
       postData.schoolTel = this.schoolModel.schoolTel

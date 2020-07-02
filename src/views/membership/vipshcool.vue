@@ -127,7 +127,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <div class="text-cut">{{ scope.row.endTime | parseTime }}</div>
+            <div class="text-cut">{{ scope.row.endTime | parseTime('{y}-{m}-{d}') }}</div>
           </template>
         </el-table-column>
         <el-table-column

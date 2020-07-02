@@ -14,14 +14,17 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
-        @selection-change="handleSelectionChange"
       >
         <el-table-column
           align="center"
-          label="用户ID"
+          label="序号"
           prop="userId"
           fixed="left"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="username"
@@ -69,9 +72,13 @@
         <el-table-column
           align="center"
           prop="endTime"
-          label="结束时间"
+          label="耗时"
           width="160"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row.useTime / 1000 + 's' }}
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
     <table-foot
