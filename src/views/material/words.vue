@@ -49,6 +49,7 @@
               style="height: 30px"
               type="primary"
               :size="$style.tableButtonSize"
+              icon="el-icon-search"
               @click="onSearch"
             >搜索</el-button>
           </div>
@@ -186,10 +187,10 @@
               size="mini"
               style="font-size: 16px"
               icon="el-icon-video-play"
-              @click="playAudio(tempWord)"
+              @click="playDialogAudio"
             >
               <audio
-                :id="tempWord.audioAddr"
+                :id="'dialog-' + tempWord.audioAddr"
                 :src="baseIp + tempWord.audioAddr"
               />
               {{ tempWord.wordSounds }}
@@ -234,14 +235,14 @@
               icon="el-icon-video-play"
               @click="playExampleAudio(tempWord)"
             >
-              <audio
-                id="dialog-audio-player"
-                :src="baseIp + tempWord.exampAudioAddr"
-              />
               <!-- <audio
                 id="dialog-audio-player"
-                src="http://47.96.184.34/youcan//resources/book/1/egs/make.mp3"
+                :src="baseIp + tempWord.exampAudioAddr"
               /> -->
+              <audio
+                id="dialog-audio-player"
+                src="http://47.96.184.34/youcan//resources/book/1/egs/make.mp3"
+              />
               {{ tempWord.exampSentence }}
             </el-button>
           </el-col>
@@ -423,11 +424,27 @@ export default {
     },
     playAudio(item) {
       const audio = document.getElementById(item.audioAddr)
-      audio.play()
+      if (audio !== null && item.audioAddr !== null) {
+        audio.play()
+      } else {
+        this.$errorMsg('单词播放失败，请检查播放地址是否正常')
+      }
+    },
+    playDialogAudio() {
+      const audio = document.getElementById('dialog-' + this.tempWord.audioAddr)
+      if (audio !== null && this.tempWord.audioAddr !== null) {
+        audio.play()
+      } else {
+        this.$errorMsg('单词播放失败，请检查播放地址是否正常')
+      }
     },
     playExampleAudio(item) {
       const audio = document.getElementById('dialog-audio-player')
-      if (audio && audio.paused) {
+      if (audio === null) {
+        this.$errorMsg('例句播放失败，请检查播放地址是否正常')
+        return
+      }
+      if (audio.paused) {
         audio.play()
       }
     },
