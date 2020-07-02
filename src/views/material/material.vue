@@ -108,7 +108,7 @@
           align="center"
           prop="resourceFileUrl"
           label="资源地址"
-          width="200"
+          width="300"
           show-overflow-tooltip
         >
           <template slot-scope="scope">

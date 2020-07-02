@@ -70,7 +70,7 @@
           label="中奖概率"
         >
           <template slot-scope="scope">
-            {{ scope.row.winweight * 100 + '%' }}
+            {{ getWeight(scope.row) + '%' }}
           </template>
         </el-table-column>
         <el-table-column
@@ -288,6 +288,9 @@ export default {
     this.getData()
   },
   methods: {
+    getWeight(item) {
+      return item.winweight < 1 ? item.winweight * 100 : item.winweight
+    },
     addGoodsInfo() {
       if (this.tableData.length === 8) {
         this.$errorMsg('只能添加 8 个奖品')

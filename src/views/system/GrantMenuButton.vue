@@ -30,7 +30,7 @@
       >
         <el-table-column
           type="expand"
-          label="点击展开"
+          label="展开/收缩"
           width="100"
         >
           <template slot-scope="scope">
@@ -64,20 +64,15 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="菜单ID"
-          prop="menuId"
+          prop="menuName"
+          label="菜单名称"
+          width
         />
         <el-table-column
           align="center"
           prop="menuSequence"
           label="序号"
           show-overflow-tooltip
-        />
-        <el-table-column
-          align="center"
-          prop="menuName"
-          label="菜单名称"
-          width
         />
         <el-table-column
           align="center"

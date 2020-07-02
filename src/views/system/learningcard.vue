@@ -50,13 +50,17 @@
           prop="cardCode"
           label="学习卡编码"
           fixed="left"
-          width="100"
-        />
+          width="120"
+        >
+          <template slot-scope="scope">
+            <div>{{ scope.row.cardType + '-' + scope.row.cardCode }}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="cardErcode"
           label="二维码"
-          width="150"
+          width="380"
           show-overflow-tooltip
         />
         <el-table-column

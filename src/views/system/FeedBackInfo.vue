@@ -110,9 +110,6 @@ export default {
       })
     },
     replayFeedBack(item) {
-      if (!this.checkButtonPermission('feed_replay')) {
-        return
-      }
       this.$router.push({
         name: 'FeedBackReply',
         params: {

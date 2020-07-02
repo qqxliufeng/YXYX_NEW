@@ -30,6 +30,7 @@
           align="center"
           type="selection"
           width="55"
+          :selectable="checkSelect"
         />
         <el-table-column
           align="center"
@@ -396,6 +397,9 @@ export default {
           })
         })
       }
+    },
+    checkSelect(row, index) {
+      return index !== 0
     },
     handleUpdate(item) {
       if (!this.checkButtonPermission('edit')) {
