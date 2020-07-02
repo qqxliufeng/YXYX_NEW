@@ -30,6 +30,7 @@
               v-model="schoolModel.schoolName"
               placeholder="请输入学校名称（必填）"
               maxlength="30"
+              clearable
             />
           </el-col>
         </el-form-item>
@@ -50,7 +51,7 @@
           <el-col :span="10">
             <el-select
               v-model="schoolModel.schoolLeaderId"
-              placeholder="请选择学校管理者（必填）"
+              placeholder="请选择学校管理者"
               style="width: 100%"
               filterable
               @change="changeTeacher"
@@ -77,7 +78,7 @@
           <el-col :span="10">
             <el-input
               v-model="schoolModel.schoolTel"
-              placeholder="请输入联系方式（必填）"
+              placeholder="请输入联系方式"
               maxlength="11"
             />
           </el-col>
@@ -281,25 +282,25 @@ export default {
         return
       }
       postData.schoolName = this.schoolModel.schoolName
-      if (!this.schoolModel.isOnLine) {
+      if (this.schoolModel.isOnLine === '') {
         this.$errorMsg('请选择是线上或者是线下学校，请谨慎选择，后期不可更改')
         return
       }
       postData.isOnLine = this.schoolModel.isOnLine
-      if (!this.schoolModel.schoolLeaderId) {
-        this.$errorMsg('请选择学校管理员')
-        return
-      }
+      // if (!this.schoolModel.schoolLeaderId) {
+      //   this.$errorMsg('请选择学校管理员')
+      //   return
+      // }
       postData.schoolLeaderId = this.schoolModel.schoolLeaderId
-      if (!this.schoolModel.schoolLeaderName) {
-        this.$errorMsg('请输入管理员姓名')
-        return
-      }
+      // if (!this.schoolModel.schoolLeaderName) {
+      //   this.$errorMsg('请输入管理员姓名')
+      //   return
+      // }
       postData.schoolLeaderName = this.schoolModel.schoolLeaderName
-      if (!this.schoolModel.schoolTel) {
-        this.$errorMsg('请输入学校电话')
-        return
-      }
+      // if (!this.schoolModel.schoolTel) {
+      //   this.$errorMsg('请输入学校电话')
+      //   return
+      // }
       postData.schoolTel = this.schoolModel.schoolTel
       if (this.schoolModel.tempProvince.length === 0) {
         this.$errorMsg('请选择省市区')

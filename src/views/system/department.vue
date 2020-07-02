@@ -298,10 +298,6 @@ export default {
         this.$errorMsg('请输入部门编码')
         return
       }
-      if (!this.tempItem.parentDeptId) {
-        this.$errorMsg('请选择上级部门')
-        return
-      }
       this.dialogFormVisible = false
       if (this.mode === 'edit') {
         this.$http({
@@ -317,6 +313,7 @@ export default {
           data: this.tempItem
         }).then(res => {
           this.$successMsg('保存成功')
+          this.getData()
         })
       }
     }

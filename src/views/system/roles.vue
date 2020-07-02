@@ -152,7 +152,9 @@
             <el-input
               v-model="modeObj.temp.roleCode"
               placeholder="请输入角色编码"
-            />
+            >
+              <template slot="prepend">ROLE_</template>
+            </el-input>
           </el-col>
         </el-form-item>
         <el-form-item
@@ -252,8 +254,9 @@ export default {
       this.dialogFormVisible = true
       this.modeObj.mode = 'edit'
       this.modeObj.temp = {
+        roleId: item.roleId,
         roleName: item.roleName,
-        roleCode: item.roleCode,
+        roleCode: item.roleCode.split('ROLE_')[1],
         deptId: item.deptId
       }
     },
@@ -365,10 +368,14 @@ export default {
         return
       }
       this.dialogFormVisible = false
+      const postData = { ...this.modeObj.temp }
+      if (!postData.roleCode.startsWith('ROLE_')) {
+        postData.roleCode = 'ROLE_' + postData.roleCode
+      }
       if (this.modeObj.mode === 'add') {
         this.$http({
           url: this.$urlPath.saveRole,
-          data: this.modeObj.temp
+          data: postData
         }).then(res => {
           this.$successMsg('添加成功')
           this.getData()
@@ -377,7 +384,7 @@ export default {
         this.modeObj.temp.roleId = this.tempItem.roleId
         this.$http({
           url: this.$urlPath.updateRole,
-          data: this.modeObj.temp
+          data: postData
         }).then(res => {
           this.$successMsg('修改成功')
           this.getData()
