@@ -22,7 +22,6 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
-        @selection-change="handleSelectionChange"
       >
         <el-table-column
           align="center"

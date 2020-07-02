@@ -295,3 +295,11 @@ export const updatePrize = baseModuleUrl + 'updatePrize'
 export const deletePrize = baseModuleUrl + 'deletePrize'
 
 // ****************奖品管理 抽奖设置**************** //
+
+// ****************奖品管理 抽奖名单**************** //
+
+export const queryPrizeDrawList = baseModuleUrl + 'queryPrizeDrawList'
+
+export const setIsGrant = baseModuleUrl + 'setIsGrant'
+
+// ****************奖品管理 抽奖名单**************** //
