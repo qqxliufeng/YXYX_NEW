@@ -78,6 +78,14 @@
                 v-model="item.address"
                 placeholder="请输入详细地址（必填）"
               />
+              <!-- <el-autocomplete
+                v-model="item.address"
+                style="width: 100%"
+                :fetch-suggestions="querySearchAsync"
+                placeholder="请输入内容"
+                @focus="onAddressFocus(item)"
+                @select="handleAddressSelect"
+              /> -->
             </el-col>
             <el-col
               v-if="item.canAdd"
@@ -103,6 +111,20 @@
             </el-col>
           </el-row>
         </el-form-item>
+        <!-- <baidu-map
+          class="map-wrapper"
+          :center="center"
+          :zoom="16"
+          ak="oW2UEhdth2tRbEE4FUpF9E5YVDCIPYih"
+        >
+          <bm-local-search
+            :keyword="addressKeyword"
+            :auto-viewport="false"
+            :location="center"
+            :panel="false"
+            @searchcomplete="searchComplete"
+          />
+        </baidu-map> -->
       </el-form>
     </el-card>
     <el-card style="margin-top: 10px">
@@ -195,15 +217,24 @@
 import schoolMixins from '../../mixins/school-mixins'
 import AddStudyCardToSchool from './components/AddStudyCardToSchool'
 import { Loading } from 'element-ui'
+// import BaiduMap from 'vue-baidu-map/components/map/Map'
+// import BmLocalSearch from 'vue-baidu-map/components/search/LocalSearch'
 export default {
   name: 'AddSchool',
   components: {
     AddStudyCardToSchool
+    // BaiduMap,
+    // BmLocalSearch
   },
   mixins: [schoolMixins],
   data() {
     return {
       level: this.$privinceData,
+      center: '济南',
+      addressKeyword: '',
+      tempSearchResult: [],
+      tempAddressModel: {},
+      tempAddressCallBack: null,
       schoolModel: {
         schoolName: '', //        学校名称
         isOnLine: '', // 是否线上线下学校，0线下 1线上
@@ -226,6 +257,11 @@ export default {
         note: '', //             备注
         endTime: '' //           到期日期
       }
+    }
+  },
+  watch: {
+    'schoolModel.tempProvince'(newVal, oldVal) {
+      this.center = newVal[1]
     }
   },
   mounted() {
@@ -319,6 +355,31 @@ export default {
         })
       })
     },
+    searchComplete(result) {
+      if (result) {
+        console.log(result)
+        this.tempSearchResult = result.Ir.map(it => {
+          return {
+            value: it.title,
+            address: it.address,
+            point: it.point
+          }
+        })
+        if (this.tempAddressCallBack) {
+          this.tempAddressCallBack(this.tempSearchResult)
+        }
+      }
+    },
+    querySearchAsync(qs, cb) {
+      this.addressKeyword = qs
+      this.tempAddressCallBack = cb
+    },
+    handleAddressSelect(item) {
+      console.log(item)
+    },
+    onAddressFocus(item) {
+      this.tempAddressModel = item
+    },
     addAddress() {
       this.schoolModel.addressDetailList.push({
         id: new Date().getTime(),
@@ -340,6 +401,10 @@ export default {
 <style lang="scss" scoped>
 >>> .el-card__header {
   padding: 10px;
+}
+.map-wrapper {
+  width: 100%;
+  height: 300x;
 }
 </style>
 

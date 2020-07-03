@@ -35,9 +35,12 @@
         <el-table-column
           align="center"
           label="序号"
-          prop="userId"
           width="80"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="phone"
@@ -100,11 +103,13 @@
         >
           <template slot-scope="scope">
             <el-button
+              :disabled="scope.row.roleId === 1"
               type="primary"
               :size="$style.tableButtonSize"
               @click="handleUpdate(scope.row)"
             >编辑</el-button>
             <el-button
+              :disabled="scope.row.roleId === 1"
               type="success"
               :size="$style.tableButtonSize"
               @click="grantMenuButton(scope.row)"
@@ -399,7 +404,7 @@ export default {
       }
     },
     checkSelect(row, index) {
-      return index !== 0
+      return row.roleId !== 1
     },
     handleUpdate(item) {
       if (!this.checkButtonPermission('edit')) {

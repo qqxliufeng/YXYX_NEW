@@ -45,6 +45,16 @@
         </el-table-column>
         <el-table-column
           align="center"
+          prop="endTime"
+          label="耗时"
+          width="160"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.useTime / 1000 + 's' }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           prop="username"
           label="耗时级别"
           width="100"
@@ -90,16 +100,6 @@
           label="操作时间"
           width="160"
         />
-        <el-table-column
-          align="center"
-          prop="endTime"
-          label="耗时"
-          width="160"
-        >
-          <template slot-scope="scope">
-            {{ scope.row.useTime / 1000 + 's' }}
-          </template>
-        </el-table-column>
       </el-table>
     </el-card>
     <table-foot

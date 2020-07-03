@@ -81,7 +81,7 @@
                 <el-link
                   :underline="false"
                   class="item-value"
-                >{{ item || '暂无' }}</el-link>
+                >{{ item.address || '暂无' }}</el-link>
               </li>
             </ul>
             <el-link
@@ -103,24 +103,10 @@
         <div class="button-wrapper">
           <div class="button-item">
             <el-button
-              type="primary"
-              size="small"
-              @click="editSchoolInfo"
-            >编辑学校信息</el-button>
-          </div>
-          <div class="button-item">
-            <el-button
               type="warning"
               size="small"
               @click="grantedStudyCard"
             >已分配学习卡</el-button>
-          </div>
-          <div class="button-item">
-            <el-button
-              type="danger"
-              size="small"
-              @click="unGrantedStudyCard"
-            >未分配学习卡</el-button>
           </div>
           <div class="button-item">
             <el-button
@@ -186,15 +172,6 @@ export default {
         })
       })
     },
-    editSchoolInfo() {
-      if (!this.checkButtonPermission('edit')) {
-        return
-      }
-      this.$router.push({
-        name: 'EditSchool',
-        params: { schoolId: this.$store.getters.schoolId }
-      })
-    },
     grantedStudyCard() {
       if (!this.checkButtonPermission('grant_card_list')) {
         return
@@ -205,19 +182,6 @@ export default {
           schoolId: this.$store.getters.schoolId,
           schoolName: this.schoolInfo.schoolName,
           type: 1
-        }
-      })
-    },
-    unGrantedStudyCard() {
-      if (!this.checkButtonPermission('un_card_list')) {
-        return
-      }
-      this.$router.push({
-        name: 'SchoolStudyCardList',
-        params: {
-          schoolId: this.$store.getters.schoolId,
-          schoolName: this.schoolInfo.schoolName,
-          type: 0
         }
       })
     },

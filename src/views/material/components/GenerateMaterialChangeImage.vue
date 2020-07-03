@@ -124,14 +124,11 @@ export default {
       })
     },
     beforeUploadImage(file) {
-      if (file.type !== 'application/zip') {
-        this.$errorMsg('文件类型不正确')
-        return false
-      }
       if (file.name !== 'images.zip') {
         this.$errorMsg('文件名称只能为：images.zip')
         return false
       }
+      this.$message('文件正常上传，请稍后……')
       this.changeImageNameLoading = true
     },
     onUploadImageSuccess(response, file, fileList) {

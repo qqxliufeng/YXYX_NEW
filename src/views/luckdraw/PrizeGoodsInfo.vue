@@ -43,6 +43,14 @@
       >
         <el-table-column
           align="center"
+          label="序号"
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           label="奖品名称"
           prop="prizeName"
         />

@@ -235,14 +235,14 @@
               icon="el-icon-video-play"
               @click="playExampleAudio(tempWord)"
             >
-              <!-- <audio
-                id="dialog-audio-player"
-                :src="baseIp + tempWord.exampAudioAddr"
-              /> -->
               <audio
                 id="dialog-audio-player"
-                src="http://47.96.184.34/youcan//resources/book/1/egs/make.mp3"
+                :src="baseIp + tempWord.exampAudioAddr"
               />
+              <!-- <audio
+                id="dialog-audio-player"
+                src="http://47.96.184.34/youcan//resources/book/1/egs/make.mp3"
+              /> -->
               {{ tempWord.exampSentence }}
             </el-button>
           </el-col>

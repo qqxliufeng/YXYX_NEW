@@ -281,7 +281,7 @@ export default {
         this.$errorMsg('请输入学校名称')
         return
       }
-      postData.schoolTel = this.schoolModel.schoolTel
+      postData.schoolName = this.schoolModel.schoolName
       if (this.schoolModel.tempProvince.length === 0) {
         this.$errorMsg('请选择省市区')
         return
