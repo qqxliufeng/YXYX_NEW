@@ -116,7 +116,7 @@
             >
               <audio
                 :id="scope.row.audioAddr"
-                :src="baseIp + scope.row.audioAddr"
+                :src="baseImageIp + scope.row.audioAddr"
               />
             </el-button>
           </template>
@@ -191,7 +191,7 @@
             >
               <audio
                 :id="'dialog-' + tempWord.audioAddr"
-                :src="baseIp + tempWord.audioAddr"
+                :src="baseImageIp + tempWord.audioAddr"
               />
               {{ tempWord.wordSounds }}
             </el-button>
@@ -237,12 +237,8 @@
             >
               <audio
                 id="dialog-audio-player"
-                :src="baseIp + tempWord.exampAudioAddr"
+                :src="baseImageIp + tempWord.exampAudioAddr"
               />
-              <!-- <audio
-                id="dialog-audio-player"
-                src="http://47.96.184.34/youcan//resources/book/1/egs/make.mp3"
-              /> -->
               {{ tempWord.exampSentence }}
             </el-button>
           </el-col>
@@ -325,6 +321,19 @@
             </el-link>
           </el-col>
         </el-form-item>
+        <el-form-item
+          label="单词图片"
+          class="text-right"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <div class="text-right">
+              <el-image
+                :src="baseImageIp + tempWord.wordImageAddr"
+                style="width: 100px; height: 100px"
+              />
+            </div>
+          </el-col>
+        </el-form-item>
       </el-form>
       <div
         slot="footer"
@@ -343,14 +352,14 @@
 
 <script>
 import tableMixins from '../../mixins/table-mixins'
-import { baseIp } from '../../api/url-path'
+import { baseImageIp } from '../../api/url-path'
 import { Loading } from 'element-ui'
 export default {
   name: 'Words',
   mixins: [tableMixins],
   data() {
     return {
-      baseIp,
+      baseImageIp,
       materialId: '',
       materialList: [],
       formModelArray: [
@@ -420,6 +429,11 @@ export default {
         }
       }).then(res => {
         this.onSuccess(res.obj)
+        this.tableData.forEach(it => {
+          it.audioAddr = it.audioAddr.replace('/opt/nginx/yxvue/dist', '')
+          it.exampAudioAddr = it.exampAudioAddr.replace('/opt/nginx/yxvue/dist', '')
+          it.wordImageAddr = it.wordImageAddr.replace('/opt/nginx/yxvue/dist', '')
+        })
       })
     },
     playAudio(item) {
