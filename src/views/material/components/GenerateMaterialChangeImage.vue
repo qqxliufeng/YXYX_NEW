@@ -20,8 +20,7 @@
           size="mini"
           type="warning"
           :loading="changeImageNameLoading"
-          @click="changeImageName"
-        >更改名称</el-button>
+        >进行中</el-button>
         <el-link
           v-else
           size="mini"
@@ -30,14 +29,41 @@
         >已完成</el-link>
       </div>
       <div
-        v-if="currentStep > shouldStep"
+        v-if="currentStep === shouldStep"
+        style="text-align: center"
+      >
+        <el-upload
+          class="upload-wrapper"
+          drag
+          :action="uploadImageUrl"
+          :before-upload="beforeUploadImage"
+          :on-success="onUploadImageSuccess"
+          :on-change="onUploadImageChange"
+          :headers="headers"
+          :data="postData"
+          :http-request="changeImageName"
+          name="imageNameZipFile"
+        >
+          <i class="el-icon-upload" />
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div
+            slot="tip"
+            class="el-upload__tip"
+          >
+            <div>1、图片压缩包内的文件夹命名必须为：images.zip</div>
+            <div>2、文件名称不能包含中文</div>
+          </div>
+        </el-upload>
+      </div>
+      <div
+        v-else-if="currentStep > shouldStep"
         class="flex justify-center align-center flex-direction padding"
       >
         <i class="el-icon-success success-icon" />
         <div class="success-tip">图片名称更改成功</div>
       </div>
       <div
-        v-if="currentStep < shouldStep"
+        v-else
         class="flex justify-center align-center flex-direction padding"
       >
         <i class="el-icon-error error-icon" />
@@ -48,6 +74,10 @@
 </template>
 
 <script>
+import { baseIp } from '../../../api/url-path'
+import { getToken } from '../../../utils/auth'
+import { blobToFile } from '../../../api/common'
+import axios from 'axios'
 export default {
   name: 'GenerateMaterialChangeImage',
   props: {
@@ -62,38 +92,56 @@ export default {
   },
   data() {
     return {
-      changeImageNameLoading: false
+      changeImageNameLoading: false,
+      uploadImageUrl: baseIp + this.$urlPath.updateImageName,
+      headers: {
+        'Authorization': `Bearer ${getToken()}`
+      },
+      postData: {
+        textbookId: this.$route.params.textbookId
+      },
+      zipFormData: new FormData()
     }
   },
   methods: {
-    changeImageName() {
-      this.$confirm(`<ul>
-                    <li>操作之前，请确保备份图片资源</li>
-                    <li>请使用Windows操作系统，不支持其它操作系统</li>
-                    <li>图片格式只能为jpg/jpeg</li>
-                    <li>请将图片保存在<strong style="color: red">D://books/images/${this.$route.params.textbookId}</strong>目录下面</li>
-                    <li>此操作后期不可更改撤改，请谨慎操作</li>
-                    </ul>`, '重要提示', {
-        dangerouslyUseHTMLString: true,
-        cancelButtonText: '再想想',
-        confirmButtonText: '确定更改'
-      }).then(_ => {
-        this.changeImageNameLoading = true
-        this.$http({
-          url: this.$urlPath.updateImageName,
-          methods: this.HTTP_GET,
-          data: {
-            textbookId: this.$route.params.textbookId
-          }
-        }).then(res => {
-          this.changeImageNameLoading = false
+    changeImageName(content) {
+      this.zipFormData.append('textbookId', this.$route.params.textbookId)
+      axios.post(this.uploadImageUrl, this.zipFormData, {
+        headers: this.headers,
+        responseType: `blob`
+      }).then(res => {
+        this.changeImageNameLoading = false
+        if (res.status === 200) {
+          this.$successMsg('文件上传成功，正在下载新的压缩文件……')
           this.$emit('changeImageSuccess')
-        }).catch(_ => {
-          this.changeImageNameLoading = false
-        })
+          blobToFile(res.data, 'changed-image')
+        } else {
+          this.$errorMsg('文件上传失败')
+        }
       }).catch(_ => {
-        console.log('error了')
+        this.changeImageNameLoading = false
+        this.$errorMsg('文件上传失败')
       })
+    },
+    beforeUploadImage(file) {
+      if (file.type !== 'application/zip') {
+        this.$errorMsg('文件类型不正确')
+        return false
+      }
+      if (file.name !== 'images.zip') {
+        this.$errorMsg('文件名称只能为：images.zip')
+        return false
+      }
+      this.changeImageNameLoading = true
+    },
+    onUploadImageSuccess(response, file, fileList) {
+      this.changeImageNameLoading = false
+      this.$emit('changeImageSuccess')
+      this.$successMsg('文件上传成功，更改名称后自动下载新的压缩文件')
+      blobToFile(response, 'changed-image')
+    },
+    onUploadImageChange(file, fileList) {
+      this.zipFormData.append('imageNameZipFile', file.raw)
     }
   }
 }

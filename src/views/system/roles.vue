@@ -217,7 +217,8 @@ export default {
           deptId: ''
         }
       },
-      tempItem: null
+      tempItem: null,
+      pageSize: 20
     }
   },
   mounted() {
