@@ -35,9 +35,12 @@
       >
         <el-table-column
           align="center"
-          label="ID"
-          prop="classId"
-        />
+          label="序号"
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="班级名称"
@@ -313,10 +316,9 @@ export default {
         methods: this.HTTP_GET,
         data: {
           pageNum: this.page,
-          pageSize: this.pageSize
-        },
-        withRoleId: false,
-        withUserId: false
+          pageSize: this.pageSize,
+          schoolId: this.$store.getters.schoolId
+        }
       }).then(res => {
         this.onSuccess(res.obj)
       })

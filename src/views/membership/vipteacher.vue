@@ -35,10 +35,13 @@
       >
         <el-table-column
           align="center"
-          label="ID"
-          prop="userId"
+          label="序号"
           fixed="left"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="老师姓名"

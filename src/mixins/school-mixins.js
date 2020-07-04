@@ -7,6 +7,7 @@
  * @FilePath: /YXYX_NEW/src/mixins/school-mixins.js
  */
 import { Loading } from 'element-ui'
+import { isArray } from '@/utils/validate'
 export default {
   data() {
     return {
@@ -135,7 +136,10 @@ export default {
     getClassList(callback) {
       this.enginData(this.$urlPath.querySchoolClass, 'classList', 100, callback)
     },
-    enginData(url, dataName, pageSize = 100, callback) {
+    getClassListBySchoolId(callback, schoolId) {
+      this.enginData(this.$urlPath.querySchoolClassBySchool, 'classList', 100, callback, schoolId)
+    },
+    enginData(url, dataName, pageSize = 100, callback, schoolId = this.$store.getters.schoolId) {
       const loadingInstance = Loading.service({
         target: document.getElementsByClassName('container')[0]
       })
@@ -145,13 +149,17 @@ export default {
         data: {
           pageNum: 0,
           pageSize,
-          schoolId: this.$store.getters.schoolId
+          schoolId
         }
       }).then(res => {
         this.$nextTick(_ => {
           loadingInstance.close()
         })
-        this[dataName] = res.obj.list
+        if (isArray(res.obj)) {
+          this[dataName] = res.obj
+        } else {
+          this[dataName] = res.obj.list
+        }
         if (callback) {
           callback()
         }

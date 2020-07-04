@@ -35,10 +35,13 @@
       >
         <el-table-column
           align="center"
-          label="ID"
-          prop="studentId"
+          label="序号"
           fixed="left"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="学生姓名"
@@ -354,14 +357,6 @@ export default {
           name: 'studentPhone',
           span: 5,
           type: 'input'
-        },
-        {
-          id: 6,
-          value: '',
-          label: '老师姓名',
-          name: 'teacherName',
-          span: 5,
-          type: 'input'
         }
       ],
       dialogFormVisible: false,
@@ -378,7 +373,28 @@ export default {
         status: 0 // 状态，0正常 1禁用
       },
       dialogTableVisible: false,
-      textbookList: []
+      textbookList: [],
+      tempWacherItem: {}
+    }
+  },
+  watch: {
+    'tempWacherItem.value'(newVal, oldVal) {
+      if (newVal) {
+        this.getClassListBySchoolId(_ => {
+          if (this.classList && this.classList.length > 0) {
+            this.formModelArray[1].selectOptions = this.classList.map(it => {
+              return {
+                label: it.className,
+                value: it.classId
+              }
+            })
+          }
+        }, newVal)
+      } else {
+        this.classList = []
+        this.formModelArray[1].selectOptions = []
+        this.formModelArray[1].value = ''
+      }
     }
   },
   mounted() {
@@ -391,16 +407,7 @@ export default {
             value: it.schoolId
           }
         })
-      }
-    })
-    this.getClassList(_ => {
-      if (this.classList && this.classList.length > 0) {
-        this.formModelArray[1].selectOptions = this.classList.map(it => {
-          return {
-            label: it.className,
-            value: it.classId
-          }
-        })
+        this.tempWacherItem = this.formModelArray[0]
       }
     })
   },
@@ -420,10 +427,9 @@ export default {
         methods: this.HTTP_GET,
         data: {
           pageNum: this.page,
-          pageSize: this.pageSize
-        },
-        withRoleId: true,
-        withUserId: false
+          pageSize: this.pageSize,
+          schoolId: this.$store.getters.schoolId
+        }
       })
         .then(res => {
           this.onSuccess(res.obj)

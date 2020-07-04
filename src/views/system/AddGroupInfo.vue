@@ -165,8 +165,10 @@
 
 <script>
 import { isvalidPhone } from '../../utils/validate'
+import userMixins from '../../mixins/user-mixins'
 export default {
   name: 'AddGroupInfo',
+  mixins: [userMixins],
   data() {
     return {
       deptList: [],

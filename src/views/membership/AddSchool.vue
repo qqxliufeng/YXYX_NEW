@@ -111,20 +111,6 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <!-- <baidu-map
-          class="map-wrapper"
-          :center="center"
-          :zoom="16"
-          ak="oW2UEhdth2tRbEE4FUpF9E5YVDCIPYih"
-        >
-          <bm-local-search
-            :keyword="addressKeyword"
-            :auto-viewport="false"
-            :location="center"
-            :panel="false"
-            @searchcomplete="searchComplete"
-          />
-        </baidu-map> -->
       </el-form>
     </el-card>
     <el-card style="margin-top: 10px">
@@ -210,6 +196,7 @@
         >保存</el-button>
       </div>
     </el-card>
+
   </div>
 </template>
 
@@ -217,14 +204,10 @@
 import schoolMixins from '../../mixins/school-mixins'
 import AddStudyCardToSchool from './components/AddStudyCardToSchool'
 import { Loading } from 'element-ui'
-// import BaiduMap from 'vue-baidu-map/components/map/Map'
-// import BmLocalSearch from 'vue-baidu-map/components/search/LocalSearch'
 export default {
   name: 'AddSchool',
   components: {
     AddStudyCardToSchool
-    // BaiduMap,
-    // BmLocalSearch
   },
   mixins: [schoolMixins],
   data() {

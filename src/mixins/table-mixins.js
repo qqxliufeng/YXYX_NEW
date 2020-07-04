@@ -229,7 +229,9 @@ export default {
     likeSearch() {
       this.loading = true
       const form = this.generatorFormObj(this.formModelArray)
-      form.schoolId = this.$store.getters.schoolId || ''
+      if (!form.hasOwnProperty('schoolId') || !form.schoolId) {
+        form.schoolId = this.$store.getters.schoolId || ''
+      }
       this.$http({
         url: this.likeSearchUrl,
         methods: this.HTTP_GET,

@@ -190,6 +190,8 @@ export const initPassword = baseModuleUrl + 'initPassword'
 
 export const querySchoolClass = baseModuleUrl + 'querySchoolClass'
 
+export const querySchoolClassBySchool = baseModuleUrl + 'querySchoolClassBySchool'
+
 export const querySchoolClassLike = baseModuleUrl + 'querySchoolClassLike'
 
 export const saveSchoolClass = baseModuleUrl + 'saveSchoolClass'
