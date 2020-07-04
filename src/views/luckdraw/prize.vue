@@ -25,10 +25,13 @@
       >
         <el-table-column
           align="center"
-          label="ID"
-          prop="prizeId"
+          label="序号"
           fixed="left"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="prizeTitle"

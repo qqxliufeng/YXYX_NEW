@@ -77,15 +77,18 @@
               <el-input
                 v-model="item.address"
                 placeholder="请输入详细地址（必填）"
+                readonly
               />
-              <!-- <el-autocomplete
-                v-model="item.address"
-                style="width: 100%"
-                :fetch-suggestions="querySearchAsync"
-                placeholder="请输入内容"
-                @focus="onAddressFocus(item)"
-                @select="handleAddressSelect"
-              /> -->
+            </el-col>
+            <el-col
+              :span="3"
+              class="text-center"
+            >
+              <el-button
+                size="mini"
+                type="primary"
+                @click="selectAddress"
+              >选择地址</el-button>
             </el-col>
             <el-col
               v-if="item.canAdd"
@@ -94,7 +97,7 @@
             >
               <el-button
                 size="mini"
-                type="primary"
+                type="warning"
                 @click="addAddress"
               >添加</el-button>
             </el-col>
@@ -176,10 +179,13 @@
         </el-form-item>
       </el-form>
     </el-card>
-
     <add-study-card-to-school
       v-if="schoolModel.isOnLine === 1"
       ref="studyCardParams"
+    />
+    <select-school-address
+      :show-address-dialog="showAddressDialog"
+      @cancel-dialog="cancelDialog"
     />
     <el-card
       body-style="padding: 0"
@@ -196,27 +202,25 @@
         >保存</el-button>
       </div>
     </el-card>
-
   </div>
 </template>
 
 <script>
 import schoolMixins from '../../mixins/school-mixins'
 import AddStudyCardToSchool from './components/AddStudyCardToSchool'
+import SelectSchoolAddress from './components/SelectSchoolAddress'
 import { Loading } from 'element-ui'
 export default {
   name: 'AddSchool',
   components: {
-    AddStudyCardToSchool
+    AddStudyCardToSchool,
+    SelectSchoolAddress
   },
   mixins: [schoolMixins],
   data() {
     return {
       level: this.$privinceData,
-      center: '济南',
-      addressKeyword: '',
-      tempSearchResult: [],
-      tempAddressModel: {},
+      showAddressDialog: false,
       tempAddressCallBack: null,
       schoolModel: {
         schoolName: '', //        学校名称
@@ -338,30 +342,8 @@ export default {
         })
       })
     },
-    searchComplete(result) {
-      if (result) {
-        console.log(result)
-        this.tempSearchResult = result.Ir.map(it => {
-          return {
-            value: it.title,
-            address: it.address,
-            point: it.point
-          }
-        })
-        if (this.tempAddressCallBack) {
-          this.tempAddressCallBack(this.tempSearchResult)
-        }
-      }
-    },
-    querySearchAsync(qs, cb) {
-      this.addressKeyword = qs
-      this.tempAddressCallBack = cb
-    },
-    handleAddressSelect(item) {
-      console.log(item)
-    },
-    onAddressFocus(item) {
-      this.tempAddressModel = item
+    selectAddress() {
+      this.showAddressDialog = true
     },
     addAddress() {
       this.schoolModel.addressDetailList.push({
@@ -376,6 +358,9 @@ export default {
         return
       }
       this.schoolModel.addressDetailList.splice(this.schoolModel.addressDetailList.indexOf(addressItem), 1)
+    },
+    cancelDialog() {
+      this.showAddressDialog = false
     }
   }
 }

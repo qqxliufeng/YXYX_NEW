@@ -29,9 +29,12 @@
         />
         <el-table-column
           align="center"
-          label="ID"
-          prop="deptId"
-        />
+          label="序号"
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="deptName"
