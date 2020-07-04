@@ -116,13 +116,13 @@
         <el-table-column
           align="center"
           label="操作"
-          width="300"
+          width="200"
           fixed="right"
         >
           <template slot-scope="scope">
             <!-- 只有在已激活或者已过期的情况下才能修改到期时间 -->
             <el-button
-              v-if="scope.row.status === 3 || scope.row.status === 4 || scope.row.isBind === 1"
+              v-if="scope.row.status === 3 || scope.row.status === 4"
               type="primary"
               :size="$style.tableButtonSize"
               @click="addEndTime(scope.row)"

@@ -10,13 +10,13 @@
         class="flex justify-between"
       >
         <el-link :underline="false">奖品信息</el-link>
-        <div class="flex-sub" />
-        <el-button
+        <el-link
           v-if="editMode"
-          type="warning"
-          size="mini"
-          @click="addGoodsInfo"
-        >添加奖品信息</el-button>
+          :underline="false"
+          style="margin-left: 10px"
+          type="danger"
+        >以下奖信息为系统默认信息，请修改信息后再进行提交</el-link>
+        <div class="flex-sub" />
         <el-button
           v-if="editMode"
           type="primary"
@@ -98,18 +98,13 @@
               :size="$style.tableButtonSize"
               @click="handlerUpdate(scope.row, scope.$index)"
             >编辑</el-button>
-            <el-button
-              type="danger"
-              :size="$style.tableButtonSize"
-              @click="deleteItem(scope.row, scope.$index)"
-            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
     <!--添加修改抽奖对话框-->
     <el-dialog
-      :title="mode === 'add' ? '添加奖品信息' : '编辑奖品信息'"
+      title="编辑奖品信息"
       :visible.sync="dialogFormVisible"
     >
       <el-form
@@ -119,7 +114,7 @@
         <el-form-item label="奖品名称">
           <el-col :span="$style.dialogColSpan">
             <el-select
-              v-model="tempSelectValue"
+              v-model="goodsModel.value"
               class="filter-item"
               style="width: 100%"
               placeholder="请选择奖品"
@@ -271,24 +266,21 @@ export default {
         }
       ],
       goodsModel: {
+        value: '',
         prizeName: '', // 奖品名称
         prizeImage: '', // 奖品图片地址
         prizeCount: '', // 奖品数量
         winweight: 10, // 中奖概率
         prizeNote: ''// 奖品说明
       },
-      tempSelectValue: '',
       tempSelectGoods: null,
-      tempSelectIndex: -1,
       editMode: false
     }
   },
   watch: {
-    tempSelectValue(newVal, oldVal) {
+    'goodsModel.value'(newVal, oldVal) {
       if (newVal) {
-        this.tempSelectGoods = this.goodsList.find(it => it.value === newVal)
-      } else {
-        this.tempSelectGoods = null
+        this.goodsModel.prizeNote = this.goodsList.find(it => it.value === Number(newVal)).label
       }
     }
   },
@@ -299,26 +291,10 @@ export default {
     getWeight(item) {
       return item.winweight < 1 ? item.winweight * 100 : item.winweight
     },
-    addGoodsInfo() {
-      if (this.tableData.length === 8) {
-        this.$errorMsg('只能添加 8 个奖品')
-        return
-      }
-      this.mode = 'add'
-      this.dialogFormVisible = true
-      this.goodsModel = {
-        prizeName: '', // 奖品名称
-        prizeImage: '', // 奖品图片地址
-        prizeCount: '', // 奖品数量
-        winweight: 10, // 中奖概率
-        prizeNote: ''// 奖品说明
-      }
-    },
     handlerUpdate(item, index) {
-      this.tempSelectIndex = index
-      this.mode = 'edit'
+      this.tempSelectGoods = item
       this.dialogFormVisible = true
-      this.tempSelectValue = item.value
+      this.goodsModel.value = item.value
       this.goodsModel.prizeName = item.prizeName // 奖品名称
       this.goodsModel.prizeImage = item.prizeImage // 奖品图片地址
       this.goodsModel.prizeCount = item.prizeCount // 奖品数量
@@ -366,46 +342,27 @@ export default {
       })
     },
     handleDialogConfirm() {
-      if (!this.tempSelectGoods) {
-        this.$errorMsg('请选择奖品')
-        return
-      }
       if (!this.goodsModel.prizeNote) {
         this.$errorMsg('请输入奖品说明')
         return
       }
-      if (this.mode === 'add') {
-        this.tableData.push({
-          prizeName: this.tempSelectGoods.label,
-          value: this.tempSelectGoods.value,
-          prizeImage: `${baseImageIp}/prizeImages/${this.tempSelectGoods.value}.jpg`,
-          prizeCount: this.goodsModel.prizeCount,
-          winweight: this.goodsModel.winweight,
-          prizeNote: this.goodsModel.prizeNote
-        })
-      } else {
-        const item = this.tableData[this.tempSelectIndex]
-        item.prizeName = this.tempSelectGoods.label
-        item.value = this.tempSelectGoods.value
-        item.prizeImage = `${baseImageIp}/prizeImages/${this.tempSelectGoods.value}.jpg`
-        item.prizeCount = this.goodsModel.prizeCount
-        item.winweight = this.goodsModel.winweight
-        item.prizeNote = this.goodsModel.prizeNote
-      }
+      const tempModel = this.goodsList.find(it => it.value === this.goodsModel.value)
+      this.tempSelectGoods.prizeName = tempModel.label
+      this.tempSelectGoods.value = this.goodsModel.value
+      this.tempSelectGoods.prizeImage = `${baseImageIp}/prizeImages/${this.goodsModel.value}.jpg`
+      this.tempSelectGoods.prizeCount = this.goodsModel.prizeCount
+      this.tempSelectGoods.winweight = this.goodsModel.winweight
+      this.tempSelectGoods.prizeNote = this.goodsModel.prizeNote
       // 重置数据
       this.dialogFormVisible = false
-      this.tempSelectIndex = -1
-      this.tempSelectValue = ''
       this.goodsModel = {
+        value: '',
         prizeName: '', // 奖品名称
         prizeImage: '', // 奖品图片地址
         prizeCount: '', // 奖品数量
         winweight: '', // 中奖概率
         prizeNote: ''// 奖品说明
       }
-    },
-    deleteItem(item, index) {
-      this.tableData.splice(index, 1)
     },
     getData() {
       this.$http({
@@ -418,6 +375,19 @@ export default {
         this.loading = false
         this.tableData = res.obj
         this.editMode = this.tableData.length === 0
+        if (this.editMode) {
+          [1, 2, 3, 4, 5, 6, 7, 8].forEach(it => {
+            this.tableData.push({
+              value: 1,
+              prizeName: '优币', // 奖品名称
+              prizeImage: `${baseImageIp}/prizeImages/1.jpg`, // 奖品图片地址
+              prizeCount: 1, // 奖品数量
+              winweight: 10, // 中奖概率
+              prizeNote: '优币'// 奖品说明
+            })
+          })
+          this.tableData[7].winweight = 30
+        }
       })
     }
   }
