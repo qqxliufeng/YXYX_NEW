@@ -221,18 +221,24 @@ export default {
         this.$errorMsg('请输入详细地址')
         return
       }
-      this.$showLoading(closeLoading => {
-        this.$http({
-          url: this.$urlPath.saveUser,
-          methods: this.HTTP_POST,
-          data: this.baseInfo
-        }).then(res => {
-          this.$successMsg(res.msg)
-          this.$closeCurrentView()
-          closeLoading()
-        }).catch(_ => {
-          closeLoading()
-        })
+      this.checkPhoneIsExist(this.baseInfo.phone, res => {
+        if (res.obj === 1) { // 手机号已经存在
+          this.$errorMsg('该手机号已经存在')
+        } else {
+          this.$showLoading(closeLoading => {
+            this.$http({
+              url: this.$urlPath.saveUser,
+              methods: this.HTTP_POST,
+              data: this.baseInfo
+            }).then(res => {
+              this.$successMsg(res.msg)
+              this.$closeCurrentView()
+              closeLoading()
+            }).catch(_ => {
+              closeLoading()
+            })
+          })
+        }
       })
     },
     queryRoleByDeptId() {

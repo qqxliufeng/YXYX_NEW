@@ -309,7 +309,8 @@ export default {
         methods: this.HTTP_GET,
         data: {
           pageNum: this.page,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          schoolId: this.$store.getters.schoolId
         }
       }).then(res => {
         this.onSuccess(res.obj)

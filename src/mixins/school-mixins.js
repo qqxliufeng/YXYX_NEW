@@ -144,7 +144,8 @@ export default {
         methods: this.HTTP_GET,
         data: {
           pageNum: 0,
-          pageSize
+          pageSize,
+          schoolId: this.$store.getters.schoolId
         }
       }).then(res => {
         this.$nextTick(_ => {

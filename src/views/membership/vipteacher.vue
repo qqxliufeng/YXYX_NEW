@@ -47,15 +47,6 @@
         />
         <el-table-column
           align="center"
-          label="老师昵称"
-          prop="userNickName"
-        >
-          <template slot-scope="scope">
-            <div>{{ scope.row.userNickName || '暂无' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
           label="手机号码"
           prop="phone"
           width="120"
@@ -64,7 +55,7 @@
           align="center"
           prop="roles[0].roleName"
           label="老师角色"
-          show-overflow-tooltip
+          width="100"
         />
         <el-table-column
           align="center"
@@ -153,6 +144,7 @@
               @click="hanlderUpdate(scope.row)"
             >编辑</el-button>
             <el-dropdown
+              v-if="$store.getters.roleId !== 12"
               style="display: inline-block; margin-left: 10px"
               :size="$style.tableButtonSize"
               type="success"
@@ -165,6 +157,12 @@
                 <el-dropdown-item :command="{tag: 2, item: scope.row}">分配按钮</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
+            <el-button
+              v-else
+              :size="$style.tableButtonSize"
+              type="success"
+              @click="initPassword(scope.row)"
+            >重置密码</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -261,7 +259,7 @@
           <el-col :span="$style.dialogColSpan">
             <el-radio-group
               v-model="teacherModel.isSchoolLeader"
-              :disabled="selectTeacherId === 12"
+              disabled
             >
               <el-radio :label="0">否</el-radio>
               <el-radio :label="1">是</el-radio>
@@ -322,9 +320,10 @@
 import tableMixins from '../../mixins/table-mixins'
 import { isvalidPhone } from '../../utils/validate'
 import schoolMixins from '../../mixins/school-mixins'
+import userMixins from '../../mixins/user-mixins'
 export default {
   name: 'VIPTeacher',
-  mixins: [tableMixins, schoolMixins],
+  mixins: [tableMixins, schoolMixins, userMixins],
   data() {
     return {
       schoolList: [],
@@ -419,9 +418,9 @@ export default {
         methods: this.HTTP_GET,
         data: {
           pageNum: this.page,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          schoolId: this.$store.getters.schoolId
         },
-        withRoleId: false,
         withUserId: false
       })
         .then(res => {
@@ -493,22 +492,29 @@ export default {
         this.$errorMsg('请输入老师家庭地址')
         return
       }
-      this.dialogFormVisible = false
       if (this.mode === 'add') {
-        this.$http({
-          url: this.$urlPath.saveTeacher,
-          data: this.teacherModel,
-          withRoleId: false,
-          withUserId: false
-        }).then(res => {
-          this.$successMsg('添加成功')
-          this.getData()
+        this.checkPhoneIsExist(this.teacherModel.phone, res => {
+          if (res.obj === 1) { // 手机号已经存在
+            this.$errorMsg('该手机号已经存在')
+          } else {
+            this.$http({
+              url: this.$urlPath.saveTeacher,
+              data: this.teacherModel,
+              withRoleId: false,
+              withUserId: false
+            }).then(res => {
+              this.dialogFormVisible = false
+              this.$successMsg('添加成功')
+              this.getData()
+            })
+          }
         })
       } else {
         this.$http({
           url: this.$urlPath.updateTeacher,
           data: this.teacherModel
         }).then(res => {
+          this.dialogFormVisible = false
           this.$successMsg('修改成功')
           this.getData()
         })
@@ -517,20 +523,17 @@ export default {
     handleTeacherCommand({ tag, item }) {
       switch (tag) {
         case 1:
-          if (!this.checkButtonPermission('reset_pwd')) {
-            return
-          }
           this.initPassword(item)
           break
         case 2:
-          if (!this.checkButtonPermission('dis_teacher_btn')) {
-            return
-          }
           this.grantMenuButton(item)
           break
       }
     },
     initPassword(item) {
+      if (!this.checkButtonPermission('reset_pwd')) {
+        return
+      }
       this.$warningConfirm('是否要重新设置密码为手机号后六位？', _ => {
         this.$http({
           url: this.$urlPath.initPassword,
@@ -544,6 +547,9 @@ export default {
       })
     },
     grantMenuButton(item) {
+      if (!this.checkButtonPermission('dis_teacher_btn')) {
+        return
+      }
       this.$router.push({
         name: 'GrantMenuButton',
         params: {

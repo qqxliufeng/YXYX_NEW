@@ -9,9 +9,9 @@
 
 export const baseImageIp = 'http://118.190.3.78'
 
-// export const baseIp = 'http://192.168.0.123:8880'
+export const baseIp = 'http://192.168.0.123:8880'
 
-export const baseIp = 'http://118.190.3.78:8881'
+// export const baseIp = 'http://118.190.3.78:8881'
 
 /**
  * 基础模块名字
@@ -33,6 +33,8 @@ export const deleteUsers = baseModuleUrl + 'deleteUsers'
 export const editPassword = baseModuleUrl + 'editPassword'
 
 export const queryRolesByDeptId = baseModuleUrl + 'queryRolesByDeptId'
+
+export const queryUserPhoneIsExit = baseModuleUrl + 'queryUserPhoneIsExit'
 
 // ****************系统管理 --- 用户管理 **************** //
 
