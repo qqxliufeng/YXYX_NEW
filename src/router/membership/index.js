@@ -31,6 +31,14 @@ export default [
         }
       },
       {
+        path: '/offlineschooltextbook/:schoolId',
+        component: () => import('@/views/membership/OffLineSchoolTextBook.vue'),
+        name: 'OffLineSchoolTextBook',
+        meta: {
+          title: '线下学校教材信息'
+        }
+      },
+      {
         path: '/schoolstudycardlist/:schoolId/:schoolName/:type',
         component: () => import('@/views/membership/SchoolStudyCardList.vue'),
         name: 'SchoolStudyCardList',

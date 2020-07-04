@@ -160,6 +160,8 @@ export const queryStudyCardNotBind = baseModuleUrl + 'queryStudyCardNotBind'
 
 export const queryTextBookOfflineSchool = baseModuleUrl + 'queryTextBookOfflineSchool'
 
+export const querySchoolAndTextBook = baseModuleUrl + 'querySchoolAndTextBook'
+
 export const grantTextBooksToSchool = baseModuleUrl + 'grantTextBooksToSchool'
 
 // ****************会员管理 --- 学校管理 **************** //

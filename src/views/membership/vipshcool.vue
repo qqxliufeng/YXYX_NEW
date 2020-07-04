@@ -87,8 +87,7 @@
         <el-table-column
           align="center"
           label="地区"
-          min-width="150"
-          show-overflow-tooltip
+          min-width="200"
         >
           <template slot-scope="scope">
             <span class="text-cut">{{
@@ -173,8 +172,18 @@
             >
               更多
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{ tag: 1, item: scope.row }">已分配的学习卡</el-dropdown-item>
-                <el-dropdown-item :command="{ tag: 2, item: scope.row }">未分配的学习卡</el-dropdown-item>
+                <el-dropdown-item
+                  v-if="scope.row.isOnLine === 1"
+                  :command="{ tag: 1, item: scope.row }"
+                >已分配的学习卡</el-dropdown-item>
+                <el-dropdown-item
+                  v-if="scope.row.isOnLine === 1"
+                  :command="{ tag: 2, item: scope.row }"
+                >未分配的学习卡</el-dropdown-item>
+                <el-dropdown-item
+                  v-if="scope.row.isOnLine === 0"
+                  :command="{ tag: 5, item: scope.row }"
+                >已分配的教材</el-dropdown-item>
                 <el-dropdown-item :command="{ tag: 3, item: scope.row }">查询服务记录</el-dropdown-item>
                 <el-dropdown-item :command="{ tag: 4, item: scope.row }">增加服务记录</el-dropdown-item>
               </el-dropdown-menu>
@@ -242,22 +251,6 @@ export default {
           span: 5,
           type: 'input'
         },
-        // {
-        //   id: 2,
-        //   value: '',
-        //   label: '负责人姓名',
-        //   name: 'schoolLeaderName',
-        //   span: 5,
-        //   type: 'input'
-        // },
-        // {
-        //   id: 3,
-        //   value: '',
-        //   label: '负责人联系方式',
-        //   name: 'schoolTel',
-        //   span: 5,
-        //   type: 'input'
-        // },
         {
           id: 4,
           value: '',
@@ -269,7 +262,7 @@ export default {
         {
           id: 5,
           value: [],
-          label: '省 /市/区',
+          label: '省/市/区',
           name: ['province', 'city', 'area'],
           span: 5,
           type: 'address'
@@ -376,6 +369,17 @@ export default {
           }
           this.recordModel.schoolId = item.schoolId
           this.dialogAddRecordVisible = true
+          break
+        case 5:
+          if (!this.checkButtonPermission('search_material')) {
+            return
+          }
+          this.$router.push({
+            name: 'OffLineSchoolTextBook',
+            params: {
+              schoolId: item.schoolId
+            }
+          })
           break
       }
     },

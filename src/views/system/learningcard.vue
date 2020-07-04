@@ -53,7 +53,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <div>{{ scope.row.cardType + '-' + scope.row.cardCode }}</div>
+            <div>{{ scope.row.cardType + scope.row.cardCode }}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -73,7 +73,8 @@
         <el-table-column
           align="center"
           prop="validityMonth"
-          label="有效期"
+          label="初始有效期"
+          width="100"
         >
           <template slot-scope="scope">
             <span>{{ scope.row.validityMonth + "个月" }}</span>
@@ -115,17 +116,17 @@
         <el-table-column
           align="center"
           label="操作"
-          min-width="200"
+          width="300"
           fixed="right"
         >
           <template slot-scope="scope">
             <!-- 只有在已激活或者已过期的情况下才能修改到期时间 -->
             <el-button
-              v-if="scope.row.status === 3 || scope.row.status === 4"
+              v-if="scope.row.status === 3 || scope.row.status === 4 || scope.row.isBind === 1"
               type="primary"
               :size="$style.tableButtonSize"
               @click="addEndTime(scope.row)"
-            >延期时间</el-button>
+            >延长时间</el-button>
             <!-- 只有在未激活的情况下才能编辑分配教材的 -->
             <el-button
               v-if="scope.row.status <= 2"

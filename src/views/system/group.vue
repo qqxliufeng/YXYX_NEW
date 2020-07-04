@@ -51,7 +51,11 @@
           align="center"
           prop="username"
           label="用户名"
-          width
+        />
+        <el-table-column
+          align="center"
+          prop="userNickName"
+          label="用户昵称"
         />
         <el-table-column
           align="center"
@@ -66,26 +70,6 @@
           width="100"
           show-overflow-tooltip
         />
-        <el-table-column
-          align="center"
-          prop="isSchoolLeader"
-          label="是否校长"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <table-status :status="{label: scope.row.isSchoolLeader === 1 ? '是' : '否', type: scope.row.isSchoolLeader === 1 ? 'primary' : 'danger'}" />
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="isSalesLeader"
-          label="是否主管"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <table-status :status="{label: scope.row.isSchoolLeader === 1 ? '是' : '否', type: scope.row.isSchoolLeader === 1 ? 'primary' : 'danger'}" />
-          </template>
-        </el-table-column>
         <el-table-column
           align="center"
           label="状态"
@@ -109,7 +93,6 @@
               @click="handleUpdate(scope.row)"
             >编辑</el-button>
             <el-button
-              :disabled="scope.row.roleId === 1"
               type="success"
               :size="$style.tableButtonSize"
               @click="grantMenuButton(scope.row)"
@@ -164,22 +147,6 @@
                 :value="item.roleId"
               />
             </el-select>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="是否校长">
-          <el-col :span="$style.dialogColSpan">
-            <el-radio-group v-model="tempItem.isSchoolLeader">
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0">否</el-radio>
-            </el-radio-group>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="是否主管">
-          <el-col :span="$style.dialogColSpan">
-            <el-radio-group v-model="tempItem.isSalesLeader">
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0">否</el-radio>
-            </el-radio-group>
           </el-col>
         </el-form-item>
         <el-form-item label="真实姓名">
@@ -351,8 +318,6 @@ export default {
       tempItem: {
         deptId: 0,
         roleId: '',
-        isSchoolLeader: 0, // 是否校长 0否 1是
-        isSalesLeader: 0, // 是否主管 0否 1是
         userName: '', //      用户真实姓名
         userNickName: '', //    用户昵称
         schoolId: '', //    所属学校ID
@@ -415,8 +380,6 @@ export default {
         userId: item.userId,
         deptId: item.deptId,
         roleId: item.roleId,
-        isSchoolLeader: item.isSchoolLeader,
-        isSalesLeader: item.isSalesLeader,
         userName: item.username,
         userNickName: item.userNickName,
         schoolId: item.schoolId,

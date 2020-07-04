@@ -20,6 +20,7 @@
           label="序号"
           prop="userId"
           fixed="left"
+          width="100"
         >
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
@@ -46,7 +47,7 @@
         <el-table-column
           align="center"
           prop="endTime"
-          label="耗时"
+          label="操作耗时"
           width="160"
         >
           <template slot-scope="scope">

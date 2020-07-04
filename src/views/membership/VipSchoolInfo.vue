@@ -103,6 +103,15 @@
         <div class="button-wrapper">
           <div class="button-item">
             <el-button
+              v-if="schoolInfo.isOnLine === 0"
+              type="warning"
+              size="small"
+              @click="grantedMaterial"
+            >
+              查看分配教材
+            </el-button>
+            <el-button
+              v-else
               type="warning"
               size="small"
               @click="grantedStudyCard"
@@ -196,7 +205,17 @@ export default {
         }
       })
     },
-    addServiceRecord() { },
+    grantedMaterial() {
+      if (!this.checkButtonPermission('search_material')) {
+        return
+      }
+      this.$router.push({
+        name: 'OffLineSchoolTextBook',
+        params: {
+          schoolId: this.$store.getters.schoolId
+        }
+      })
+    },
     checkButtonPermission(btnCode) {
       if (!btnCode) {
         this.$errorMsg('按钮编码不能为空')

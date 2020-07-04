@@ -51,22 +51,6 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="是否校长">
-          <el-col :span="10">
-            <el-radio-group v-model="baseInfo.isSchoolLeader">
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0">否</el-radio>
-            </el-radio-group>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="是否主管">
-          <el-col :span="10">
-            <el-radio-group v-model="baseInfo.isSalesLeader">
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0">否</el-radio>
-            </el-radio-group>
-          </el-col>
-        </el-form-item>
       </el-form>
     </el-card>
     <el-card style="margin-top: 10px">
@@ -190,8 +174,6 @@ export default {
       baseInfo: {
         deptId: 0,
         roleId: '',
-        isSchoolLeader: 0, // 是否校长 0否 1是
-        isSalesLeader: 0, // 是否主管 0否 1是
         userName: '', //      用户真实姓名
         userNickName: '', //    用户昵称
         schoolId: 1, //    所属学校ID
