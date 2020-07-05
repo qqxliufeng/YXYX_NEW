@@ -73,22 +73,13 @@
             :key="item.id"
             style="margin-bottom: 10px"
           >
-            <el-col :span="7">
+            <el-col :span="10">
               <el-input
                 v-model="item.address"
                 placeholder="请输入详细地址（必填）"
                 readonly
+                @focus="onAddressFocus(item)"
               />
-            </el-col>
-            <el-col
-              :span="3"
-              class="text-center"
-            >
-              <el-button
-                size="mini"
-                type="primary"
-                @click="selectAddress"
-              >选择地址</el-button>
             </el-col>
             <el-col
               v-if="item.canAdd"
@@ -185,6 +176,9 @@
     />
     <select-school-address
       :show-address-dialog="showAddressDialog"
+      :address="tempAddressInfo"
+      :location="location"
+      @on-select-address="onSelectedAddress"
       @cancel-dialog="cancelDialog"
     />
     <el-card
@@ -235,6 +229,7 @@ export default {
           {
             id: new Date().getTime(),
             address: '',
+            point: null,
             canAdd: true,
             canDelete: false
           }
@@ -243,12 +238,27 @@ export default {
         salesId: '', //           销售顾问ID
         note: '', //             备注
         endTime: '' //           到期日期
-      }
+      },
+      tempAddress: {},
+      tempAddressInfo: '',
+      location: '济南'
     }
   },
   watch: {
     'schoolModel.tempProvince'(newVal, oldVal) {
-      this.center = newVal[1]
+      if (newVal.length === 0) {
+        this.schoolModel.addressDetailList = []
+        this.schoolModel.addressDetailList.push(
+          {
+            id: new Date().getTime(),
+            address: '',
+            point: null,
+            canAdd: true,
+            canDelete: false
+          })
+      } else {
+        this.location = newVal[1]
+      }
     }
   },
   mounted() {
@@ -342,13 +352,29 @@ export default {
         })
       })
     },
-    selectAddress() {
+    onAddressFocus(item) {
+      if (this.schoolModel.tempProvince.length === 0) {
+        this.$errorMsg('请先选择省市区')
+        return
+      }
+      this.tempAddress = item
+      this.showAddressDialog = true
+      this.tempAddressInfo = item.address
+    },
+    onSelectedAddress(address) {
+      this.showAddressDialog = false
+      this.tempAddress.id = address.uid || new Date().getTime()
+      this.tempAddress.address = address.address
+      this.tempAddress.point = address.point
+    },
+    selectAddress(item) {
       this.showAddressDialog = true
     },
     addAddress() {
       this.schoolModel.addressDetailList.push({
         id: new Date().getTime(),
         address: '',
+        point: null,
         canAdd: true,
         canDelete: true
       })

@@ -7,6 +7,7 @@
       width="80%"
       top="10vh"
       :show-close="false"
+      :close-on-click-modal="false"
     >
       <div style="position: relative">
         <baidu-map
@@ -32,18 +33,21 @@
         </baidu-map>
       </div>
       <div
-        slot="footer"
-        class="dialog-footer"
+        slot="title"
+        class="dialog-footer flex justify-between"
       >
-        <el-button
-          :size="$style.dialogButtonSize"
-          @click="cancelDialog"
-        >取消</el-button>
-        <el-button
-          :size="$style.dialogButtonSize"
-          type="primary"
-          @click="addAddressItem"
-        >添加</el-button>
+        <el-link :underline="false">添加学校地址</el-link>
+        <div>
+          <el-button
+            :size="$style.dialogButtonSize"
+            @click="cancelDialog"
+          >取消</el-button>
+          <el-button
+            :size="$style.dialogButtonSize"
+            type="primary"
+            @click="addAddressItem"
+          >添加</el-button>
+        </div>
       </div>
     </el-dialog>
     <!-- 增加服务记录对话框 -->
@@ -69,6 +73,10 @@ export default {
     location: {
       type: String,
       default: '济南'
+    },
+    address: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -85,8 +93,10 @@ export default {
     },
     showAddressDialog(newVal) {
       if (newVal) {
-        this.addressKeyword = ''
-        this.tempAddress = null
+        this.addressKeyword = this.address || ''
+        if (!this.address) {
+          this.tempAddress = null
+        }
       }
     }
   },
@@ -96,9 +106,10 @@ export default {
         this.$errorMsg('请选择一个地理位置')
         return
       }
+      this.$emit('on-select-address', this.tempAddress)
     },
     infohtmlset(val) {
-      console.log(val)
+      this.tempAddress = val
     },
     cancelDialog() {
       this.$emit('cancel-dialog', {})
