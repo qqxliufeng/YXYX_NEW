@@ -78,6 +78,8 @@
                 v-model="item.address"
                 placeholder="请输入详细地址（必填）"
                 readonly
+                type="textarea"
+                :rows="2"
                 @focus="onAddressFocus(item)"
               />
             </el-col>
@@ -269,7 +271,9 @@ export default {
       }
       postData.addressDetailList = this.schoolModel.addressDetailList.map(it => {
         return {
-          address: it.address
+          address: it.address,
+          lng: it.point.lng,
+          lat: it.point.lat
         }
       })
       if (!this.schoolModel.superviseId) {

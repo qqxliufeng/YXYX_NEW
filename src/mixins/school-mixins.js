@@ -21,58 +21,12 @@ export default {
   methods: {
     getSchoolList(callback) {
       this.enginData(this.$urlPath.querySchoolList, 'schoolList', 1000, callback)
-      // const loadingInstance = Loading.service(document.getElementsByClassName('container')[0])
-      // if (this.schoolList.length === 0) {
-      //   this.$http({
-      //     url: this.$urlPath.querySchoolList,
-      //     methods: this.HTTP_GET,
-      //     data: {
-      //       pageNum: 0,
-      //       pageSize: 100
-      //     }
-      //   }).then(res => {
-      //     this.$nextTick(_ => {
-      //       loadingInstance.close()
-      //     })
-      //     this.schoolList = res.obj.list
-      //     if (callback) {
-      //       callback()
-      //     }
-      //   })
-      // } else {
-      //   if (callback) {
-      //     callback()
-      //   }
-      // }
     },
     /**
      * 获取老师的列表信息
      */
     getTeacherList(callback) {
       this.enginData(this.$urlPath.queryTeacherList, 'teacherList', 1000, callback)
-      // const loadingInstance = Loading.service(document.getElementsByClassName('container')[0])
-      // if (this.schoolList.length === 0) {
-      //   this.$http({
-      //     url: this.$urlPath.queryTeacherList,
-      //     methods: this.HTTP_GET,
-      //     data: {
-      //       pageNum: 0,
-      //       pageSize: 1000
-      //     }
-      //   }).then(res => {
-      //     this.$nextTick(_ => {
-      //       loadingInstance.close()
-      //     })
-      //     this.teacherList = res.obj.list
-      //     if (callback) {
-      //       callback()
-      //     }
-      //   })
-      // } else {
-      //   if (callback) {
-      //     callback()
-      //   }
-      // }
     },
     teacherChange(teacherId) {
       if (!this.teacherChangeCallBack) return
@@ -84,54 +38,12 @@ export default {
      */
     getYouXingList(callback) {
       this.enginData(this.$urlPath.queryYouXingUserList, 'youXingUserList', 1000, callback)
-      // const loadingInstance = Loading.service(document.getElementsByClassName('container')[0])
-      // if (this.schoolList.length === 0) {
-      //   this.$http({
-      //     url: this.$urlPath.queryYouXingUserList,
-      //     methods: this.HTTP_GET,
-      //     data: {
-      //       pageNum: 0,
-      //       pageSize: 1000
-      //     }
-      //   }).then(res => {
-      //     this.$nextTick(_ => {
-      //       loadingInstance.close()
-      //     })
-      //     this.youXingUserList = res.obj.list
-      //     if (callback) {
-      //       callback()
-      //     }
-      //   })
-      // } else {
-      //   if (callback) {
-      //     callback()
-      //   }
-      // }
     },
     /**
      * 获取所有的角色
      */
     getRoleList(callback) {
       this.enginData(this.$urlPath.queryRoles, 'roleList', 100, callback)
-      // const loadingInstance = Loading.service(document.getElementsByClassName('container')[0])
-      // this.$http({
-      //   url: this.$urlPath.queryRoles,
-      //   methods: this.HTTP_GET,
-      //   data: {
-      //     pageNum: 0,
-      //     pageSize: 100
-      //   }
-      // }).then(res => {
-      //   this.$nextTick(_ => {
-      //     loadingInstance.close()
-      //   })
-      //   this.roleList = res.obj.list
-      // }).catch(error => {
-      //   console.log(error)
-      //   this.$nextTick(_ => {
-      //     loadingInstance.close()
-      //   })
-      // })
     },
     getClassList(callback) {
       this.enginData(this.$urlPath.querySchoolClass, 'classList', 100, callback)

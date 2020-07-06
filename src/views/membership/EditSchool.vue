@@ -80,6 +80,10 @@
               <el-input
                 v-model="item.address"
                 placeholder="请输入详细地址（必填）"
+                readonly
+                type="textarea"
+                :rows="2"
+                @focus="onAddressFocus(item)"
               />
             </el-col>
             <el-col
@@ -174,6 +178,13 @@
       v-if="schoolModel.isOnLine === 1"
       ref="studyCardParams"
     />
+    <select-school-address
+      :show-address-dialog="showAddressDialog"
+      :address="tempAddressInfo"
+      :location="location"
+      @on-select-address="onSelectedAddress"
+      @cancel-dialog="cancelDialog"
+    />
     <el-card
       body-style="padding: 0"
       style="margin-top: 10px"
@@ -195,13 +206,16 @@
 <script>
 import schoolMixins from '../../mixins/school-mixins'
 import AddStudyCardToSchool from './components/AddStudyCardToSchool'
+import SelectSchoolAddress from './components/SelectSchoolAddress'
+import SchoolAddressMixins from './components/SchoolAddressMixins'
 import { Loading } from 'element-ui'
 export default {
   name: 'EditSchool',
   components: {
-    AddStudyCardToSchool
+    AddStudyCardToSchool,
+    SelectSchoolAddress
   },
-  mixins: [schoolMixins],
+  mixins: [schoolMixins, SchoolAddressMixins],
   data() {
     return {
       level: this.$privinceData,
@@ -263,7 +277,11 @@ export default {
               id: it.id,
               address: it.address,
               canAdd: true,
-              canDelete: index !== 0
+              canDelete: index !== 0,
+              ponit: {
+                lat: it.lat,
+                lng: it.lng
+              }
             }
           })
         }
@@ -295,7 +313,9 @@ export default {
       }
       postData.addressDetailList = this.schoolModel.addressDetailList.map(it => {
         return {
-          address: it.address
+          address: it.address,
+          lng: it.point.lng,
+          lat: it.point.lat
         }
       })
       if (!this.schoolModel.superviseId) {

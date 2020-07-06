@@ -200,7 +200,7 @@
               placeholder="请选择班级名称"
             >
               <el-option
-                v-for="item of classList"
+                v-for="item of myClassList"
                 :key="item.classId"
                 :label="item.className"
                 :value="item.classId"
@@ -223,6 +223,7 @@
               v-model="studentModel.studentPhone"
               placeholder="请输入手机号码（必填）"
               maxlength="11"
+              :readonly="mode === 'edit'"
             />
           </el-col>
         </el-form-item>
@@ -263,7 +264,10 @@
         </el-form-item>
         <el-form-item label="是否线上">
           <el-col :span="$style.dialogColSpan">
-            <el-radio-group v-model="studentModel.isOnLine">
+            <el-radio-group
+              v-model="studentModel.isOnLine"
+              :disabled="mode === 'edit'"
+            >
               <el-radio :label="1">是</el-radio>
               <el-radio :label="0">否</el-radio>
             </el-radio-group>
@@ -374,7 +378,8 @@ export default {
       },
       dialogTableVisible: false,
       textbookList: [],
-      tempWacherItem: {}
+      tempWacherItem: {},
+      myClassList: []
     }
   },
   watch: {
@@ -394,6 +399,11 @@ export default {
         this.classList = []
         this.formModelArray[1].selectOptions = []
         this.formModelArray[1].value = ''
+      }
+    },
+    'studentModel.schoolId'(newVal, oldVal) {
+      if (newVal) {
+        this.getMyCalssList(newVal)
       }
     }
   },
@@ -420,6 +430,28 @@ export default {
         label: item.status === 0 ? '正常' : '禁用',
         type: item.status === 0 ? 'primary' : 'danger'
       }
+    },
+    getMyCalssList(schoolId = this.$store.getters.schoolId) {
+      this.$showLoading(closeLoading => {
+        this.myClassList = []
+        this.$http({
+          url: this.$urlPath.querySchoolClassBySchool,
+          methods: this.HTTP_GET,
+          data: {
+            schoolId
+          }
+        }).then(res => {
+          closeLoading()
+          this.myClassList = res.obj
+          if (this.myClassList) {
+            if (!this.myClassList.find(it => it.classId === this.studentModel.classId)) {
+              this.studentModel.classId = ''
+            }
+          }
+        }).catch(_ => {
+          closeLoading()
+        })
+      })
     },
     getData() {
       this.$http({
