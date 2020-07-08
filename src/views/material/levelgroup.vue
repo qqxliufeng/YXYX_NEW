@@ -108,6 +108,10 @@ export default {
       this.getData(textbookId, courseCode, levelCode)
     },
     getData(textbookId, courseCode, levelCode) {
+      if (!textbookId) {
+        this.loading = false
+        return
+      }
       this.$http({
         url: this.$urlPath.queryCourseLevelGroup,
         methods: this.HTTP_GET,

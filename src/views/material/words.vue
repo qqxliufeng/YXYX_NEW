@@ -353,7 +353,6 @@
 <script>
 import tableMixins from '../../mixins/table-mixins'
 import { baseImageIp } from '../../api/url-path'
-import { Loading } from 'element-ui'
 export default {
   name: 'Words',
   mixins: [tableMixins],
@@ -389,28 +388,24 @@ export default {
       this.likeSearchUrl = this.$urlPath.queryWordInfoListLike
     },
     getMaterialList() {
-      const loadingInstance = Loading.service({
-        target: document.getElementsByClassName('container')[0]
-      })
-      this.$http({
-        url: this.$urlPath.queryTextBookList,
-        methods: this.HTTP_GET,
-        data: {
-          pageNum: 0,
-          pageSize: 1000
-        }
-      }).then(res => {
-        this.$nextTick(_ => {
-          loadingInstance.close()
-        })
-        this.materialList = res.obj.list
-        if (this.materialList && this.materialList.length > 0) {
-          this.materialId = this.materialList[0].textbookId
-        }
-      }).catch(error => {
-        console.log(error)
-        this.$nextTick(_ => {
-          loadingInstance.close()
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.queryTextBookList,
+          methods: this.HTTP_GET,
+          data: {
+            pageNum: 0,
+            pageSize: 1000
+          }
+        }).then(res => {
+          closeLoading()
+          this.materialList = res.obj.list
+          if (this.materialList && this.materialList.length > 0) {
+            this.materialId = this.materialList[0].textbookId
+          } else {
+            this.loading = false
+          }
+        }).catch(_ => {
+          closeLoading()
         })
       })
     },

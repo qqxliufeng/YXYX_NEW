@@ -164,6 +164,8 @@ export default {
     this.getMaterialList(_ => {
       if (this.materialList && this.materialList.length > 0) {
         this.materialId = this.materialList[0].textbookId
+      } else {
+        this.changeValue()
       }
     })
   },

@@ -107,6 +107,7 @@ export default {
     onChangeValue({ textbookId, courseCode }) {
       if (!textbookId || !courseCode) {
         this.$errorMsg('暂无课程信息')
+        this.loading = false
         this.tableData = []
         return
       }
@@ -116,6 +117,10 @@ export default {
       this.getData(textbookId, courseCode)
     },
     getData(textbookId, courseCode) {
+      if (!textbookId) {
+        this.loading = false
+        return
+      }
       this.$http({
         url: this.$urlPath.queryCourseLevel,
         methods: this.HTTP_GET,

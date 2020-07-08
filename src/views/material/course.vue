@@ -91,6 +91,10 @@ export default {
       this.getData(textbookId)
     },
     getData(textbookId) {
+      if (!textbookId) {
+        this.loading = false
+        return
+      }
       this.$http({
         url: this.$urlPath.queryCourseByTextBook,
         methods: this.HTTP_GET,
