@@ -11,7 +11,8 @@ export const baseImageIp = 'http://118.190.3.78'
 
 // export const baseIp = 'http://192.168.0.123:8880'
 
-export const baseIp = 'http://118.190.3.78:8881'
+// export const baseIp = 'http://118.190.3.78:8881'
+export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
  * 基础模块名字

@@ -260,7 +260,7 @@
             </el-radio-group>
           </el-col>
         </el-form-item>
-        <el-form-item label="用户状态">
+        <el-form-item label="教材状态">
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="materialModel.status">
               <el-radio :label="0">正常</el-radio>
