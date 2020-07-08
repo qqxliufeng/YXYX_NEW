@@ -13,10 +13,13 @@
       >
         <el-table-column
           align="center"
-          label="ID"
+          label="序号"
           width="50"
-          prop="recordId"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="服务内容"

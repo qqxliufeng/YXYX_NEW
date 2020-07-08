@@ -15,33 +15,16 @@
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
       >
-        <!-- createId: 1
-    createTime: 1593680865000
-    dr: 0
-    isHasExercises: 0
-    isHasVideo: 0
-    isOpenUser: 0
-    offlineSchoolId: null
-    progressNo: 6
-    resourceFileUrl: "/opt/nginx/yxvue/dist/adminFile/books/resourceFile/3/resourceFile.7z"
-    schoolIds: null
-    status: 0
-    stuTextbookId: null
-    studyCardCreateId: null
-    textbookCategory: 2
-    textbookId: 3
-    textbookName: "人教PEP三上"
-    textbookType: 0
-    textbookVersion: "人教版"
-    unLockCoins: 1
-    updateId: 5
-    updateTime: 1593768950000 -->
         <el-table-column
           align="center"
-          prop="textbookId"
-          label="ID"
+          label="序号"
           fixed="left"
-        />
+          width="50"
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="textbookName"
