@@ -464,6 +464,7 @@ export default {
       }
       this.dialogFormVisible = true
       this.mode = 'edit'
+      this.teacherModel.userId = item.userId
       this.teacherModel.schoolId = item.schoolId
       this.teacherModel.roleId = item.roleId
       this.teacherModel.userName = item.username
@@ -515,7 +516,8 @@ export default {
       } else {
         this.$http({
           url: this.$urlPath.updateTeacher,
-          data: this.teacherModel
+          data: this.teacherModel,
+          withUserId: false
         }).then(res => {
           this.dialogFormVisible = false
           this.$successMsg('修改成功')

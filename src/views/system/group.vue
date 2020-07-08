@@ -416,7 +416,8 @@ export default {
       this.dialogFormVisible = false
       this.$http({
         url: this.$urlPath.updateUser,
-        data: this.tempItem
+        data: this.tempItem,
+        withUserId: false
       }).then(res => {
         this.$successMsg('保存成功')
         this.getData()
