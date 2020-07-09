@@ -11,6 +11,7 @@ const state = {
   roleId: Number(localStorage.getItem('roleId')) || '',
   avatar: '',
   schoolId: Number(localStorage.getItem('schoolId')) || '',
+  schoolStatus: Number(localStorage.getItem('schoolStatus')) || '', // 是否线上线下学校 0线下学校 1线上学校
   introduction: '',
   roles: []
 }
@@ -42,6 +43,9 @@ const mutations = {
   },
   SET_SCHOOL_ID: (state, schoolId) => {
     state.schoolId = schoolId
+  },
+  SET_SCHOOL_STATUS: (state, schoolStatus) => {
+    state.schoolStatus = schoolStatus
   }
 }
 
@@ -90,6 +94,7 @@ const actions = {
         localStorage.removeItem('roleId')
         localStorage.removeItem('userId')
         localStorage.removeItem('schoolId')
+        localStorage.removeItem('schoolStatus')
         sessionStorage.removeItem('userRoles')
         removeAll()
         resetRouter()
@@ -108,6 +113,15 @@ const actions = {
       commit('SET_TOKEN', '')
       commit('SET_ROLES', [])
       removeToken()
+      resolve()
+    })
+  },
+
+  // 保存学校状态
+  saveSchoolStatus({ commit }, schoolStatus) {
+    return new Promise(resolve => {
+      commit('SET_SCHOOL_STATUS', schoolStatus)
+      localStorage.setItem('schoolStatus', schoolStatus)
       resolve()
     })
   },

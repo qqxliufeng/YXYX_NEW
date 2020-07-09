@@ -131,8 +131,10 @@
 </template>
 
 <script>
+import userMixins from '../../mixins/user-mixins'
 export default {
   name: 'VipSchoolInfo',
+  mixins: [userMixins],
   data() {
     return {
       schoolInfo: null
@@ -176,6 +178,7 @@ export default {
         }).then(res => {
           closeLoading()
           this.schoolInfo = res.obj
+          this.saveSchoolStatus(this.schoolInfo.isOnLine)
         }).catch(_ => {
           closeLoading()
         })

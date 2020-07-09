@@ -13,7 +13,7 @@
       title="查询内容"
       :form-model-array="formModelArray"
       :show-search="true"
-      :show-add="true"
+      :show-add="isSuperAdmin || !isOnLineSchool"
       :show-delete="false"
       @onadd="onAdd"
       @onsearch="onSearch"
@@ -178,6 +178,7 @@
           <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="studentModel.schoolId"
+              :disabled="mode === 'edit'"
               style="width: 100%"
               class="filter-item"
               placeholder="请选择学校名称"
@@ -189,12 +190,16 @@
                 :value="item.schoolId"
               />
             </el-select>
+            <div v-show="isOnLineSchoolTip">
+              <el-link type="danger">{{ isOnLineSchoolTip }}</el-link>
+            </div>
           </el-col>
         </el-form-item>
         <el-form-item label="班级名称">
           <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="studentModel.classId"
+              :disabled="mode === 'edit'"
               style="width: 100%"
               class="filter-item"
               placeholder="请选择班级名称"
@@ -262,17 +267,6 @@
             </el-radio-group>
           </el-col>
         </el-form-item>
-        <el-form-item label="是否线上">
-          <el-col :span="$style.dialogColSpan">
-            <el-radio-group
-              v-model="studentModel.isOnLine"
-              :disabled="mode === 'edit'"
-            >
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0">否</el-radio>
-            </el-radio-group>
-          </el-col>
-        </el-form-item>
         <el-form-item label="学生状态">
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.status">
@@ -304,9 +298,10 @@
 <script>
 import tableMixins from '../../mixins/table-mixins'
 import schoolMixins from '../../mixins/school-mixins'
+import userMixins from '../../mixins/user-mixins'
 export default {
   name: 'VIPClass',
-  mixins: [tableMixins, schoolMixins],
+  mixins: [tableMixins, schoolMixins, userMixins],
   data() {
     return {
       formModelArray: [
@@ -379,7 +374,8 @@ export default {
       dialogTableVisible: false,
       textbookList: [],
       tempWacherItem: {},
-      myClassList: []
+      myClassList: [],
+      isOnLineSchoolTip: ''
     }
   },
   watch: {
@@ -403,7 +399,12 @@ export default {
     },
     'studentModel.schoolId'(newVal, oldVal) {
       if (newVal) {
+        const schoolItem = this.schoolList.find(it => it.schoolId === newVal)
+        this.studentModel.isOnLine = schoolItem.isOnLine
+        this.isOnLineSchoolTip = schoolItem.isOnLine === 1 ? '当前学校为线上学校' : '当前学校为线下学校'
         this.getMyCalssList(newVal)
+      } else {
+        this.isOnLineSchoolTip = ''
       }
     }
   },
@@ -532,6 +533,7 @@ export default {
           data: this.studentModel
         }).then(res => {
           this.dialogFormVisible = false
+          this.isOnLineSchoolTip = ''
           this.$successMsg('学生添加成功')
           this.getData()
         })

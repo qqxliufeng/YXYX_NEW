@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <table-header
+      v-if="isSuperAdmin"
       ref="tableHeader"
       :form-model-array="formModelArray"
       :show-add="true"
@@ -28,7 +29,7 @@
           align="center"
           label="学校名称"
           prop="schoolName"
-          width="120"
+          width="130"
           fixed="left"
         />
         <el-table-column
@@ -57,7 +58,7 @@
                 type="primary"
               >线上</el-link>
             </div>
-            <div v-if="scope.row.isOnLine === 0">
+            <div v-if="scope.row.isOnLine === 0 && isSuperAdmin">
               <el-tooltip
                 class="item"
                 effect="dark"
@@ -142,10 +143,11 @@
           align="center"
           label="操作"
           fixed="right"
-          min-width="250"
+          :width="isSuperAdmin ? 250 : 200"
         >
           <template slot-scope="scope">
             <el-button
+              v-if="isSuperAdmin"
               :size="$style.tableButtonSize"
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
               @click="
@@ -159,10 +161,17 @@
               "
             >{{ scope.row.status === 0 ? "禁用" : "解锁" }}</el-button>
             <el-button
+              v-if="isSuperAdmin"
               :size="$style.tableButtonSize"
               type="primary"
               @click="editAccountInfo(scope.row)"
             >编辑</el-button>
+            <el-button
+              v-if="!isSuperAdmin"
+              :size="$style.tableButtonSize"
+              type="primary"
+              @click="$router.push({path: '/'})"
+            >查看详情</el-button>
             <el-dropdown
               style="display: inline-block; margin-left: 10px"
               :size="$style.tableButtonSize"
@@ -177,7 +186,7 @@
                   :command="{ tag: 1, item: scope.row }"
                 >已分配的学习卡</el-dropdown-item>
                 <el-dropdown-item
-                  v-if="scope.row.isOnLine === 1"
+                  v-if="scope.row.isOnLine === 1 && isSuperAdmin"
                   :command="{ tag: 2, item: scope.row }"
                 >未分配的学习卡</el-dropdown-item>
                 <el-dropdown-item
@@ -234,12 +243,13 @@
 <script>
 import Tinymce from '@/components/Tinymce'
 import TableMixins from '../../mixins/table-mixins'
+import userMixins from '../../mixins/user-mixins'
 export default {
   name: 'VIPShcool',
   components: {
     Tinymce
   },
-  mixins: [TableMixins],
+  mixins: [TableMixins, userMixins],
   data() {
     return {
       formModelArray: [

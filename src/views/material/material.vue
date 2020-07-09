@@ -8,13 +8,14 @@
       title="基本操作"
       :form-model-array="formModelArray"
       :show-delete="false"
-      :show-add="true"
+      :show-add="isSuperAdmin"
       :show-search="true"
       @onsearch="onSearch"
       @onadd="onAdd"
     >
       <template slot="other">
         <el-button
+          v-if="isSuperAdmin"
           type="danger"
           size="mini"
           @click="downExcel"
@@ -89,6 +90,14 @@
         />
         <el-table-column
           align="center"
+          label="拼读状态"
+        >
+          <template slot-scope="scope">
+            <table-status :status="{ label: scope.row.isJumpSpell === 0 ? '未跳过' : '已跳过', type: scope.row.isJumpSpell === 0 ? 'primary' : 'danger' }" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           prop="createTime"
           label="创建时间"
           width="160"
@@ -123,21 +132,30 @@
         <el-table-column
           align="center"
           label="操作"
-          min-width="250"
+          :width="isSuperAdmin ? 250 : 120"
           fixed="right"
         >
           <template slot-scope="scope">
             <el-button
+              v-if="isSuperAdmin"
               type="primary"
               :size="$style.tableButtonSize"
               @click="handlerUpdate(scope.row)"
             >编辑</el-button>
             <el-button
+              v-if="isSuperAdmin"
               type="danger"
               :size="$style.tableButtonSize"
               @click="deleteItem(scope.row)"
             >删除</el-button>
+            <el-button
+              v-if="!isSuperAdmin"
+              :type="scope.row.isJumpSpell === 0 ? 'danger' : 'primary'"
+              :size="$style.tableButtonSize"
+              @click="jumpSpell(scope.row)"
+            >{{ scope.row.isJumpSpell === 0 ? '跳过拼读' : '恢复拼读' }}</el-button>
             <el-dropdown
+              v-if="isSuperAdmin"
               style="display: inline-block; margin-left: 10px"
               :size="$style.tableButtonSize"
               type="success"
@@ -148,6 +166,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{tag: 1, item: scope.row}">查看已授权的学校</el-dropdown-item>
                 <el-dropdown-item :command="{tag: 2, item: scope.row}">生成/编辑教材</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 3, item: scope.row}">跳过拼读</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -417,6 +436,7 @@
 import tableMixins from '../../mixins/table-mixins'
 import { blobToExecl } from '../../api/common'
 import textBookMixins from '../../mixins/text-book-mixins'
+import userMixins from '../../mixins/user-mixins'
 const textbookTypes = [
   {
     label: '词汇',
@@ -493,7 +513,7 @@ const textbookVersion = [
 ]
 export default {
   name: 'Material',
-  mixins: [tableMixins, textBookMixins],
+  mixins: [tableMixins, textBookMixins, userMixins],
   data() {
     return {
       textbookTypes,
@@ -630,6 +650,9 @@ export default {
             }
           })
           break
+        case 3:
+          this.jumpSpell(item)
+          break
       }
     },
     handlerFormConfirm() {
@@ -724,6 +747,24 @@ export default {
         responseType: `blob`
       }).then(res => {
         blobToExecl(res, '教材模板')
+      })
+    },
+    jumpSpell(item) {
+      if (!this.checkButtonPermission('jump_spell')) {
+        return
+      }
+      const tip = item.isJumpSpell === 0 ? '是否跳过此教材的拼读功能？' : '是否恢复此教材的拼读功能？'
+      this.$warningConfirm(tip, _ => {
+        this.$http({
+          url: this.$urlPath.updateJumpSpell,
+          data: {
+            textbookId: item.textbookId,
+            isJumpSpell: item.isJumpSpell === 0 ? 1 : 0
+          }
+        }).then(res => {
+          this.$successMsg('设置成功')
+          this.getData()
+        })
       })
     }
   }

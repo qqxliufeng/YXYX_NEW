@@ -1,4 +1,12 @@
 export default {
+  computed: {
+    isSuperAdmin() {
+      return Number(this.$store.getters.roleId) === 1
+    },
+    isOnLineSchool() {
+      return Number(this.$store.getters.schoolStatus) === 1
+    }
+  },
   methods: {
     checkPhoneIsExist(phone, cb) {
       this.$http({
@@ -10,6 +18,9 @@ export default {
       }).then(res => {
         cb(res)
       })
+    },
+    saveSchoolStatus(schoolStatus) {
+      this.$store.dispatch('user/saveSchoolStatus', schoolStatus)
     }
   }
 }
