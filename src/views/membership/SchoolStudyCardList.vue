@@ -21,27 +21,70 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
-        @selection-change="handleSelectionChange"
       >
         <el-table-column
-          align="center"
-          type="selection"
-          width="55"
-          fixed="left"
-        />
+          type="expand"
+          label="查看教材"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <el-row
+              v-for="textbook of scope.row.textBookList"
+              :key="textbook.textbookId"
+              style="margin-bottom: 20px"
+              align="middle"
+            >
+              <el-col
+                :span="4"
+                style="margin-top: 5px"
+              >
+                <el-link :underline="false">教材名称：</el-link>
+                <el-link
+                  :underline="false"
+                  type="primary"
+                >{{ textbook.textbookName }}</el-link>
+              </el-col>
+              <el-col
+                :span="4"
+                style="margin-top: 5px"
+              >
+                <el-link :underline="false">教材版本：</el-link>
+                <el-link
+                  :underline="false"
+                  type="primary"
+                >{{ textbook.textbookVersion }}</el-link>
+              </el-col>
+              <el-col
+                :span="4"
+                style="margin-top: 5px"
+              >
+                <el-link :underline="false">拼读状态：</el-link>
+                <el-link
+                  :underline="false"
+                  :type="textbook.isJumpSpell === 0 ? 'danger' : 'primary'"
+                >{{ textbook.isJumpSpell === 0 ? '未跳过' : '已跳过' }}</el-link>
+              </el-col>
+              <el-col :span="4">
+                <el-button
+                  size="mini"
+                  :type="textbook.isJumpSpell === 0 ? 'danger' : 'primary'"
+                  @click="jumpSpell(scope.row, textbook)"
+                >{{ textbook.isJumpSpell === 0 ? '跳过拼读' : '恢复拼读' }}</el-button>
+              </el-col>
+            </el-row>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="cardCode"
           label="学习卡编码"
-          fixed="left"
           width="100"
         />
         <el-table-column
           align="center"
           prop="cardErcode"
           label="二维码"
-          width="150"
-          show-overflow-tooltip
+          width="400"
         />
         <el-table-column
           align="center"
@@ -95,13 +138,13 @@
         <el-table-column
           align="center"
           label="操作"
-          min-width="200"
+          width="200"
           fixed="right"
         >
           <template slot-scope="scope">
             <!-- 只有在已激活或者已过期的情况下才能修改到期时间 -->
             <el-button
-              v-if="scope.row.status === 3 || scope.row.status === 4"
+              v-if="showAddTimeButton(scope.row)"
               type="primary"
               :size="$style.tableButtonSize"
               @click="addEndTime(scope.row)"
@@ -111,13 +154,15 @@
               v-if="scope.row.status <= 2"
               type="danger"
               :size="$style.tableButtonSize"
-              @click="textBookList(scope.row)"
+              @click="$router.push({
+                name: 'TextBookList',
+                params: {
+                  studyCardId: scope.row.studyCardId,
+                  studyCardCode: scope.row.cardCode,
+                  studyCardErcode: scope.row.cardErcode
+                }
+              })"
             >授权教材</el-button>
-            <el-button
-              type="warning"
-              :size="$style.tableButtonSize"
-              @click="grantTextBookList(scope.row)"
-            >查看教材</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -234,9 +279,10 @@
 <script>
 import tableMixins from '../../mixins/table-mixins'
 import studyCardMixins from '../../mixins/study-card-mixins'
+import userMixins from '../../mixins/user-mixins'
 export default {
   name: 'SchoolStudyCardList',
-  mixins: [tableMixins, studyCardMixins],
+  mixins: [tableMixins, studyCardMixins, userMixins],
   mounted() {
     this.getData()
   },
@@ -255,6 +301,44 @@ export default {
         }
       }).then(res => {
         this.onSuccess(res.obj)
+      })
+    },
+    grantTextBookList(item) {
+      this.dialogGrantTextBookVisible = true
+      this.grantTextBookLoading = true
+      this.$http({
+        url: this.$urlPath.queryTextBookByStudyCardId,
+        methods: this.HTTP_GET,
+        data: {
+          studyCardId: item.studyCardId
+        }
+      }).then(res => {
+        this.grantTextBookLoading = false
+        this.grantTextBookTableData = res.obj
+      })
+    },
+    showAddTimeButton(item) {
+      return this.isSuperAdmin && (item.status === 3 || item.status === 4)
+    },
+    jumpSpell(studyCardItem, textbookItem) {
+      const tip = textbookItem.isJumpSpell === 0 ? '是否要跳过此教材的拼读功能？' : '是否要恢复此教材的拼读功能？'
+      this.$warningConfirm(tip, _ => {
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: this.$urlPath.updateStudyCardTextBookJumpSpell,
+            data: {
+              textbookId: textbookItem.textbookId,
+              studyCardId: studyCardItem.studyCardId,
+              isJumpSpell: textbookItem.isJumpSpell === 0 ? 1 : 0
+            }
+          }).then(res => {
+            closeLoading()
+            this.$successMsg('设置成功')
+            textbookItem.isJumpSpell = textbookItem.isJumpSpell === 0 ? 1 : 0
+          }).catch(_ => {
+            closeLoading()
+          })
+        })
       })
     }
   }

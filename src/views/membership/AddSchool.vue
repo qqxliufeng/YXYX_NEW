@@ -299,7 +299,7 @@ export default {
         if (studyCardParams && studyCardParams.length > 0) {
           postData.saveType = saveType
           const filterResult = studyCardParams.some(it => {
-            return it.cardType === '' || it.cardNum === 0 || it.tempTextbookIds.length === 0
+            return it.cardType === '' || it.cardNum === 0
           })
           if (filterResult) {
             this.$errorMsg('请输入学习卡的具体信息')

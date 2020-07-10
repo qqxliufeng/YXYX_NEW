@@ -9,10 +9,10 @@
 
 export const baseImageIp = 'http://118.190.3.78'
 
-export const baseIp = 'http://192.168.1.103:8880'
+// export const baseIp = 'http://192.168.1.103:8880'
 
 // export const baseIp = 'http://118.190.3.78:8881'
-// export const baseIp = 'http://ht.youcanedu.net:8881'
+export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
  * 基础模块名字
@@ -136,6 +136,22 @@ export const queryFeedBackReplyList = baseModuleUrl + 'queryFeedBackReplyList'
 export const saveFeedBackReply = baseModuleUrl + 'saveFeedBackReply'
 
 // ****************系统管理 --- 意见反馈管理 **************** //
+
+// ****************系统管理 --- 版本管理 **************** //
+
+export const queryAppVersionList = baseModuleUrl + 'queryAppVersionList'
+
+export const queryAppVersionListLike = baseModuleUrl + 'queryAppVersionListLike'
+
+export const uploadAppVersionFile = baseModuleUrl + 'uploadAppVersionFile'
+
+export const saveAppVersion = baseModuleUrl + 'saveAppVersion'
+
+export const sendAppVersion = baseModuleUrl + 'sendAppVersion'
+
+export const upAppVersion = baseModuleUrl + 'upAppVersion'
+
+// ****************系统管理 --- 版本管理 **************** //
 
 // ****************会员管理 --- 学校管理 **************** //
 
@@ -261,7 +277,7 @@ export const cancelGrantTextBookToSchool = baseModuleUrl + 'cancelGrantTextBookT
 
 export const queryTextBookProgressNo = baseModuleUrl + 'queryTextBookProgressNo'
 
-export const updateJumpSpell = baseModuleUrl + 'updateJumpSpell'
+export const updateStudyCardTextBookJumpSpell = baseModuleUrl + 'updateStudyCardTextBookJumpSpell'
 
 // ****************教材信息**************** //
 
