@@ -40,7 +40,7 @@
         <el-table-column
           align="center"
           prop="versionNo"
-          label="版本号"
+          label="版本名称"
         />
         <el-table-column
           align="center"
@@ -125,12 +125,11 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="版本号码">
+        <el-form-item label="版本名称">
           <el-col :span="$style.dialogColSpan">
-            <el-input-number
+            <el-input
               v-model="appVersionModel.versionNo"
-              :min="1"
-              style="width: 100%"
+              placeholder="请输入版本名称（必填），如：1.0.1"
             />
           </el-col>
         </el-form-item>
@@ -240,7 +239,7 @@ export default {
       ],
       appVersionModel: {
         terminalType: '', // 终端类型
-        versionNo: 1, // 版本号
+        versionNo: '', // 版本号
         terminalUrl: '', // 版本下载地址
         isUpgrade: 1, // 是否强制升级
         versionStatus: 0, // 发布状态 0未上架 1已上架
@@ -276,7 +275,7 @@ export default {
       this.dialogFormVisible = true
       this.appVersionModel = {
         terminalType: 'android', // 终端类型
-        versionNo: 1, // 版本号
+        versionNo: '', // 版本号
         terminalUrl: '', // 版本下载地址
         isUpgrade: 1, // 是否强制升级
         versionStatus: 0, // 发布状态 0未上架 1已上架
@@ -286,6 +285,10 @@ export default {
     handleDialogConfirm() {
       if (!this.appVersionModel.terminalType) {
         this.$errorMsg('请选择终端类型')
+        return
+      }
+      if (!this.appVersionModel.versionNo) {
+        this.$errorMsg('请输入版本名称')
         return
       }
       if (!this.appVersionModel.terminalUrl) {

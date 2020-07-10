@@ -56,7 +56,11 @@
           align="center"
           prop="userNickName"
           label="用户昵称"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row.userNickName | emptyFormat }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="dept.deptName"
