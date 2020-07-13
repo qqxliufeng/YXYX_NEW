@@ -259,11 +259,15 @@
             </el-radio-group>
           </el-col>
         </el-form-item>
-        <el-form-item label="学生属性">
+        <el-form-item
+          v-if="isSuperAdmin"
+          label="学生属性"
+        >
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.isTeacher">
-              <el-radio :label="0">普通学生</el-radio>
-              <el-radio :label="1">老师</el-radio>
+              <el-radio :label="0">线上非VIP</el-radio>
+              <el-radio :label="3">校长</el-radio>
+              <el-radio :label="4">老师</el-radio>
             </el-radio-group>
           </el-col>
         </el-form-item>
@@ -299,8 +303,9 @@
 import tableMixins from '../../mixins/table-mixins'
 import schoolMixins from '../../mixins/school-mixins'
 import userMixins from '../../mixins/user-mixins'
+import { isvalidPhone } from '../../utils/validate'
 export default {
-  name: 'VIPClass',
+  name: 'VIPStudent',
   mixins: [tableMixins, schoolMixins, userMixins],
   data() {
     return {
@@ -523,9 +528,16 @@ export default {
         this.$errorMsg('请选择学生联系方式')
         return
       }
+      if (!isvalidPhone(this.studentModel.studentPhone)) {
+        this.$errorMsg('请输入合法的手机号码')
+        return
+      }
       if (!this.studentModel.address) {
         this.$errorMsg('请输入学生家庭地址')
         return
+      }
+      if (!this.isSuperAdmin) {
+        delete this.studentModel.isTeacher
       }
       if (this.mode === 'add') {
         this.$http({

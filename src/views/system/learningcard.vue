@@ -10,6 +10,12 @@
     >
       <template slot="other">
         <el-button
+          type="info"
+          size="mini"
+          icon="el-icon-info"
+          @click="studyCardNote"
+        >学习卡状态说明</el-button>
+        <el-button
           type="warning"
           size="mini"
           icon="el-icon-upload2"
@@ -106,7 +112,7 @@
         <el-table-column
           align="center"
           prop="status"
-          label="状态"
+          label="学习卡状态"
           width="100"
         >
           <template slot-scope="scope">
@@ -317,6 +323,25 @@
       </div>
     </el-dialog>
     <!-- 授权列表对话框 -->
+    <!-- 学习卡状态说明对话框 -->
+    <el-dialog
+      title="学习卡状态说明"
+      :visible.sync="dialogStudyCardStatusVisible"
+    >
+      <div class="dialog-container">
+        123
+      </div>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogStudyCardStatusVisible = false"
+        >知道了</el-button>
+      </div>
+    </el-dialog>
+    <!-- 学习卡状态说明对话框 -->
   </div>
 </template>
 
@@ -384,7 +409,8 @@ export default {
         studyCardNum: 1,
         validityMonth: 1
       },
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      dialogStudyCardStatusVisible: false
     }
   },
   mounted() {
@@ -446,6 +472,9 @@ export default {
       }).then(res => {
         this.onSuccess(res.obj)
       })
+    },
+    studyCardNote() {
+      this.dialogStudyCardStatusVisible = true
     }
   }
 }

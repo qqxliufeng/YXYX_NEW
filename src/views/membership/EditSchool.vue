@@ -278,7 +278,7 @@ export default {
               address: it.address,
               canAdd: true,
               canDelete: index !== 0,
-              ponit: {
+              point: {
                 lat: it.lat,
                 lng: it.lng
               }
