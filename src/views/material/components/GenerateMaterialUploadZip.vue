@@ -163,7 +163,9 @@ export default {
         this.$errorMsg('请上传mp3 zip文件')
         return
       }
-      this.zipFormData.append('textBookId', this.$route.params.textbookId)
+      if (!this.zipFormData.has('textBookId')) {
+        this.zipFormData.append('textBookId', this.$route.params.textbookId)
+      }
       this.uploadZipLoading = true
       axios.post(this.uploadZipUrl, this.zipFormData, {
         headers: this.headers

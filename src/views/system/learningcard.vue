@@ -10,12 +10,6 @@
     >
       <template slot="other">
         <el-button
-          type="info"
-          size="mini"
-          icon="el-icon-info"
-          @click="studyCardNote"
-        >学习卡状态说明</el-button>
-        <el-button
           type="warning"
           size="mini"
           icon="el-icon-upload2"
@@ -91,7 +85,6 @@
           prop="createTime"
           label="创建时间"
           width="160"
-          show-overflow-tooltip
         />
         <el-table-column
           align="center"
