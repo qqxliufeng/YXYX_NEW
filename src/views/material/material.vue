@@ -89,11 +89,11 @@
           :formatter="openFormatter"
         />
         <el-table-column
+          v-if="isSuperAdmin"
           align="center"
           prop="createTime"
           label="创建时间"
           width="160"
-          show-overflow-tooltip
         >
           <template slot-scope="scope">
             <div>{{ scope.row.createTime | parseTime }}</div>
@@ -106,19 +106,6 @@
         >
           <template slot-scope="scope">
             <table-status :status="statusFormatter(scope.row)" />
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="resourceFileUrl"
-          label="资源地址"
-          width="300"
-          show-overflow-tooltip
-        >
-          <template slot-scope="scope">
-            <div>
-              {{ scope.row.resourceFileUrl ? scope.row.resourceFileUrl : '暂无地址' }}
-            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -171,7 +158,7 @@
     <el-dialog
       :title="mode === 'add' ? '添加教材' : '编辑教材信息'"
       :visible.sync="dialogFormVisible"
-      top="10vh"
+      top="5vh"
     >
       <el-form class="dialog-container">
         <el-form-item label="教材名称">
@@ -240,6 +227,14 @@
             </el-select>
           </el-col>
         </el-form-item>
+        <el-form-item label="是否体验">
+          <el-col :span="$style.dialogColSpan">
+            <el-radio-group v-model="materialModel.isExper">
+              <el-radio :label="0">是</el-radio>
+              <el-radio :label="1">否</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-form-item>
         <el-form-item label="用户开放">
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="materialModel.isOpenUser">
@@ -270,6 +265,27 @@
               <el-radio :label="0">正常</el-radio>
               <el-radio :label="1">禁用</el-radio>
             </el-radio-group>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="教材封面">
+          <el-col :span="$style.dialogColSpan">
+            <el-upload
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img
+                v-if="materialModel.coverUrl"
+                :src="materialModel.coverUrl"
+                class="avatar"
+              >
+              <i
+                v-else
+                class="el-icon-plus avatar-uploader-icon"
+              />
+            </el-upload>
           </el-col>
         </el-form-item>
       </el-form>
@@ -548,10 +564,12 @@ export default {
         textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
         textbookVersion: '人教版', // 教材版本主键ID
         isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
+        isExper: 0, // 是否体验版 0 否 1是
         schoolIds: '', // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
         isHasVideo: 0, // 是否有视频 0是 1否
         isHasExercises: 0, // 是否有配对练习 0是 1否
-        status: 0// 教材状态 0正常 1禁用
+        status: 0, // 教材状态 0正常 1禁用
+        coverUrl: '' // 教材封面
       },
       mode: 'add',
       dialogFormVisible: false,
@@ -587,10 +605,12 @@ export default {
         textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
         textbookVersion: '人教版', // 教材版本
         isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
+        isExper: 0,
         schoolIds: '', // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
         isHasVideo: 0, // 是否有视频 0是 1否
         isHasExercises: 0, // 是否有配对练习 0是 1否
-        status: 0// 教材状态 0正常 1禁用
+        status: 0, // 教材状态 0正常 1禁用
+        coverUrl: '' // 教材封面
       }
     },
     getData() {
@@ -700,10 +720,12 @@ export default {
       this.materialModel.textbookCategory = item.textbookCategory // 教材类别 0YouCan 1拳心同步 2智能英语
       this.materialModel.textbookVersion = item.textbookVersion // 教材版本主键ID
       this.materialModel.isOpenUser = item.isOpenUser // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
+      this.materialModel.isExper = item.isExper
       this.materialModel.schoolIds = item.schoolIds // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
       this.materialModel.isHasVideo = item.isHasVideo // 是否有视频 0是 1否
       this.materialModel.isHasExercises = item.isHasExercises // 是否有配对练习 0是 1否
       this.materialModel.status = item.status// 教材状态 0正常 1禁用
+      this.materialModel.coverUrl = item.coverUrl
     },
     deleteItem(item) {
       if (!this.checkButtonPermission('delete')) {
@@ -733,7 +755,34 @@ export default {
       }).then(res => {
         blobToExecl(res, '教材模板')
       })
-    }
+    },
+    beforeAvatarUpload() { },
+    handleAvatarSuccess() { }
   }
 }
 </script>
+<style lang="scss" scoped>
+>>> .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+>>> .avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 150px;
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
+}
+.avatar {
+  width: 150px;
+  height: 150px;
+  display: block;
+}
+</style>

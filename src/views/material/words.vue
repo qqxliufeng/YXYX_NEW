@@ -186,9 +186,12 @@
               type="text"
               size="mini"
               style="font-size: 16px"
-              icon="el-icon-video-play"
               @click="playDialogAudio"
             >
+              <i
+                class="el-icon-video-play"
+                style="font-size: 20px; color: red;"
+              />
               <audio
                 :id="'dialog-' + tempWord.audioAddr"
                 :src="baseImageIp + tempWord.audioAddr"
@@ -231,10 +234,13 @@
             <el-button
               type="text"
               size="mini"
-              style="font-size: 16px"
-              icon="el-icon-video-play"
+              style="font-size: 16px;"
               @click="playExampleAudio(tempWord)"
             >
+              <i
+                class="el-icon-video-play"
+                style="font-size: 20px; color: red;"
+              />
               <audio
                 id="dialog-audio-player"
                 :src="baseImageIp + tempWord.exampAudioAddr"
@@ -377,7 +383,19 @@ export default {
   },
   watch: {
     materialId(newVal, oldVal) {
+      this.formModelArray.forEach(it => {
+        it.value = ''
+      })
       this.getData(newVal)
+    },
+    tableData(newVal) {
+      if (newVal && newVal.length > 0) {
+        newVal.forEach(it => {
+          if (it.audioAddr) it.audioAddr = it.audioAddr.replace('/opt/nginx/yxvue/dist', '')
+          if (it.exampAudioAddr) it.exampAudioAddr = it.exampAudioAddr.replace('/opt/nginx/yxvue/dist', '')
+          if (it.wordImageAddr) it.wordImageAddr = it.wordImageAddr.replace('/opt/nginx/yxvue/dist', '')
+        })
+      }
     }
   },
   mounted() {
@@ -409,6 +427,9 @@ export default {
         })
       })
     },
+    externalParam(form) {
+      form.textbookId = this.materialId
+    },
     getData() {
       if (!this.materialId) {
         this.$errorMsg('暂没有相关的教材')
@@ -424,11 +445,6 @@ export default {
         }
       }).then(res => {
         this.onSuccess(res.obj)
-        this.tableData.forEach(it => {
-          it.audioAddr = it.audioAddr.replace('/opt/nginx/yxvue/dist', '')
-          it.exampAudioAddr = it.exampAudioAddr.replace('/opt/nginx/yxvue/dist', '')
-          it.wordImageAddr = it.wordImageAddr.replace('/opt/nginx/yxvue/dist', '')
-        })
       })
     },
     playAudio(item) {

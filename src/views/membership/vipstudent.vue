@@ -47,6 +47,7 @@
           label="学生姓名"
           prop="studentName"
           fixed="left"
+          width="120"
         />
         <!-- <el-table-column
           align="center"
@@ -77,14 +78,26 @@
         <el-table-column
           align="center"
           label="在线状态"
-          show-overflow-tooltip
+          width="100"
         >
           <template slot-scope="scope">
-            <div>
-              {{ scope.row.isOnLine === 1 ? "线上" : "线下" }}
+            <div v-if="scope.row.isTeacher === 6">
+              <el-tag
+                type="warning"
+                size="mini"
+                effect="dark"
+              >特殊用户</el-tag>
             </div>
+            <div v-else>
+              <el-tag
+                :type="scope.row.isOnLine === 1 ? 'primary' : 'success'"
+                size="mini"
+                effect="dark"
+              >{{ scope.row.isOnLine === 1 ? "线上" : "线下" }}</el-tag>
+            </div>
+            <!-- 线下用户或者是特殊用户都可以分配教材 -->
             <el-link
-              v-if="scope.row.isOnLine === 0"
+              v-if="scope.row.isOnLine === 0 || scope.row.isTeacher === 6"
               style="font-size: 14px"
               type="danger"
               @click.native="assginTextbook(scope.row)"
@@ -94,11 +107,9 @@
         <el-table-column
           align="center"
           label="学生属性"
-          show-overflow-tooltip
+          width="100"
         >
-          <template slot-scope="scope">{{
-            scope.row.isTeacher === 0 ? "普通学生" : "老师"
-          }}</template>
+          <template slot-scope="scope">{{ studentTypeStatus(scope.row) }}</template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -266,12 +277,13 @@
         >
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.isTeacher">
-              <el-radio :label="0">线上非VIP</el-radio>
+              <!-- <el-radio :label="0">线上非VIP</el-radio> -->
+              <el-radio :label="5">线下学生</el-radio>
               <el-radio :label="1">陪伴号</el-radio>
-              <el-radio :label="2">线上VIP</el-radio>
+              <!-- <el-radio :label="2">线上VIP</el-radio> -->
               <el-radio :label="3">校长</el-radio>
               <el-radio :label="4">老师</el-radio>
-              <el-radio :label="5">线下学生</el-radio>
+              <el-radio :label="6">特殊用户</el-radio>
             </el-radio-group>
           </el-col>
         </el-form-item>
@@ -376,7 +388,7 @@ export default {
         studentPhone: '', // 学生联系方式(登录密码为手机号后6位)
         address: '', // 家庭地址
         sex: 0, // 性别 0男 1女
-        isTeacher: 0, // 学生属性 0普通学生 1老师
+        isTeacher: 5, // 学生属性 0普通学生 1老师
         isOnLine: 1, // 是否线上 0否 1是，和学校线上线下一致
         status: 0 // 状态，0正常 1禁用
       },
@@ -441,6 +453,24 @@ export default {
         type: item.status === 0 ? 'primary' : 'danger'
       }
     },
+    studentTypeStatus(item) {
+      switch (item.isTeacher) {
+        case 0:
+          return '线上非VIP'
+        case 1:
+          return '陪伴号'
+        case 2:
+          return '线上VIP'
+        case 3:
+          return '校长'
+        case 4:
+          return '老师'
+        case 5:
+          return '线下学生'
+        case 6:
+          return '特殊用户'
+      }
+    },
     getMyCalssList(schoolId = this.$store.getters.schoolId) {
       this.$showLoading(closeLoading => {
         this.myClassList = []
@@ -493,7 +523,7 @@ export default {
         studentPhone: '', // 学生联系方式(登录密码为手机号后6位)
         address: '', // 家庭地址
         sex: 0, // 性别 0男 1女
-        isTeacher: 0, // 学生属性 0普通学生 1老师
+        isTeacher: 5, // 学生属性 0普通学生 1老师
         isOnLine: 1, // 是否线上 0否 1是，和学校线上线下一致
         status: 0 // 状态，0正常 1禁用
       }
@@ -516,15 +546,17 @@ export default {
       this.studentModel.status = item.status
     },
     handlerFormConfirm() {
-      if (!this.studentModel.schoolId) {
-        this.$errorMsg('请选择学校')
-        return
+      if (this.mode === 'add') {
+        if (!this.studentModel.schoolId) {
+          this.$errorMsg('请选择学校')
+          return
+        }
+        if (!this.studentModel.classId) {
+          this.$errorMsg('请输入年级名称')
+          return
+        }
       }
-      if (!this.studentModel.classId) {
-        this.$errorMsg('请输入年级名称')
-        return
-      }
-      if (!this.studentModel.studentName) {
+      if (!this.studentModel.studentName.trim()) {
         this.$errorMsg('请输入学生姓名')
         return
       }
@@ -536,7 +568,7 @@ export default {
         this.$errorMsg('请输入合法的手机号码')
         return
       }
-      if (!this.studentModel.address) {
+      if (!this.studentModel.address.trim()) {
         this.$errorMsg('请输入学生家庭地址')
         return
       }

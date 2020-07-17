@@ -232,6 +232,9 @@ export default {
       if (!form.hasOwnProperty('schoolId') || !form.schoolId) {
         form.schoolId = this.$store.getters.schoolId || ''
       }
+      if (this.externalParam) {
+        this.externalParam(form)
+      }
       this.$http({
         url: this.likeSearchUrl,
         methods: this.HTTP_GET,

@@ -65,6 +65,7 @@ pathMapName.set('vipshcool', 'VIPShcool')
 pathMapName.set('vipteacher', 'VIPTeacher')
 pathMapName.set('vipclass', 'VIPClass')
 pathMapName.set('vipstudent', 'VIPStudent')
+pathMapName.set('expressuser', 'ExpressUser')
 pathMapName.set('material', 'Material')
 pathMapName.set('prize', 'Prize')
 pathMapName.set('lucklist', 'LuckList')
@@ -72,6 +73,7 @@ pathMapName.set('lucklist', 'LuckList')
 const pathToFileName = new Map()
 pathToFileName.set('/message/groupmessage', '/message/GroupMessage')
 pathToFileName.set('/message/schoolmessage', '/message/SchoolMessage')
+pathToFileName.set('/membership/expressuser', '/membership/ExpressUser')
 
 /**
  * Use meta.role to determine if the current user has permission
