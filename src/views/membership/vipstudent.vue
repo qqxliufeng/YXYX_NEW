@@ -48,7 +48,7 @@
           prop="studentName"
           fixed="left"
         />
-        <el-table-column
+        <!-- <el-table-column
           align="center"
           label="学号"
           prop="schoolNo"
@@ -58,7 +58,7 @@
               {{ scope.row.studentNo ? scope.row.studentNo : '暂无' }}
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           align="center"
           label="手机号码"
@@ -171,6 +171,7 @@
     <el-dialog
       :title="mode === 'add' ? '添加学生' : '编辑学生信息'"
       :visible.sync="dialogFormVisible"
+      width="60%"
       top="10vh"
     >
       <el-form class="dialog-container">
@@ -266,8 +267,11 @@
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.isTeacher">
               <el-radio :label="0">线上非VIP</el-radio>
+              <el-radio :label="1">陪伴号</el-radio>
+              <el-radio :label="2">线上VIP</el-radio>
               <el-radio :label="3">校长</el-radio>
               <el-radio :label="4">老师</el-radio>
+              <el-radio :label="5">线下学生</el-radio>
             </el-radio-group>
           </el-col>
         </el-form-item>
