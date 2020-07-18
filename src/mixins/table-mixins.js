@@ -53,7 +53,6 @@ export default {
   },
   methods: {
     onCollapsed() {
-      console.log('123')
       this.tableCardStyle.top = this.$refs.tableHeader ? (this.$refs.tableHeader.$el.offsetHeight + 10 + 'px') : '0'
     },
     resetData() {

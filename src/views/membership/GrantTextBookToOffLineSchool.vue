@@ -94,7 +94,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="状态"
+          label="操作"
           width="150"
           fixed="right"
         >

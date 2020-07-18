@@ -5,7 +5,7 @@
   >
     <table-header
       ref="tableHeader"
-      title="基本操作"
+      title="查询内容"
       :form-model-array="formModelArray"
       :show-delete="false"
       :show-add="isSuperAdmin"
@@ -454,11 +454,11 @@ const textbookTypes = [
     value: 1
   },
   {
-    label: '体验',
+    label: '综合',
     value: 2
   },
   {
-    label: '自然拼读',
+    label: '拼读',
     value: 3
   }
 ]
