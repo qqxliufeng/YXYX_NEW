@@ -1,3 +1,5 @@
+import { baseImageIp } from '@/api/url-path'
+
 // import parseTime, formatTime and set to filter
 export { parseTime, formatTime } from '@/utils'
 
@@ -76,4 +78,14 @@ export function emptyFormat(text) {
     return '暂无'
   }
   return text
+}
+
+/**
+ * 获取图片的真正地址
+ */
+export function getImagePath(src) {
+  if (src) {
+    return baseImageIp + src.replace('/opt/nginx/yxvue/dist', '')
+  }
+  return ''
 }

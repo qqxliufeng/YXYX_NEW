@@ -230,8 +230,8 @@
         <el-form-item label="是否体验">
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="materialModel.isExper">
-              <el-radio :label="0">是</el-radio>
-              <el-radio :label="1">否</el-radio>
+              <el-radio :label="0">否</el-radio>
+              <el-radio :label="1">是</el-radio>
             </el-radio-group>
           </el-col>
         </el-form-item>
@@ -271,18 +271,19 @@
           <el-col :span="$style.dialogColSpan">
             <el-upload
               class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :show-file-list="false"
+              :action="uploadCoverUrl"
+              list-type="picture-card"
+              :headers="headers"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
+              :on-remove="handleRemove"
+              :limit="1"
+              :file-list="fileList"
+              :on-exceed="handlerExceed"
+              name="textBookCoverFile"
             >
-              <img
-                v-if="materialModel.coverUrl"
-                :src="materialModel.coverUrl"
-                class="avatar"
-              >
               <i
-                v-else
+                slot="default"
                 class="el-icon-plus avatar-uploader-icon"
               />
             </el-upload>
@@ -438,6 +439,9 @@ import tableMixins from '../../mixins/table-mixins'
 import { blobToExecl } from '../../api/common'
 import textBookMixins from '../../mixins/text-book-mixins'
 import userMixins from '../../mixins/user-mixins'
+import { getToken } from '../../utils/auth'
+import { baseIp } from '../../api/url-path'
+import { getImagePath } from '../../filters'
 const textbookTypes = [
   {
     label: '词汇',
@@ -575,8 +579,19 @@ export default {
       dialogFormVisible: false,
       dialogGrantSchoolVisible: false,
       grantSchoolLoading: false,
-      grantSchoolTableData: []
-
+      grantSchoolTableData: [],
+      uploadCoverUrl: baseIp + this.$urlPath.uploadTextBookCoverImage,
+      headers: {
+        'Authorization': `Bearer ${getToken()}`
+      },
+      fileList: []
+    }
+  },
+  watch: {
+    dialogFormVisible(newVal) {
+      if (!newVal) {
+        this.fileList = []
+      }
     }
   },
   mounted() {
@@ -598,6 +613,7 @@ export default {
       }
       this.dialogFormVisible = true
       this.mode = 'add'
+      this.fileList = []
       this.materialModel = {
         textbookName: '', // 教材名称
         unLockCoins: 0, // 解锁所需优钻
@@ -665,6 +681,10 @@ export default {
         this.$errorMsg('请输入教材名称')
         return
       }
+      if (!this.materialModel.coverUrl) {
+        this.$errorMsg('请选择一张教材封面')
+        return
+      }
       this.dialogFormVisible = false
       this.$showLoading(closeLoading => {
         if (this.mode === 'add') {
@@ -726,6 +746,14 @@ export default {
       this.materialModel.isHasExercises = item.isHasExercises // 是否有配对练习 0是 1否
       this.materialModel.status = item.status// 教材状态 0正常 1禁用
       this.materialModel.coverUrl = item.coverUrl
+      if (this.materialModel.coverUrl) {
+        this.fileList.push(
+          {
+            name: 'cover.png',
+            url: getImagePath(item.coverUrl)
+          }
+        )
+      }
     },
     deleteItem(item) {
       if (!this.checkButtonPermission('delete')) {
@@ -756,8 +784,26 @@ export default {
         blobToExecl(res, '教材模板')
       })
     },
-    beforeAvatarUpload() { },
-    handleAvatarSuccess() { }
+    beforeAvatarUpload(file) {
+      const isJPGOrPNG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 < 500
+      if (!isJPGOrPNG) {
+        this.$message.error('上传教材封面图片只能是 JPG或者PNG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传教材封面图片大小不能超过 500KB!')
+      }
+      return isJPGOrPNG && isLt2M
+    },
+    handleAvatarSuccess(res, file) {
+      if (res.status === 200) this.materialModel.coverUrl = res.obj
+    },
+    handleRemove(file) {
+      this.materialModel.coverUrl = ''
+    },
+    handlerExceed() {
+      this.$errorMsg('最多只能上传 1 张封面图片')
+    }
   }
 }
 </script>

@@ -251,6 +251,8 @@ export const queryTextBookListLike = baseModuleUrl + 'queryTextBookListLike'
 
 export const saveTextBook = baseModuleUrl + 'saveTextBook'
 
+export const uploadTextBookCoverImage = baseModuleUrl + 'uploadTextBookCoverImage'
+
 export const updateTextBook = baseModuleUrl + 'updateTextBook'
 
 export const deleteTextBook = baseModuleUrl + 'deleteTextBook'
