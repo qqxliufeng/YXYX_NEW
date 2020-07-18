@@ -28,6 +28,10 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import Element from 'element-ui'
+// fade/zoom 等
+import 'element-ui/lib/theme-chalk/base.css'
+// collapse 展开折叠
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition'
 
 import * as filters from './filters' // global filters
 
@@ -41,6 +45,7 @@ import './utils/init-vue.js'
 Vue.component('TableFoot', TableFoot)
 Vue.component('TableHeader', TableHeader)
 Vue.component('TableStatus', TableStatus)
+Vue.component(CollapseTransition.name, CollapseTransition)
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size

@@ -1,11 +1,3 @@
-<!--
- * @Author: your name
- * @Date: 2020-06-13 10:35:14
- * @LastEditTime: 2020-06-13 17:58:52
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /YXYX_NEW/src/views/membership/vipstudent.vue
--->
 <template>
   <div class="container">
     <table-header
@@ -15,8 +7,10 @@
       :show-search="true"
       :show-add="isSuperAdmin || !isOnLineSchool"
       :show-delete="false"
+      :can-collapse="true"
       @onadd="onAdd"
       @onsearch="onSearch"
+      @table-header-collapse="onCollapsed"
     />
     <el-card
       :body-style="{ padding: '2px' }"
@@ -49,17 +43,6 @@
           fixed="left"
           width="120"
         />
-        <!-- <el-table-column
-          align="center"
-          label="学号"
-          prop="schoolNo"
-        >
-          <template slot-scope="scope">
-            <div>
-              {{ scope.row.studentNo ? scope.row.studentNo : '暂无' }}
-            </div>
-          </template>
-        </el-table-column> -->
         <el-table-column
           align="center"
           label="手机号码"

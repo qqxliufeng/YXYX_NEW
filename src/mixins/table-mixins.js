@@ -52,6 +52,10 @@ export default {
     console.log('消息取消监听')
   },
   methods: {
+    onCollapsed() {
+      console.log('123')
+      this.tableCardStyle.top = this.$refs.tableHeader ? (this.$refs.tableHeader.$el.offsetHeight + 10 + 'px') : '0'
+    },
     resetData() {
       this.tableData = []
       this.page = 1
@@ -144,8 +148,6 @@ export default {
     onSuccess(data) {
       this.loading = false
       this.tableData = data.list
-      // this.tableData = this.tableData.concat(this.tableData)
-      // this.tableData = this.tableData.concat(this.tableData)
       this.pageInfo = {
         endRow: data.endRow,
         hasNextPage: data.hasNextPage,

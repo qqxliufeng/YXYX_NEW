@@ -10,8 +10,10 @@
       :show-delete="false"
       :show-add="isSuperAdmin"
       :show-search="true"
+      :can-collapse="true"
       @onsearch="onSearch"
       @onadd="onAdd"
+      @table-header-collapse="onCollapsed"
     >
       <template slot="other">
         <el-button

@@ -1,11 +1,3 @@
-<!--
- * @Author: your name
- * @Date: 2020-06-13 10:34:43
- * @LastEditTime: 2020-06-13 17:16:51
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /YXYX_NEW/src/views/membership/vipteacher.vue
--->
 <template>
   <div class="container">
     <table-header
@@ -15,8 +7,10 @@
       :show-search="true"
       :show-add="true"
       :show-delete="false"
+      :can-collapse="true"
       @onadd="onAdd"
       @onsearch="onSearch"
+      @table-header-collapse="onCollapsed"
     />
     <el-card
       :body-style="{ padding: '2px' }"

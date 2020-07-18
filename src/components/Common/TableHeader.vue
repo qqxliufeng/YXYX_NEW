@@ -5,7 +5,14 @@
         slot="header"
         class="flex align-center"
       >
-        <span class="text-bold text-sm">{{ title }}</span>
+        <el-link
+          :underline="false"
+          @click="collapsed"
+        >{{ title }}
+          <i
+            v-if="canCollapse"
+            :class="isCollapse ? 'el-icon-caret-bottom' : 'el-icon-caret-top'"
+          /></el-link>
         <div class="flex-sub" />
         <el-button
           v-if="showAdd"
@@ -23,62 +30,64 @@
         >批量删除</el-button>
         <slot name="other" />
       </div>
-      <div v-if="showSearch && formModelArray.length > 0">
-        <el-row>
-          <el-col :span="22">
-            <el-form
-              :inline="true"
-              size="small"
-              :gutter="5"
-            >
-              <el-form-item
-                v-for="item of formModelArray"
-                :key="item.id"
-                :label="item.label"
-                style="padding: 10px"
+      <el-collapse-transition>
+        <div v-if="isCollapse && showSearch && formModelArray.length > 0">
+          <el-row>
+            <el-col :span="22">
+              <el-form
+                :inline="true"
+                size="small"
+                :gutter="5"
               >
-                <el-input
-                  v-if="item.type === 'input'"
-                  v-model="item.value"
-                  placeholder="请输入内容"
-                  clearable
-                />
-                <el-cascader
-                  v-else-if="item.type === 'address'"
-                  v-model="item.value"
-                  :options="level"
-                  :props="{label: 'name', value: 'name'}"
-                  clearable
-                />
-                <el-select
-                  v-else-if="item.type === 'select'"
-                  v-model="item.value"
-                  clearable
+                <el-form-item
+                  v-for="item of formModelArray"
+                  :key="item.id"
+                  :label="item.label"
+                  style="padding: 10px"
                 >
-                  <el-option
-                    v-for="it of item.selectOptions"
-                    :key="it.value"
-                    :label="it.label"
-                    :value="it.value"
+                  <el-input
+                    v-if="item.type === 'input'"
+                    v-model="item.value"
+                    placeholder="请输入内容"
+                    clearable
                   />
-                </el-select>
-              </el-form-item>
-            </el-form>
-          </el-col>
-          <el-col
-            :span="2"
-            style="margin-top: 10px; text-align: right; padding-right: 10px"
-          >
-            <el-button
-              v-if="showSearch && formModelArray.length > 0"
-              type="primary"
-              size="mini"
-              icon="el-icon-search"
-              @click="onsearch"
-            >查询</el-button>
-          </el-col>
-        </el-row>
-      </div>
+                  <el-cascader
+                    v-else-if="item.type === 'address'"
+                    v-model="item.value"
+                    :options="level"
+                    :props="{label: 'name', value: 'name'}"
+                    clearable
+                  />
+                  <el-select
+                    v-else-if="item.type === 'select'"
+                    v-model="item.value"
+                    clearable
+                  >
+                    <el-option
+                      v-for="it of item.selectOptions"
+                      :key="it.value"
+                      :label="it.label"
+                      :value="it.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-form>
+            </el-col>
+            <el-col
+              :span="2"
+              style="margin-top: 10px; text-align: right; padding-right: 10px"
+            >
+              <el-button
+                v-if="showSearch && formModelArray.length > 0"
+                type="primary"
+                size="mini"
+                icon="el-icon-search"
+                @click="onsearch"
+              >查询</el-button>
+            </el-col>
+          </el-row>
+        </div>
+      </el-collapse-transition>
     </el-card>
   </div>
 </template>
@@ -108,11 +117,23 @@ export default {
     showSearch: {
       type: Boolean,
       default: true
+    },
+    canCollapse: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      level: this.$privinceData
+      level: this.$privinceData,
+      isCollapse: true
+    }
+  },
+  watch: {
+    isCollapse() {
+      setTimeout(_ => {
+        this.$emit('table-header-collapse')
+      }, 350)
     }
   },
   methods: {
@@ -124,6 +145,12 @@ export default {
     },
     onsearch() {
       this.$emit('onsearch')
+    },
+    collapsed() {
+      if (!this.canCollapse) {
+        return
+      }
+      this.isCollapse = !this.isCollapse
     }
   }
 }
