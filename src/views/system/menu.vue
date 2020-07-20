@@ -23,7 +23,6 @@
           align="center"
           prop="menuName"
           label="菜单名称"
-          width
         >
           <template slot-scope="scope">
             <el-link
