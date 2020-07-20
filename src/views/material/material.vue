@@ -57,6 +57,14 @@
         />
         <el-table-column
           align="center"
+          label="体验教材"
+        >
+          <template slot-scope="scope">
+            <table-status :status="{ label: scope.row.isExper === 1 ? '是' : '否', type: scope.row.isExper === 1 ? 'danger' : 'primary'}" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           label="教材类型"
           :formatter="typeFormatter"
         />
