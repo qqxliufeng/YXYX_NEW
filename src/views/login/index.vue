@@ -80,7 +80,7 @@
           <el-button
             :loading="loading"
             type="primary"
-            style="width:100%; margin-top: 60px"
+            style="width:100%; margin-top: 10%"
             @click.native.prevent="handleLogin"
           >登录
           </el-button>
@@ -312,6 +312,7 @@ $primary_color: #1890ff;
         border: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
         position: relative;
         width: 80%;
+        height: 60%;
         padding: 40px;
         margin: 0 auto;
         margin-left: 0;

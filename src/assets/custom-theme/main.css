@@ -49,6 +49,10 @@ body {
   font-family: Helvetica Neue, Helvetica, sans-serif;
 }
 
+body .el-table__fixed::before {
+  z-index: inherit;
+}
+
 * {
   box-sizing: border-box;
 }

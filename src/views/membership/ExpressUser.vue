@@ -28,6 +28,7 @@
           align="center"
           label="序号"
           fixed="left"
+          width="55"
         >
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
@@ -37,20 +38,17 @@
           align="center"
           label="账号"
           prop="studentNo"
-          width="120"
           fixed="left"
         />
         <el-table-column
           align="center"
           label="所属学校"
           prop="school.schoolName"
-          width="150"
         />
         <el-table-column
           align="center"
           prop="isLock"
           label="状态"
-          show-overflow-tooltip
         >
           <template slot-scope="scope">
             <table-status :status="statusFormat(scope.row)" />
@@ -60,7 +58,6 @@
           align="center"
           label="创建时间"
           prop="createTime"
-          width="170"
         >
           <template slot-scope="scope">{{
             scope.row.createTime | parseTime
@@ -69,7 +66,6 @@
         <el-table-column
           align="center"
           label="到期时间"
-          width="170"
         >
           <template slot-scope="scope">
             <div v-if="scope.row.endTime">{{ scope.row.endTime | parseTime }}</div>
@@ -105,6 +101,7 @@
               </el-dropdown-menu>
             </el-dropdown>
             <el-dropdown
+              v-if="isSuperAdmin"
               style="display: inline-block; margin-left: 10px"
               :size="$style.tableButtonSize"
               type="success"
@@ -113,13 +110,18 @@
             >
               更多
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{tag: 1, item: scope.row}">查看/编辑教材</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="isSuperAdmin"
-                  :command="{tag: 2, item: scope.row}"
-                >延长时间</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 1, item: scope.row}">编辑教材</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 2, item: scope.row}">延长时间</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
+            <el-button
+              v-else
+              :size="$style.tableButtonSize"
+              type="success"
+              @click="editTextBook(scope.row)"
+            >
+              编辑教材
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -164,7 +166,7 @@
             <el-input-number
               v-model="addExpressUserModel.experNum"
               :min="1"
-              :max="10"
+              :max="100"
               style="width: 100%"
             />
           </el-col>
@@ -250,14 +252,12 @@
           align="center"
           label="教材名称"
           prop="textbookName"
-          width="120"
           fixed="left"
         />
         <el-table-column
           align="center"
           label="教材版本"
           prop="textbookVersion"
-          width="150"
         />
         <el-table-column
           align="center"
@@ -285,71 +285,41 @@
       </div>
     </el-dialog>
     <!-- 添加体验账号对话框 -->
-    <!-- 查看教材对话框 -->
+    <!-- 延期对话框 -->
     <el-dialog
-      title="编辑教材"
-      :visible.sync="editTextBookModel.dialogLookBookVisible"
+      title="延长时间"
+      :visible.sync="addTimeModel.dialogAddTimeVisible"
     >
-      <el-table
-        ref="grantTextBookMultiTable"
-        v-loading="loading"
-        :stripe="tableConfig.stripe"
-        :header-cell-style="tableConfig.headerCellStyle"
-        :data="editTextBookModel.grantedTextBookList"
-        :border="tableConfig.border"
-        :size="tableConfig.size"
-        :default-sort="tableConfig.defalutSort"
-        :style="tableConfig.style"
-        @selection-change="editTextBookModel.handleSelectionChange"
-      >
-        <el-table-column
-          align="center"
-          type="selection"
-          fixed="left"
-        />
-        <el-table-column
-          align="center"
-          label="序号"
-          fixed="left"
-        >
-          <template slot-scope="scope">
-            {{ scope.$index + 1 }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="教材名称"
-          prop="textbookName"
-          width="120"
-          fixed="left"
-        />
-        <el-table-column
-          align="center"
-          label="教材版本"
-          prop="textbookVersion"
-          width="150"
-        />
-        <el-table-column
-          align="center"
-          prop="isLock"
-          label="状态"
-        >
-          <template slot-scope="scope">
-            <table-status :status="editTextBookModel.grantStatusFormatter(scope.row)" />
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-form class="dialog-container">
+        <el-form-item label="选择时间">
+          <el-col :span="$style.dialogColSpan">
+            <el-date-picker
+              v-model="addTimeModel.timeValue"
+              type="datetime"
+              placeholder="选择日期时间"
+              style="width: 100%"
+              value-format="timestamp"
+              :picker-options="datePickerOptions"
+            />
+          </el-col>
+        </el-form-item>
+      </el-form>
       <div
         slot="footer"
         class="dialog-footer"
       >
         <el-button
           :size="$style.dialogButtonSize"
-          @click="editTextBookModel.dialogLookBookVisible = false"
-        >我知道了</el-button>
+          @click="addTimeModel.dialogAddTimeVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handlerAddTimeConfirm"
+        >确定</el-button>
       </div>
     </el-dialog>
-    <!-- 添加体验账号对话框 -->
+    <!-- 延期对话框 -->
   </div>
 </template>
 
@@ -382,6 +352,15 @@ export default {
         },
         handleSelectionChange: (val) => {
           this.editTextBookModel.selectTextBookList = val
+        }
+      },
+      addTimeModel: {
+        dialogAddTimeVisible: false,
+        timeValue: ''
+      },
+      datePickerOptions: {
+        disabledDate(date) {
+          return date < new Date()
         }
       }
     }
@@ -511,6 +490,10 @@ export default {
       })
     },
     handlerEditTextBookConfirm() {
+      if (this.editTextBookModel.selectTextBookList.length > this.editTextBookModel.tempItem.textbookNum) {
+        this.$errorMsg('当前账号最多只能添加' + this.editTextBookModel.tempItem.textbookNum + '本教材')
+        return
+      }
       this.$http({
         url: this.$urlPath.grantTextBookToExperience,
         data: {
@@ -539,17 +522,43 @@ export default {
     handleExpressUserCommand({ tag, item }) {
       switch (tag) {
         case 1:
-          if (item.status !== 1) {
-            this.$errorMsg('只有在账号未被激活的状态下可编辑教材')
-            return
-          }
-          this.editTextBookModel.tempItem = item
-          this.editTextBookModel.dialogEditTextBookVisible = true
-          this.getCanGrantTextBookList(item)
+          this.editTextBook(item)
           return
         case 2:
+          this.editTextBookModel.tempItem = item
+          this.addTimeModel.dialogAddTimeVisible = true
           return
       }
+    },
+    editTextBook(item) {
+      if (item.status !== 1) {
+        this.$errorMsg('只有在账号未被激活的状态下可编辑教材')
+        return
+      }
+      this.editTextBookModel.tempItem = item
+      this.editTextBookModel.dialogEditTextBookVisible = true
+      this.getCanGrantTextBookList(item)
+    },
+    handlerAddTimeConfirm() {
+      if (!this.addTimeModel.timeValue) {
+        this.$errorMsg('请选择延长日期')
+        return
+      }
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.delayExperStudent,
+          data: {
+            studentId: this.editTextBookModel.tempItem.studentId,
+            delayDate: this.addTimeModel.timeValue
+          }
+        }).then(res => {
+          closeLoading()
+          this.getData()
+          this.addTimeModel.dialogAddTimeVisible = false
+        }).catch(_ => {
+          closeLoading()
+        })
+      })
     }
   }
 }
