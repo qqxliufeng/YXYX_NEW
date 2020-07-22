@@ -31,7 +31,6 @@
           prop="username"
           label="用户名称"
           fixed="left"
-          width="100"
         >
           <template slot-scope="scope">
             <el-link
@@ -48,7 +47,6 @@
           align="center"
           prop="endTime"
           label="操作耗时"
-          width="160"
         >
           <template slot-scope="scope">
             {{ scope.row.useTime / 1000 + 's' }}
@@ -58,7 +56,6 @@
           align="center"
           prop="username"
           label="耗时级别"
-          width="100"
         >
           <template slot-scope="scope">
             <el-link :type="getWarningLevelName(scope.row)">{{ getWarningName(scope.row) }}</el-link>
@@ -74,13 +71,12 @@
           align="center"
           prop="moduleName"
           label="操作模块"
-          width="120"
         />
         <el-table-column
           align="center"
           prop="optionName"
           label="具体说明"
-          width="160"
+          width="200"
         />
         <el-table-column
           align="center"
