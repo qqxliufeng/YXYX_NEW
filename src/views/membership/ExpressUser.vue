@@ -472,6 +472,9 @@ export default {
       })
     },
     disableAccount(item) {
+      if (!this.checkButtonPermission('disable')) {
+        return
+      }
       this.$warningConfirm('是否要禁用此体验账号？', _ => {
         this.$showLoading(closeLoading => {
           this.$http({
@@ -506,6 +509,9 @@ export default {
       })
     },
     handleActivityAccountCommand({ tag, item }) {
+      if (!this.checkButtonPermission('activate')) {
+        return
+      }
       this.$warningConfirm('是否要激活此账号，有效期' + tag + '天', _ => {
         this.$http({
           url: this.$urlPath.activationExperience,
@@ -525,12 +531,18 @@ export default {
           this.editTextBook(item)
           return
         case 2:
+          if (!this.checkButtonPermission('delayTime')) {
+            return
+          }
           this.editTextBookModel.tempItem = item
           this.addTimeModel.dialogAddTimeVisible = true
           return
       }
     },
     editTextBook(item) {
+      if (!this.checkButtonPermission('edit')) {
+        return
+      }
       if (item.status !== 1) {
         this.$errorMsg('只有在账号未被激活的状态下可编辑教材')
         return
