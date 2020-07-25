@@ -6,7 +6,9 @@
       :form-model-array="formModelArray"
       :show-delete="false"
       :show-add="false"
+      :can-collapse="true"
       @onsearch="onSearch"
+      @table-header-collapse="onCollapsed"
     >
       <template slot="other">
         <el-button
