@@ -124,7 +124,7 @@
           align="center"
           label="操作"
           fixed="right"
-          min-width="250"
+          min-width="330"
         >
           <template slot-scope="scope">
             <el-button
@@ -148,6 +148,11 @@
               type="success"
               @click="initPassword(scope.row)"
             >重置密码</el-button>
+            <el-button
+              :size="$style.tableButtonSize"
+              type="warning"
+              @click="company(scope.row)"
+            >陪伴号</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -604,6 +609,24 @@ export default {
         params: {
           studentId: item.studentId
         }
+      })
+    },
+    company(item) {
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.queryStudentCompanion,
+          methods: this.HTTP_GET,
+          data: {
+            studentId: item.studentId,
+            isTeacher: item.isTeacher,
+            isOnLine: item.isOnLine
+          }
+        }).then(res => {
+          closeLoading()
+          console.log(res)
+        }).catch(_ => {
+          closeLoading()
+        })
       })
     }
   }

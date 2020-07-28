@@ -9,10 +9,10 @@
 
 export const baseImageIp = 'http://118.190.3.78'
 
-// export const baseIp = 'http://192.168.1.103:8881'
+export const baseIp = 'http://192.168.1.103:8880'
 
 // export const baseIp = 'http://118.190.3.78:8881'
-export const baseIp = 'http://ht.youcanedu.net:8881'
+// export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
  * 基础模块名字
@@ -240,6 +240,8 @@ export const initStudentPassword = baseModuleUrl + 'initStudentPassword'
 export const studentAssignedTextBook = baseModuleUrl + 'studentAssignedTextBook'
 
 export const getAllTextBookAndStudent = baseModuleUrl + 'getAllTextBookAndStudent'
+
+export const queryStudentCompanion = baseModuleUrl + 'queryStudentCompanion'
 
 // ****************会员管理 --- 学生管理 **************** //
 
