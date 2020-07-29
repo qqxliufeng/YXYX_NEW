@@ -51,10 +51,19 @@
           align="center"
           label="视频地址"
           prop="groupVideo"
-          show-overflow-tooltip
+          width="450"
         >
           <template slot-scope="scope">
-            <div class="text-cut">{{ scope.row.groupVideo === null ? '暂无' : scope.row.groupVideo }}</div>
+            <el-link
+              class="text-cut"
+              type="primary"
+              :underline="true"
+            >
+              <a
+                :href="baseImageIp + scope.row.groupVideo"
+                target="_blank"
+              >{{ scope.row.groupVideo === null ? '暂无' : scope.row.groupVideo }}</a>
+            </el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -96,12 +105,18 @@
 <script>
 import MaterialTableHeader from './components/MaterialTableHeader'
 import tableMixins from '../../mixins/table-mixins'
+import { baseImageIp } from '../../api/url-path'
 export default {
   name: 'LevelGroup',
   components: {
     MaterialTableHeader
   },
   mixins: [tableMixins],
+  data() {
+    return {
+      baseImageIp
+    }
+  },
   methods: {
     onChangeValue({ textbookId, courseCode, levelCode }) {
       this.page = 0
@@ -124,6 +139,10 @@ export default {
         }
       }).then(res => {
         this.onSuccess(res.obj)
+        // opt/nginx/yxvue/dist/
+        this.tableData.forEach(it => {
+          it.groupVideo = it.groupVideo.replace('opt/nginx/yxvue/dist/', '')
+        })
       })
     }
   }

@@ -78,11 +78,11 @@
           prop="textbookVersion"
           label="教材版本"
         />
-        <el-table-column
+        <!-- <el-table-column
           align="center"
           prop="unLockCoins"
           label="解锁优钻"
-        />
+        /> -->
         <el-table-column
           align="center"
           label="包含视频"
@@ -179,7 +179,7 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item label="所需优钻">
+        <!-- <el-form-item label="所需优钻">
           <el-col :span="$style.dialogColSpan">
             <el-input-number
               v-model="materialModel.unLockCoins"
@@ -188,7 +188,7 @@
               style="width: 100%"
             />
           </el-col>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="教材类型">
           <el-col :span="$style.dialogColSpan">
             <el-select

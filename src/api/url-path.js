@@ -7,12 +7,12 @@
  * @LastEditTime: 2020-06-08 15:38:21
  */
 
-export const baseImageIp = 'http://118.190.3.78'
+export const baseImageIp = 'http://ht.youcanedu.net'
 
-export const baseIp = 'http://192.168.1.103:8880'
+// export const baseIp = 'http://192.168.1.103:8880'
 
 // export const baseIp = 'http://118.190.3.78:8881'
-// export const baseIp = 'http://ht.youcanedu.net:8881'
+export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
  * 基础模块名字

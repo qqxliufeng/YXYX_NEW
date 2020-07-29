@@ -149,6 +149,7 @@
               @click="initPassword(scope.row)"
             >重置密码</el-button>
             <el-button
+              :disabled="scope.row.isTeacher === 1 || scope.row.isTeacher === 5"
               :size="$style.tableButtonSize"
               type="warning"
               @click="company(scope.row)"
@@ -213,6 +214,23 @@
             </el-select>
           </el-col>
         </el-form-item>
+        <el-form-item
+          v-if="isSuperAdmin"
+          label="学生属性"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-radio-group v-model="studentModel.isTeacher">
+              <!-- <el-radio :label="0">线上非VIP</el-radio> -->
+              <el-radio :label="5">线下学生</el-radio>
+              <el-radio :label="1">陪伴号</el-radio>
+              <!-- <el-radio :label="2">线上VIP</el-radio> -->
+              <el-radio :label="3">校长</el-radio>
+              <el-radio :label="4">老师</el-radio>
+              <el-radio :label="6">特殊用户</el-radio>
+            </el-radio-group>
+            <span class="text-red margin-left">（注：请谨慎选择账号类型）</span>
+          </el-col>
+        </el-form-item>
         <el-form-item label="学生姓名">
           <el-col :span="$style.dialogColSpan">
             <el-input
@@ -259,22 +277,6 @@
             </el-radio-group>
           </el-col>
         </el-form-item>
-        <el-form-item
-          v-if="isSuperAdmin"
-          label="学生属性"
-        >
-          <el-col :span="$style.dialogColSpan">
-            <el-radio-group v-model="studentModel.isTeacher">
-              <!-- <el-radio :label="0">线上非VIP</el-radio> -->
-              <el-radio :label="5">线下学生</el-radio>
-              <el-radio :label="1">陪伴号</el-radio>
-              <!-- <el-radio :label="2">线上VIP</el-radio> -->
-              <el-radio :label="3">校长</el-radio>
-              <el-radio :label="4">老师</el-radio>
-              <el-radio :label="6">特殊用户</el-radio>
-            </el-radio-group>
-          </el-col>
-        </el-form-item>
         <el-form-item label="学生状态">
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.status">
@@ -299,7 +301,42 @@
         >确定</el-button>
       </div>
     </el-dialog>
-    <!-- 增加班级对话框 -->
+    <!-- 增加学生对话框 -->
+
+    <!-- 查看陪伴号对话框 -->
+    <el-dialog
+      title="陪伴账号"
+      :visible.sync="dialogCompanyVisible"
+    >
+      <el-form class="dialog-container">
+        <el-form-item label="账号名称">
+          <el-col :span="$style.dialogColSpan">
+            <el-link type="danger">{{ companyItem ? companyItem.studentName : '' }}</el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-col :span="$style.dialogColSpan">
+            <el-link type="danger">{{ companyItem ? companyItem.studentPhone : '' }}</el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="家庭地址">
+          <el-col :span="$style.dialogColSpan">
+            <el-link type="danger">{{ companyItem ? companyItem.address : '' }}</el-link>
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="dialogCompanyVisible = false"
+        >知道了</el-button>
+      </div>
+    </el-dialog>
+    <!-- 查看陪伴号对话框 -->
   </div>
 </template>
 
@@ -384,7 +421,9 @@ export default {
       textbookList: [],
       tempWacherItem: {},
       myClassList: [],
-      isOnLineSchoolTip: ''
+      isOnLineSchoolTip: '',
+      dialogCompanyVisible: false,
+      companyItem: null
     }
   },
   watch: {
@@ -623,7 +662,8 @@ export default {
           }
         }).then(res => {
           closeLoading()
-          console.log(res)
+          this.companyItem = res.obj[0]
+          this.dialogCompanyVisible = true
         }).catch(_ => {
           closeLoading()
         })

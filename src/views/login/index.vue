@@ -80,7 +80,7 @@
           <el-button
             :loading="loading"
             type="primary"
-            style="width:100%; margin-top: 10%"
+            style="width:100%; margin-top: 20%"
             @click.native.prevent="handleLogin"
           >登录
           </el-button>
