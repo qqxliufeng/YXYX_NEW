@@ -9,9 +9,8 @@
 
 export const baseImageIp = 'http://ht.youcanedu.net'
 
-// export const baseIp = 'http://192.168.1.103:8880'
+// export const baseIp = 'http://192.168.1.103:8881'
 
-// export const baseIp = 'http://118.190.3.78:8881'
 export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
@@ -219,6 +218,8 @@ export const lockSchoolClass = baseModuleUrl + 'lockSchoolClass'
 
 export const unLockSchoolClass = baseModuleUrl + 'unLockSchoolClass'
 
+export const grantReviewTextBookToSchoolClass = baseModuleUrl + 'grantReviewTextBookToSchoolClass'
+
 // ****************会员管理 --- 班级管理 **************** //
 
 // ****************会员管理 --- 学生管理 **************** //
@@ -266,6 +267,8 @@ export const delayExperStudent = baseModuleUrl + 'delayExperStudent'
 // ****************会员管理 --- 体验账号管理 **************** //
 
 // ****************教材信息**************** //
+
+export const queryAllTextBookVersion = baseModuleUrl + 'queryAllTextBookVersion'
 
 export const queryTextBookList = baseModuleUrl + 'queryTextBookList'
 

@@ -19,6 +19,16 @@ export default {
     }
   },
   methods: {
+    /**
+     * 根据学校id，判断这个学校是否是线上线下
+     * @param {学校id} schoolId
+     */
+    isOnLineSchoolStatus(schoolId) {
+      return this.schoolList.find(it => it.schoolId === schoolId).isOnLine === 1
+    },
+    /**
+     * 获取所有的学校列表
+     */
     getSchoolList(callback) {
       this.enginData(this.$urlPath.querySchoolList, 'schoolList', 1000, callback)
     },

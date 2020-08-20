@@ -34,13 +34,6 @@
         />
         <el-table-column
           align="center"
-          prop="textbookId"
-          label="ID"
-          fixed="left"
-          width="90"
-        />
-        <el-table-column
-          align="center"
           prop="textbookName"
           label="教材名称"
           fixed="left"

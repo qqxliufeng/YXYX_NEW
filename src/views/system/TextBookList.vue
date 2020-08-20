@@ -5,13 +5,13 @@
       :show-delete="false"
       :show-add="false"
     >
-      <template slot="other">
+      <!-- <template slot="other">
         <el-button
           type="primary"
           size="mini"
           @click="grantAllTextBook"
         >批量授权</el-button>
-      </template>
+      </template> -->
     </table-header>
     <el-card :body-style="{padding: 0}">
       <el-table
@@ -24,59 +24,88 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
-        @selection-change="handleSelectionChange"
+        @expand-change="expandChange"
       >
-        <el-table-column
-          align="center"
-          type="selection"
-          width="55"
-        />
-        <el-table-column
-          align="center"
-          prop="textbookId"
-          label="ID"
-        />
-        <el-table-column
-          align="center"
-          prop="textbookName"
-          label="教材名称"
-        />
-        <el-table-column
-          align="center"
-          prop="studyCardCreateId"
-          label="授权状态"
-          :formatter="grantStatusFormatter"
-        />
-        <el-table-column
-          align="center"
-          prop="resourceFileUrl"
-          label="资源地址"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          align="center"
-          prop="createTime"
-          label="创建时间"
-          width="180"
-          show-overflow-tooltip
-        >
+        <el-table-column type="expand">
           <template slot-scope="scope">
-            <span>{{ scope.row.createTime | parseTime }}</span>
+            <el-table
+              ref="multiTable"
+              v-loading="scope.row.loading"
+              :stripe="tableConfig.stripe"
+              :header-cell-style="tableConfig.headerCellStyle"
+              :data="scope.row.textBookList"
+              :border="tableConfig.border"
+              :size="tableConfig.size"
+              :default-sort="tableConfig.defalutSort"
+              :style="tableConfig.style"
+            >
+              <el-table-column
+                align="center"
+                label="序号"
+                width="80"
+              >
+                <template slot-scope="innerScope">
+                  {{ innerScope.$index + 1 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                prop="textbookName"
+                label="教材名称"
+              />
+              <el-table-column
+                align="center"
+                prop="studyCardCreateId"
+                label="授权状态"
+                :formatter="grantStatusFormatter"
+              />
+              <el-table-column
+                align="center"
+                prop="coverUrl"
+                label="封面"
+              >
+                <template slot-scope="innerScope">
+                  <a
+                    target="_blank"
+                    :href="baseImageIp + innerScope.row.coverUrl"
+                  >
+                    <el-image
+                      style="width: 40px; "
+                      :src="baseImageIp + innerScope.row.coverUrl"
+                    />
+                  </a>
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="操作"
+                width="120"
+              >
+                <template slot-scope="innerScope">
+                  <el-button
+                    :type="innerScope.row.studyCardCreateId === null ? 'primary' : 'danger'"
+                    :size="$style.tableButtonSize"
+                    @click="grantToCard(innerScope.row, scope.row)"
+                  >{{ innerScope.row.studyCardCreateId === null ? '授权' : '取消授权' }}</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="操作"
-          width="120"
+          label="序号"
+          width="80"
         >
           <template slot-scope="scope">
-            <el-button
-              :type="scope.row.studyCardCreateId === null ? 'primary' : 'danger'"
-              :size="$style.tableButtonSize"
-              @click="grantToCard(scope.row)"
-            >{{ scope.row.studyCardCreateId === null ? '授权' : '取消授权' }}</el-button>
+            {{ scope.$index + 1 }}
           </template>
         </el-table-column>
+        <el-table-column
+          align="left"
+          prop="textbookVersion"
+          label="版本名称"
+        />
       </el-table>
     </el-card>
   </div>
@@ -84,9 +113,15 @@
 
 <script>
 import TableMixins from '../../mixins/table-mixins'
+import { baseImageIp } from '@/api/url-path'
 export default {
   name: 'TextBookList',
   mixins: [TableMixins],
+  data() {
+    return {
+      baseImageIp
+    }
+  },
   mounted() {
     this.getData()
   },
@@ -97,7 +132,7 @@ export default {
     /**
      * 取消或者授权教材
      */
-    grantToCard(item) {
+    grantToCard(item, parentItem) {
       this.$warningConfirm(item.studyCardCreateId === null ? '是否要授权此教材到此学习卡上吗？' : '是否要取消授权此教材吗？', _ => {
         const ids = this.tableData.filter(it => it.studyCardCreateId !== null).map(it => it.textbookId)
         if (item.studyCardCreateId === null) {
@@ -116,7 +151,7 @@ export default {
           }
         }).then(res => {
           this.$successMsg('操作成功')
-          this.getData()
+          this.loadTextBook(parentItem)
         })
       })
     },
@@ -137,26 +172,38 @@ export default {
         })
       })
     },
-    getData() {
-      this.$http({
+    async getData() {
+      const res = await this.$http({
+        url: this.$urlPath.queryAllTextBookVersion,
+        methods: this.HTTP_GET
+      })
+      this.loading = false
+      this.tableData = res.obj
+      this.tableData && this.tableData.forEach(it => {
+        this.$set(it, 'textBookList', [])
+        this.$set(it, 'loading', false)
+      })
+    },
+    expandChange(row, expandedRows) {
+      if (row.textBookList.length === 0) {
+        this.loadTextBook(row)
+      }
+    },
+    async loadTextBook(row) {
+      row.loading = true
+      const res = await this.$http({
         url: this.$urlPath.queryAllTextBookAndStudyCard,
         methods: this.HTTP_GET,
         data: {
-          studyCardId: this.$route.params.studyCardId
-        }
-      }).then(res => {
-        this.loading = false
-        this.tableData = res.obj
-        if (this.tableData && this.tableData.length > 0) {
-          this.$nextTick(_ => {
-            this.tableData.forEach(it => {
-              if (it.studyCardCreateId !== null) {
-                this.$refs.multiTable.toggleRowSelection(it)
-              }
-            })
-          })
+          studyCardId: this.$route.params.studyCardId,
+          textbookVersion: row.textbookVersion
         }
       })
+      row.textBookList = res.obj
+      row.textBookList && row.textBookList.forEach(it => {
+        it.coverUrl = it.coverUrl.replace('/opt/nginx/yxvue/dist', '')
+      })
+      row.loading = false
     }
   }
 }

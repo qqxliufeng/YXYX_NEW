@@ -55,7 +55,24 @@
           label="班级人数"
           prop="classPersonNum"
         />
-
+        <!-- <el-table-column
+          align="center"
+          label="复习教材"
+          prop="classPersonNum"
+        >
+          <template slot-scope="scope">
+            <div>{{ scope.row.reviewTextBookId ? scope.row.reviewTextBookId : '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="单词数量"
+          prop="classPersonNum"
+        >
+          <template slot-scope="scope">
+            <div>{{ scope.row.reviewWordNum ? scope.row.reviewWordNum : '--' }}</div>
+          </template>
+        </el-table-column> -->
         <el-table-column
           align="center"
           label="创建时间"
@@ -79,7 +96,7 @@
           align="center"
           label="操作"
           fixed="right"
-          min-width="150"
+          width="250"
         >
           <template slot-scope="scope">
             <el-button
@@ -92,6 +109,11 @@
               type="primary"
               @click="handlerUpdate(scope.row)"
             >编辑</el-button>
+            <el-button
+              :size="$style.tableButtonSize"
+              type="success"
+              @click="handlerReview(scope.row)"
+            >复习管理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -210,15 +232,95 @@
       </div>
     </el-dialog>
     <!-- 增加班级对话框 -->
+    <!-- 复习管理对话框 -->
+    <el-dialog
+      title="复习管理"
+      :visible.sync="dialogReviewVisible"
+    >
+      <el-form class="dialog-container">
+        <el-form-item label="班级名称">
+          <el-col :span="$style.dialogColSpan">
+            <el-input
+              v-model="reviewModel.className"
+              readonly
+            />
+          </el-col>
+        </el-form-item>
+        <!-- <el-form-item
+          v-if="reviewModel.isOnLineSchool"
+          label="教材版本"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-select
+              v-model="reviewModel.textBookVersion"
+              style="width: 100%"
+              class="filter-item"
+              placeholder="请选择教材版本"
+            >
+              <el-option
+                v-for="item of reviewModel.textBookVersions"
+                :key="item.textbookVersion"
+                :label="item.textbookVersion"
+                :value="item.textbookVersion"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item> -->
+        <el-form-item label="选择教材">
+          <el-col :span="$style.dialogColSpan">
+            <el-select
+              v-model="reviewModel.reviewTextBookId"
+              style="width: 100%"
+              class="filter-item"
+              placeholder="请选择教材"
+              filterable
+            >
+              <el-option
+                v-for="item of reviewModel.textBookList"
+                :key="item.textbookId"
+                :label="item.textbookName"
+                :value="item.textbookId"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="单词数量">
+          <el-col :span="$style.dialogColSpan">
+            <el-input-number
+              v-model="reviewModel.reviewWordNum"
+              style="width: 100%"
+              :min="30"
+              :max="100"
+            />
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogReviewVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="handlerReviewConfirm"
+        >确定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 复习管理对话框 -->
   </div>
 </template>
 
 <script>
 import tableMixins from '../../mixins/table-mixins'
 import schoolMixins from '../../mixins/school-mixins'
+import userMixins from '@/mixins/user-mixins'
 export default {
   name: 'VIPClass',
-  mixins: [tableMixins, schoolMixins],
+  mixins: [tableMixins, schoolMixins, userMixins],
   data() {
     return {
       formModelArray: [
@@ -267,6 +369,7 @@ export default {
         }
       ],
       dialogFormVisible: false,
+      dialogReviewVisible: false,
       mode: 'add',
       classModel: {
         schoolId: '',
@@ -277,11 +380,30 @@ export default {
         status: 0, // 状态，0正常 1禁用
         note: ''
       },
+      reviewModel: {
+        className: '',
+        classId: '',
+        textBookVersion: '',
+        reviewTextBookId: '',
+        reviewWordNum: 30,
+        textBookList: [],
+        textBookVersions: [],
+        isOnLineSchool: true
+      },
       classLeaderList: []
     }
   },
+  watch: {
+    'reviewModel.textBookVersion'(newVal) {
+      this.loadTextBookByVersion(newVal)
+    }
+  },
   mounted() {
-    this.getData()
+    if (!this.isSuperAdmin) {
+      this.getData()
+    } else {
+      this.loading = false
+    }
     this.getSchoolList(_ => {
       if (this.schoolList && this.schoolList.length > 0) {
         this.formModelArray[0].selectOptions = this.schoolList.map(it => {
@@ -388,6 +510,93 @@ export default {
           this.getData()
         })
       }
+    },
+    handlerReview(item) {
+      if (!this.checkButtonPermission('review')) {
+        return
+      }
+      this.reviewModel.classId = item.classId
+      this.reviewModel.className = item.className
+      this.reviewModel.isOnLineSchool = this.isOnLineSchoolStatus(item.schoolId)
+      this.reviewModel.textBookVersion = ''
+      this.reviewModel.reviewTextBookId = item.reviewTextBookId ? item.reviewTextBookId : ''
+      this.reviewModel.reviewWordNum = item.reviewWordNum ? item.reviewWordNum : ''
+      if (this.reviewModel.isOnLineSchool) {
+        this.loadAllTextBook()
+      } else {
+        this.loadOffLineTextBook(item)
+      }
+      this.dialogReviewVisible = true
+    },
+    loadAllTextBook() {
+      this.$http({
+        url: this.$urlPath.queryTextBookList,
+        methods: this.HTTP_GET,
+        data: {
+          pageNum: 1,
+          pageSize: 500
+        }
+      }).then(res => {
+        this.reviewModel.textBookList = res.obj.list
+      })
+    },
+    loadOffLineTextBook(item) {
+      this.$http({
+        url: this.$urlPath.querySchoolAndTextBook,
+        methods: this.HTTP_GET,
+        data: {
+          schoolId: item.schoolId,
+          pageNum: 1,
+          pageSize: 500
+        }
+      }).then(res => {
+        this.reviewModel.textBookList = res.obj.list
+      })
+    },
+    loadOnLineTextBook(item) {
+      this.$http({
+        url: this.$urlPath.queryAllTextBookVersion,
+        methods: this.HTTP_GET
+      }).then(res => {
+        this.reviewModel.textBookVersions = res.obj
+      })
+    },
+    loadTextBookByVersion(textbookVersion) {
+      if (!textbookVersion) return
+      this.$http({
+        url: this.$urlPath.queryAllTextBookAndStudyCard,
+        methods: this.HTTP_GET,
+        data: {
+          studyCardId: 0,
+          textbookVersion
+        }
+      }).then(res => {
+        this.reviewModel.textBookList = res.obj
+      })
+    },
+    handlerReviewConfirm() {
+      if (!this.reviewModel.reviewTextBookId) {
+        this.$errorMsg('请选择教材')
+        return
+      }
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.grantReviewTextBookToSchoolClass,
+          data: {
+            classId: this.reviewModel.classId,
+            reviewTextBookId: this.reviewModel.reviewTextBookId,
+            reviewWordNum: this.reviewModel.reviewWordNum
+          }
+        }).then(res => {
+          closeLoading()
+          this.dialogReviewVisible = false
+          this.$successMsg('设置成功')
+        }).catch(_ => {
+          closeLoading()
+          this.dialogReviewVisible = false
+          this.$successMsg('设置失败')
+        })
+      })
     },
     teacherChangeCallBack(teacherName) {
       this.classModel.classLeaderName = teacherName
