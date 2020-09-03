@@ -8,7 +8,7 @@ const hiddenMenuList = [
   '/system/menuButton',
   '/material/distribution',
   '/message',
-  '/arena',
+  // '/arena',
   '/integral'
 ]
 
@@ -69,11 +69,15 @@ pathMapName.set('expressuser', 'ExpressUser')
 pathMapName.set('material', 'Material')
 pathMapName.set('prize', 'Prize')
 pathMapName.set('lucklist', 'LuckList')
+pathMapName.set('online', 'OnlinePK')
+pathMapName.set('testpaper', 'TestPager')
 
 const pathToFileName = new Map()
 pathToFileName.set('/message/groupmessage', '/message/GroupMessage')
 pathToFileName.set('/message/schoolmessage', '/message/SchoolMessage')
 pathToFileName.set('/membership/expressuser', '/membership/ExpressUser')
+pathToFileName.set('/arena/online', '/arena/OnlinePK')
+pathToFileName.set('/arena/testpaper', '/arena/TestPaper')
 
 /**
  * Use meta.role to determine if the current user has permission

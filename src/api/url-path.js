@@ -9,9 +9,9 @@
 
 export const baseImageIp = 'http://ht.youcanedu.net'
 
-// export const baseIp = 'http://192.168.1.103:8881'
+export const baseIp = 'http://192.168.1.103:8881'
 
-export const baseIp = 'http://ht.youcanedu.net:8881'
+// export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
  * 基础模块名字
@@ -355,3 +355,27 @@ export const queryPrizeDrawList = baseModuleUrl + 'queryPrizeDrawList'
 export const setIsGrant = baseModuleUrl + 'setIsGrant'
 
 // ****************奖品管理 抽奖名单**************** //
+
+// ****************竞技场**************** //
+
+export const queryArenaList = baseModuleUrl + 'queryArenaList'
+
+export const queryArenaSchoolList = baseModuleUrl + 'queryArenaSchoolList'
+
+export const queryArenaWordList = baseModuleUrl + 'queryArenaWordList'
+
+export const queryArenaJoinStudentList = baseModuleUrl + 'queryArenaJoinStudentList'
+
+export const queryArenaUnJoinStudentList = baseModuleUrl + 'queryArenaUnJoinStudentList'
+
+export const queryArenaRandomWords = baseModuleUrl + 'queryArenaRandomWords'
+
+export const saveArena = baseModuleUrl + 'saveArena'
+
+export const isAward = baseModuleUrl + 'isAward'
+
+export const queryArenaAllWords = baseModuleUrl + 'queryArenaAllWords'
+
+export const queryArenaWordLike = baseModuleUrl + 'queryArenaWordLike'
+
+// ****************竞技场**************** //
