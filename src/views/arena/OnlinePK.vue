@@ -37,28 +37,39 @@
         />
         <el-table-column
           align="center"
-          label="题型"
-          prop="questionType"
-          width="120"
-        />
-        <el-table-column
-          align="center"
           label="开始时间"
           prop="beginArenaTime"
-          width="120"
+          width="160"
         />
         <el-table-column
           align="center"
-          label="截止时间"
+          label="比赛时长"
+          prop="useArenaTime"
+          width="160"
+        >
+          <template slot-scope="scope">
+            <div class="text-cut">
+              {{ scope.row.useArenaTime + '分钟' }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="报名截止时间"
           prop="arenaEndTime"
-          width="200"
+          width="160"
         />
         <el-table-column
           align="center"
           label="奖励方式"
-          width="200"
           prop="rewardType"
-        />
+        >
+          <template slot-scope="scope">
+            <div class="text-cut">
+              {{ scope.row.rewardType === 0 ? '线下奖励' : '线上奖励' }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="创建时间"
@@ -84,60 +95,14 @@
           align="center"
           label="操作"
           fixed="right"
-          :width="isSuperAdmin ? 250 : 200"
+          width="150"
         >
           <template slot-scope="scope">
             <el-button
-              v-if="isSuperAdmin"
               :size="$style.tableButtonSize"
-              :type="scope.row.status === 0 ? 'danger' : 'warning'"
-              @click="
-                changeLockStatus({
-                  item: scope.row,
-                  statusField: 'status',
-                  data: { schoolId: scope.row.schoolId },
-                  lockUrl: $urlPath.lockSchool,
-                  unLockUrl: $urlPath.unLockSchool
-                })
-              "
-            >{{ scope.row.status === 0 ? "禁用" : "解锁" }}</el-button>
-            <el-button
-              v-if="isSuperAdmin"
-              :size="$style.tableButtonSize"
-              type="primary"
-              @click="editAccountInfo(scope.row)"
-            >编辑</el-button>
-            <el-button
-              v-if="!isSuperAdmin"
-              :size="$style.tableButtonSize"
-              type="primary"
-              @click="$router.push({path: '/'})"
+              type="danger"
+              @click="showDetails(scope.row)"
             >查看详情</el-button>
-            <el-dropdown
-              style="display: inline-block; margin-left: 10px"
-              :size="$style.tableButtonSize"
-              type="success"
-              split-button
-              @command="handleSchoolCommand"
-            >
-              更多
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  v-if="scope.row.isOnLine === 1"
-                  :command="{ tag: 1, item: scope.row }"
-                >已分配的学习卡</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="scope.row.isOnLine === 1 && isSuperAdmin"
-                  :command="{ tag: 2, item: scope.row }"
-                >未分配的学习卡</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="scope.row.isOnLine === 0"
-                  :command="{ tag: 5, item: scope.row }"
-                >已分配的教材</el-dropdown-item>
-                <el-dropdown-item :command="{ tag: 3, item: scope.row }">查询服务记录</el-dropdown-item>
-                <el-dropdown-item :command="{ tag: 4, item: scope.row }">增加服务记录</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -151,7 +116,14 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
-    <add-arena ref="addArena" />
+    <add-arena
+      ref="addArena"
+      @reload="reload"
+    />
+    <arena-details
+      ref="arenaDetails"
+      :arena-model="arenaItem"
+    />
   </div>
 </template>
 
@@ -159,21 +131,37 @@
 import TableMixins from '../../mixins/table-mixins'
 import userMixins from '../../mixins/user-mixins'
 import AddArena from './components/AddArena.vue'
+import ArenaDetails from './components/ArenaDetails.vue'
 export default {
   name: 'OnlinePK',
   components: {
-    AddArena
+    AddArena,
+    ArenaDetails
   },
   mixins: [TableMixins, userMixins],
   data() {
     return {
-      formModelArray: []
+      formModelArray: [],
+      arenaItem: null
     }
   },
   mounted() {
     this.getData()
   },
   methods: {
+    statusFormat(item) {
+      switch (item.status) {
+        case 0:
+          return { label: '未开始', type: 'primary' }
+        case 1:
+          return { label: '进行中', type: 'danger' }
+        case 2:
+          return { label: '已结束', type: 'warning' }
+      }
+    },
+    reload() {
+      this.reloadData()
+    },
     getData() {
       this.$http({
         url: this.$urlPath.queryArenaList,
@@ -189,6 +177,10 @@ export default {
     },
     onAdd() {
       this.$refs.addArena.showDialog()
+    },
+    showDetails(item) {
+      this.$refs.arenaDetails.showDialog()
+      this.arenaItem = item
     }
   }
 }

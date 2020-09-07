@@ -26,6 +26,7 @@
               v-model="arenaModel.textBookId"
               style="width: 100%"
               placeholder="请选择教材"
+              @change="textBookChange"
             >
               <el-option
                 v-for="item of textbookList"
@@ -34,6 +35,11 @@
                 :value="item.textbookId"
               />
             </el-select>
+            <el-link
+              v-if="arenaModel.isExper === 1"
+              type="danger"
+              :underline="false"
+            >说明：当前选择的教材是体验教材。</el-link>
           </el-col>
         </el-form-item>
         <el-form-item label="选择课程">
@@ -82,9 +88,11 @@
               <el-checkbox
                 v-for="item of subjectTypes"
                 :key="item.value"
-                :label="item.name"
+                :label="item.value"
                 checked
-              />
+              >
+                {{ item.name }}
+              </el-checkbox>
             </el-checkbox-group>
           </el-col>
         </el-form-item>
@@ -222,7 +230,7 @@
           <el-button
             type="primary"
             size="mini"
-            @click="drawerSchoolList = false"
+            @click="confirmSchool"
           >确定</el-button>
         </div>
         <el-table
@@ -247,6 +255,18 @@
             label="学校名称"
             prop="schoolName"
           />
+          <el-table-column
+            align="center"
+            label="学校状态"
+            prop="schoolName"
+          >
+            <template slot-scope="scope">
+              <el-link
+                :underline="false"
+                :type="scope.row.isOnLine === 0 ? 'primary' : 'danger' "
+              >{{ scope.row.isOnLine === 0 ? '线下学校': '线上学校' }}</el-link>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </el-drawer>
@@ -328,6 +348,18 @@
             size="mini"
             @click="drawerAllWordList = false"
           >关闭</el-button>
+          <el-input
+            v-model="linkWord"
+            placeholder="请输入单词"
+            size="small"
+            style="width: 80%"
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="searchWord"
+            />
+          </el-input>
         </div>
         <el-table
           v-loading="allWordLoading"
@@ -441,13 +473,15 @@ export default {
       drawerSchoolList: false,
       drawerWordList: false,
       drawerAllWordList: false,
+      linkWord: '',
       arenaModel: {
         name: '',
         textBookId: '',
+        isExper: 0, // 是否是体验教材：0 不是 1是
         courseCodes: [],
         wordsNum: 20,
         questionType: [],
-        beginArenaTime: 0,
+        beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
         useArenaTime: 60,
         arenaEndTime: 0,
         selectedSchoolList: [],
@@ -498,6 +532,9 @@ export default {
         this.textbookList = res.obj.list
       })
     },
+    textBookChange(item) {
+      this.arenaModel.isExper = parseInt(this.textbookList.find(it => it.textbookId === item).isExper)
+    },
     openSchoolList() {
       this.drawerSchoolList = true
       if (this.schoolList.length === 0) {
@@ -525,6 +562,7 @@ export default {
       this.getRandomWordList()
     },
     getRandomWordList() {
+      this.randomWordLoading = true
       this.$http({
         url: this.$urlPath.queryArenaRandomWords,
         methods: this.HTTP_GET,
@@ -537,6 +575,19 @@ export default {
         this.randomWordLoading = false
         this.randomWordList = res.obj
       })
+    },
+    confirmSchool() {
+      if (this.arenaModel.selectedSchoolList.length === 0) {
+        this.$errorMsg('请至少选择一个参赛学校')
+        return
+      }
+      const isAllOffLine = this.arenaModel.selectedSchoolList.every(it => it.isOnLine === 0)
+      const isAllOnLine = this.arenaModel.selectedSchoolList.every(it => it.isOnLine === 1)
+      if (!isAllOffLine && !isAllOnLine) {
+        this.$errorMsg('选择的学校必须都是线上学校 或者 都是线下学校')
+        return
+      }
+      this.drawerSchoolList = false
     },
     confirmRandomWordList() {
       this.drawerWordList = false
@@ -556,7 +607,7 @@ export default {
       })
     },
     handleSelectionChange(val) {
-      this.selectedSchoolList = val
+      this.arenaModel.selectedSchoolList = val
     },
     replaceItem(item) {
       this.arenaModel.replacedItem = item
@@ -579,6 +630,26 @@ export default {
         this.allWordList = res.obj.list
         this.allWordPageModel.total = res.obj.total
       })
+    },
+    searchWord() {
+      if (!this.linkWord) {
+        this.allWordPageModel.currentPage = 1
+        this.getAllWordList()
+      } else {
+        this.allWordLoading = true
+        this.$http({
+          url: this.$urlPath.queryArenaWordLike,
+          methods: this.HTTP_GET,
+          data: {
+            courseCodes: this.arenaModel.courseCodes.join(','),
+            textBookId: this.arenaModel.textBookId,
+            wordCode: this.linkWord
+          }
+        }).then(res => {
+          this.allWordLoading = false
+          this.allWordList = res.obj
+        })
+      }
     },
     prevClick(page) {
       this.allWordPageModel.currentPage = page
@@ -608,7 +679,6 @@ export default {
       this.randomWordList.splice(this.randomWordList.indexOf(item), 1)
     },
     submitArena() {
-      this.dialogFormVisible = false
       if (!this.arenaModel.name) {
         this.$errorMsg('请输入比赛名称')
         return
@@ -617,6 +687,92 @@ export default {
         this.$errorMsg('请选择教材信息')
         return
       }
+      if (this.arenaModel.courseCodes.length === 0) {
+        this.$errorMsg('请至少选择一个课程')
+        return
+      }
+      if (this.randomWordList.length === 0) {
+        this.$errorMsg('请选择随机单词')
+        return
+      }
+      if (this.arenaModel.questionType.length === 0) {
+        this.$errorMsg('请选择至少一个题型')
+        return
+      }
+      if (!this.arenaModel.beginArenaTime) {
+        this.$errorMsg('请选择一个开始时间')
+        return
+      }
+      if (this.arenaModel.beginArenaTime < new Date().getTime()) {
+        this.$errorMsg('开始时间不能小于当前时间')
+        return
+      }
+      if (this.isSuperAdmin && this.arenaModel.selectedSchoolList.length === 0) {
+        this.$errorMsg('请选择至少一个参赛学校')
+        return
+      }
+      const isAllOffLine = this.arenaModel.selectedSchoolList.every(it => it.isOnLine === 0)
+      const isAllOnLine = this.arenaModel.selectedSchoolList.every(it => it.isOnLine === 1)
+      if (!isAllOffLine && !isAllOnLine) {
+        this.$errorMsg('选择的学校必须都是线上学校 或者 都是线下学校')
+        return
+      }
+      if (this.arenaModel.rewardType === 0) {
+        if (!this.arenaModel.offlineReward13) {
+          this.$errorMsg('请选择前三名的奖品信息')
+          return
+        }
+        if (!this.arenaModel.offlineReward410) {
+          this.$errorMsg('请选择四到十名的奖品信息')
+          return
+        }
+      }
+      const postData = {}
+      postData.arenaName = this.arenaModel.name
+      postData.textBookId = this.arenaModel.textBookId
+      postData.isExper = this.arenaModel.isExper
+      postData.courseCodes = this.arenaModel.courseCodes.join(',')
+      postData.wordsNum = this.arenaModel.wordsNum
+      postData.questionType = this.arenaModel.questionType.join(',')
+      postData.beginArenaTime = this.arenaModel.beginArenaTime
+      postData.useArenaTime = this.arenaModel.useArenaTime
+      postData.arenaEndTime = this.arenaModel.beginArenaTime + this.arenaModel.arenaEndTime * 60 * 1000
+      postData.rewardType = this.arenaModel.rewardType
+      postData.offlineReward13 = this.arenaModel.offlineReward13
+      postData.offlineReward410 = this.arenaModel.offlineReward410
+      postData.wordsIdList = this.randomWordList.map(it => { return { wordId: it.wordId } })
+      postData.arenaSchoolIdList = this.arenaModel.selectedSchoolList.map(it => { return { schoolId: it.schoolId } })
+      this.$http({
+        url: this.$urlPath.saveArena,
+        methods: this.HTTP_POST,
+        data: {
+          jsonParam: JSON.stringify(postData),
+          schoolIsOnline: this.arenaModel.selectedSchoolList[0].isOnLine,
+          isExper: this.arenaModel.isExper
+        }
+      }).then(res => {
+        this.dialogFormVisible = false
+        this.$successMsg('添加成功')
+        this.randomWordList = []
+        this.arenaModel = {
+          name: '',
+          textBookId: '',
+          isExper: 0,
+          courseCodes: [],
+          wordsNum: 20,
+          questionType: [],
+          beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
+          useArenaTime: 60,
+          arenaEndTime: 0,
+          selectedSchoolList: [],
+          rewardType: 0,
+          offlineReward13: '',
+          offlineReward410: '',
+          replacedItem: null,
+          lockRandomWord: false
+        }
+        this.$emit('reload')
+      })
     }
   }
 }
