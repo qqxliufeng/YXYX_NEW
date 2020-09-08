@@ -149,7 +149,24 @@
           </div>
         </el-form-item>
         <el-form-item v-else>
-          <div>前10名，10个积分</div>
+          <div>
+            <el-link
+              type="danger"
+              :underline="false"
+            >
+              排名前10名者，可获得优币奖励，详情如下：<br>
+              第一名：100优币<br>
+              第二名：95优币<br>
+              第三名：90优币<br>
+              第四名：85优币<br>
+              第五名：80优币<br>
+              第六名：75优币<br>
+              第七名：70优币<br>
+              第八名：65优币<br>
+              第九名：60优币<br>
+              第十名：55优币<br>
+            </el-link>
+          </div>
         </el-form-item>
       </el-form>
       <div

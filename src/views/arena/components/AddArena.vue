@@ -152,7 +152,7 @@
               @click="openSchoolList"
             >点击选择参赛学校</el-button>
             <el-link v-else>
-              4123456
+              {{ arenaModel.selectedSchoolList[0].schoolName }}
             </el-link>
           </el-col>
         </el-form-item>
@@ -201,7 +201,24 @@
           </el-select>
         </el-form-item>
         <el-form-item v-else>
-          <div>前10名，10个积分</div>
+          <div>
+            <el-link
+              type="danger"
+              :underline="false"
+            >
+              排名前10名者，可获得优币奖励，详情如下：<br>
+              第一名：100优币<br>
+              第二名：95优币<br>
+              第三名：90优币<br>
+              第四名：85优币<br>
+              第五名：80优币<br>
+              第六名：75优币<br>
+              第七名：70优币<br>
+              第八名：65优币<br>
+              第九名：60优币<br>
+              第十名：55优币<br>
+            </el-link>
+          </div>
         </el-form-item>
       </el-form>
       <div
@@ -519,6 +536,9 @@ export default {
       if (this.textbookList.length === 0) {
         this.getTextBookList()
       }
+      if (!this.isSuperAdmin) {
+        this.getSchoolInfo()
+      }
     },
     getTextBookList() {
       this.$http({
@@ -530,6 +550,21 @@ export default {
         }
       }).then(res => {
         this.textbookList = res.obj.list
+      })
+    },
+    getSchoolInfo() {
+      this.$http({
+        url: this.$urlPath.querySchoolBySchoolId,
+        methods: this.HTTP_GET,
+        data: {
+          schoolId: this.$store.getters.schoolId
+        }
+      }).then(res => {
+        this.arenaModel.selectedSchoolList.push({
+          schoolId: res.obj.schoolId,
+          schoolName: res.obj.schoolName,
+          isOnLine: res.obj.isOnLine
+        })
       })
     },
     textBookChange(item) {
@@ -594,6 +629,7 @@ export default {
       this.arenaModel.lockRandomWord = true
     },
     getCourseList(textbookId) {
+      if (!textbookId) return
       this.$http({
         url: this.$urlPath.queryCourseByTextBook,
         methods: this.HTTP_GET,
@@ -742,6 +778,7 @@ export default {
       postData.offlineReward410 = this.arenaModel.offlineReward410
       postData.wordsIdList = this.randomWordList.map(it => { return { wordId: it.wordId } })
       postData.arenaSchoolIdList = this.arenaModel.selectedSchoolList.map(it => { return { schoolId: it.schoolId } })
+      postData.createSchoolId = this.$store.getters.schoolId
       this.$http({
         url: this.$urlPath.saveArena,
         methods: this.HTTP_POST,

@@ -152,6 +152,20 @@ export const upAppVersion = baseModuleUrl + 'upAppVersion'
 
 // ****************系统管理 --- 版本管理 **************** //
 
+// ****************系统管理 --- 定时任务 **************** //
+
+export const queryJob = baseModuleUrl + 'queryjob'
+
+export const insertJob = baseModuleUrl + 'insert'
+
+export const pauseJob = baseModuleUrl + 'pause'
+
+export const resumeJob = baseModuleUrl + 'resume'
+
+export const deleteJob = baseModuleUrl + 'delete'
+
+// ****************系统管理 --- 定时任务 **************** //
+
 // ****************会员管理 --- 学校管理 **************** //
 
 export const querySchoolList = baseModuleUrl + 'querySchoolList'

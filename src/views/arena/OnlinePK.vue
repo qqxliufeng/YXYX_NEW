@@ -116,10 +116,7 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
-    <add-arena
-      ref="addArena"
-      @reload="reload"
-    />
+    <add-arena ref="addArena" />
     <arena-details
       ref="arenaDetails"
       :arena-model="arenaItem"
@@ -160,7 +157,8 @@ export default {
       }
     },
     reload() {
-      this.reloadData()
+      this.page = 1
+      this.getData()
     },
     getData() {
       this.$http({
