@@ -9,6 +9,7 @@
       @onadd="onAdd"
     />
     <el-card
+      ref="tableContainer"
       :body-style="{padding: 0}"
       class="table-container"
       :style="tableCardStyle"
@@ -22,6 +23,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        :height="tableConfig.style.myHeight"
       >
         <el-table-column
           align="center"
@@ -268,6 +270,9 @@ export default {
       }
     },
     onAdd() {
+      if (!this.checkButtonPermission('cron_add')) {
+        return
+      }
       this.dialogFormVisible = true
       this.crontabModel = {
         jobClassName: '', // 定时任务类名
@@ -280,6 +285,9 @@ export default {
       }
     },
     pauseJob(item) {
+      if (!this.checkButtonPermission('cron_pause')) {
+        return
+      }
       this.$warningConfirm('是否要暂停此定时任务', () => {
         this.$http({
           url: this.$urlPath.pauseJob,
@@ -295,6 +303,9 @@ export default {
       })
     },
     resumeJob(item) {
+      if (!this.checkButtonPermission('cron_resume')) {
+        return
+      }
       this.$warningConfirm('是否要继续执行此定时任务', () => {
         this.$http({
           url: this.$urlPath.resumeJob,
@@ -310,6 +321,9 @@ export default {
       })
     },
     deleteJob(item) {
+      if (!this.checkButtonPermission('cron_delete')) {
+        return
+      }
       this.$warningConfirm('是否要删除此定时任务', () => {
         this.$http({
           url: this.$urlPath.deleteJob,

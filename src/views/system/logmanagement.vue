@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <el-card
+      ref="tableContainer"
       :body-style="{ padding: 0 }"
       class="table-container"
       :style="tableCardStyle"
@@ -14,6 +15,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        :height="tableConfig.style.myHeight"
       >
         <el-table-column
           align="center"

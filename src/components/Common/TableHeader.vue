@@ -12,8 +12,11 @@
           <i
             v-if="canCollapse"
             :class="isCollapse ? 'el-icon-caret-bottom' : 'el-icon-caret-top'"
-          /></el-link>
-        <div class="flex-sub" />
+          />
+        </el-link>
+        <div class="flex-sub">
+          <slot name="center" />
+        </div>
         <el-button
           v-if="showAdd"
           type="warning"

@@ -7,7 +7,19 @@
       :show-delete="false"
       :show-search="true"
       @onadd="onAdd"
-    />
+    >
+      <template slot="center">
+        <el-radio-group
+          v-model="status"
+          size="mini"
+          class="margin-left"
+        >
+          <el-radio-button :label="0">未开始</el-radio-button>
+          <el-radio-button :label="1">进行中</el-radio-button>
+          <el-radio-button :label="2">已结束</el-radio-button>
+        </el-radio-group>
+      </template>
+    </table-header>
     <el-card
       :body-style="{ padding: '2px' }"
       class="table-container"
@@ -55,8 +67,14 @@
         </el-table-column>
         <el-table-column
           align="center"
+          label="到期时间"
+          prop="comeInArenaEndTime"
+          width="160"
+        />
+        <el-table-column
+          align="center"
           label="报名截止时间"
-          prop="arenaEndTime"
+          prop="comeInArenaEndTime"
           width="160"
         />
         <el-table-column
@@ -80,15 +98,6 @@
             <div class="text-cut">
               {{ scope.row.createTime | parseTime }}
             </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="状态"
-          prop="status"
-        >
-          <template slot-scope="scope">
-            <table-status :status="statusFormat(scope.row)" />
           </template>
         </el-table-column>
         <el-table-column
@@ -139,7 +148,15 @@ export default {
   data() {
     return {
       formModelArray: [],
-      arenaItem: null
+      arenaItem: null,
+      status: 0
+    }
+  },
+  watch: {
+    status(newVal) {
+      this.page = 1
+      this.loading = true
+      this.getData()
     }
   },
   mounted() {
@@ -167,16 +184,23 @@ export default {
         data: {
           schoolId: this.$store.getters.schoolId,
           pageNum: this.page,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          status: this.status
         }
       }).then(res => {
         this.onSuccess(res.obj)
       })
     },
     onAdd() {
+      if (!this.checkButtonPermission('arena_add')) {
+        return
+      }
       this.$refs.addArena.showDialog()
     },
     showDetails(item) {
+      if (!this.checkButtonPermission('arena_details')) {
+        return
+      }
       this.$refs.arenaDetails.showDialog()
       this.arenaItem = item
     }

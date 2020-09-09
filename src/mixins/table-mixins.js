@@ -15,7 +15,8 @@ export default {
         },
         style: {
           width: '99%',
-          margin: '10px auto'
+          margin: '10px auto',
+          myHeight: 0
         }
       },
       tableData: [],
@@ -40,20 +41,24 @@ export default {
   },
   mounted() {
     this.tableCardStyle.top = this.$refs.tableHeader ? (this.$refs.tableHeader.$el.offsetHeight + 10 + 'px') : '0'
+    this.$nextTick(_ => {
+      this.tableConfig.style.myHeight = this.$refs.tableContainer ? (this.$refs.tableContainer.$el.offsetHeight - parseInt(this.tableCardStyle.top) - 25) : 0
+    })
     if (this.initData) {
       this.initData()
     }
-    this.$root.$on('refresh_table', _ => {
-      this.reloadData()
-    })
+    // this.$root.$on('refresh_table', _ => {
+    //   this.reloadData()
+    // })
   },
-  beforeDestroy() {
-    this.$root.$off('refresh_table')
-    console.log('消息取消监听')
-  },
+  // beforeDestroy() {
+  //   this.$root.$off('refresh_table')
+  // },
   methods: {
     onCollapsed() {
+      const tempTop = this.tableCardStyle.top
       this.tableCardStyle.top = this.$refs.tableHeader ? (this.$refs.tableHeader.$el.offsetHeight + 10 + 'px') : '0'
+      this.tableConfig.style.myHeight = this.tableConfig.style.myHeight + (parseInt(tempTop) - parseInt(this.tableCardStyle.top))
     },
     resetData() {
       this.tableData = []

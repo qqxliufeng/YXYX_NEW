@@ -26,6 +26,7 @@
       </template>
     </table-header>
     <el-card
+      ref="tableContainer"
       :body-style="{ padding: 0 }"
       class="table-container"
       :style="tableCardStyle"
@@ -39,6 +40,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        :height="tableConfig.style.myHeight"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
