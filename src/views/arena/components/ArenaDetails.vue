@@ -88,7 +88,15 @@
             <el-link
               type="primary"
               :underline="false"
-            >{{ arenaModel.arenaEndTime }}</el-link>
+            >{{ arenaModel.endArenaTime }}</el-link>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="报名截止">
+          <el-col :span="20">
+            <el-link
+              type="primary"
+              :underline="false"
+            >{{ arenaModel.comeInArenaEndTime }}</el-link>
           </el-col>
         </el-form-item>
         <el-form-item label="参赛学校">
@@ -261,6 +269,14 @@
             label="解释"
             prop="wordExplain"
           />
+          <el-table-column
+            align="center"
+            label="题型"
+          >
+            <template slot-scope="scoped">
+              {{ scoped.row.questionType | questionTypeFilter }}
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </el-drawer>
@@ -272,6 +288,24 @@ import userMixins from '@/mixins/user-mixins'
 import tableMixins from '@/mixins/table-mixins'
 export default {
   name: 'ArenaDetails',
+  filters: {
+    questionTypeFilter(item) {
+      switch (item) {
+        case 1:
+          return '拼写(填空题)'
+        case 2:
+          return '听力(选择)'
+        case 3:
+          return '看图(选择)'
+        case 4:
+          return '句子翻译(选择)'
+        case 5:
+          return '单词翻译(汉译英、选择题)'
+        case 6:
+          return '英译汉'
+      }
+    }
+  },
   mixins: [userMixins, tableMixins],
   props: {
     arenaModel: {

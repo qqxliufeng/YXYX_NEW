@@ -84,7 +84,7 @@
             @click.native.prevent="handleLogin"
           >登录
           </el-button>
-          <div class="margin-top flex justify-between">
+          <div class="brower-tip-wrapper margin-top flex justify-between">
             <el-link
               :underline="false"
               style="color: #333"
@@ -250,133 +250,239 @@ $primary_color: #1890ff;
   width: 100%;
   overflow: hidden;
   position: relative;
-  .bg-images {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.6;
-  }
-  .content-wrapper {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 111;
-    display: flex;
-    .left-wrapper {
-      background-color: $left_bg;
-      position: relative;
-      .logo-wrapper {
-        position: absolute;
-        top: 5%;
-        left: 5%;
-        width: 100px;
-        height: 125px;
-        & img {
-          width: 100%;
-          height: 100%;
-        }
-      }
-      .tip-wrapper {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        & > div {
-          width: 100%;
-          border-top: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
-          border-bottom: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
-          background-color: rgba($color: #ffffff, $alpha: 0.5);
-          padding: 10px 0;
-        }
-      }
+  @media screen and (min-width: 768px) {
+    .bg-images {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.6;
     }
-    .right-wrapper {
-      width: 40%;
+    .content-wrapper {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 111;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      .login-form {
-        background-color: rgba($color: #ffffff, $alpha: 0.8);
-        border-radius: 10px;
-        border: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
+      .left-wrapper {
+        background-color: $left_bg;
         position: relative;
-        width: 80%;
-        height: 60%;
-        padding: 40px;
-        margin: 0 auto;
-        margin-left: 0;
-        .hat-wrapper {
+        .logo-wrapper {
           position: absolute;
-          top: 0;
-          right: 0;
-          margin-top: -50px;
-          margin-right: -40px;
+          top: 5%;
+          left: 5%;
           width: 100px;
-          height: 100px;
-          z-index: 999;
+          height: 125px;
           & img {
             width: 100%;
             height: 100%;
           }
         }
+        .tip-wrapper {
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          & > div {
+            width: 100%;
+            border-top: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
+            border-bottom: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
+            background-color: rgba($color: #ffffff, $alpha: 0.5);
+            padding: 10px 0;
+          }
+        }
+      }
+      .right-wrapper {
+        width: 40%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .login-form {
+          background-color: rgba($color: #ffffff, $alpha: 0.8);
+          border-radius: 10px;
+          border: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
+          position: relative;
+          width: 80%;
+          height: 60%;
+          padding: 40px;
+          margin: 0 auto;
+          margin-left: 0;
+          .hat-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin-top: -50px;
+            margin-right: -40px;
+            width: 100px;
+            height: 100px;
+            z-index: 999;
+            & img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
       }
     }
-  }
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
+    .tips {
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 10px;
 
-    span {
-      &:first-of-type {
-        margin-right: 16px;
+      span {
+        &:first-of-type {
+          margin-right: 16px;
+        }
       }
     }
-  }
 
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
+    .svg-container {
+      padding: 6px 5px 6px 15px;
+      vertical-align: middle;
+      width: 30px;
+      display: inline-block;
+    }
 
-  .title-container {
-    position: relative;
+    .title-container {
+      position: relative;
 
-    .title {
-      font-size: 26px;
-      color: $primary_color;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
+      .title {
+        font-size: 26px;
+        color: $primary_color;
+        margin: 0px auto 40px auto;
+        text-align: center;
+        font-weight: bold;
+      }
+    }
+
+    .show-pwd {
+      position: absolute;
+      right: 10px;
+      top: 7px;
+      font-size: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .thirdparty-button {
+      position: absolute;
+      right: 0;
+      bottom: 6px;
     }
   }
 
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    cursor: pointer;
-    user-select: none;
-  }
+  @media screen and (max-width: 768px) {
+    .bg-images {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.6;
+    }
+    .content-wrapper {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 111;
+      display: flex;
+      .left-wrapper {
+        display: none;
+      }
+      .right-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .login-form {
+          background-color: rgba($color: #ffffff, $alpha: 0.8);
+          border-radius: 10px;
+          border: rgba($color: #ffffff, $alpha: 0.8) solid 5px;
+          position: relative;
+          width: 90%;
+          height: 60%;
+          padding: 40px;
+          margin: 0 auto;
+          .hat-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin-top: -50px;
+            margin-right: -20px;
+            width: 100px;
+            height: 100px;
+            z-index: 999;
+            & img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+        .brower-tip-wrapper {
+          display: none;
+        }
+      }
+    }
+    .tips {
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 10px;
 
-  .thirdparty-button {
-    position: absolute;
-    right: 0;
-    bottom: 6px;
+      span {
+        &:first-of-type {
+          margin-right: 16px;
+        }
+      }
+    }
+
+    .svg-container {
+      padding: 6px 5px 6px 15px;
+      vertical-align: middle;
+      width: 30px;
+      display: inline-block;
+    }
+
+    .title-container {
+      position: relative;
+
+      .title {
+        font-size: 26px;
+        color: $primary_color;
+        margin: 0px auto 40px auto;
+        text-align: center;
+        font-weight: bold;
+      }
+    }
+
+    .show-pwd {
+      position: absolute;
+      right: 10px;
+      top: 7px;
+      font-size: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .thirdparty-button {
+      position: absolute;
+      right: 0;
+      bottom: 6px;
+    }
   }
 
   @media only screen and (max-width: 470px) {

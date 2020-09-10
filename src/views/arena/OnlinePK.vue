@@ -21,6 +21,7 @@
       </template>
     </table-header>
     <el-card
+      ref="tableContainer"
       :body-style="{ padding: '2px' }"
       class="table-container"
       :style="tableCardStyle"
@@ -34,6 +35,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        :height="tableConfig.style.myHeight"
       >
         <el-table-column
           align="center"
@@ -68,7 +70,7 @@
         <el-table-column
           align="center"
           label="到期时间"
-          prop="comeInArenaEndTime"
+          prop="endArenaTime"
           width="160"
         />
         <el-table-column

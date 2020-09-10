@@ -89,7 +89,6 @@
                 v-for="item of subjectTypes"
                 :key="item.value"
                 :label="item.value"
-                checked
               >
                 {{ item.name }}
               </el-checkbox>
@@ -497,7 +496,7 @@ export default {
         isExper: 0, // 是否是体验教材：0 不是 1是
         courseCodes: [],
         wordsNum: 20,
-        questionType: [],
+        questionType: [1, 2, 3, 4, 5, 6],
         beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
         useArenaTime: 60,
         arenaEndTime: 0,
@@ -772,7 +771,7 @@ export default {
       postData.questionType = this.arenaModel.questionType.join(',')
       postData.beginArenaTime = this.arenaModel.beginArenaTime
       postData.useArenaTime = this.arenaModel.useArenaTime
-      postData.arenaEndTime = this.arenaModel.beginArenaTime + this.arenaModel.arenaEndTime * 60 * 1000
+      postData.comeInArenaEndTime = this.arenaModel.beginArenaTime + this.arenaModel.arenaEndTime * 60 * 1000
       postData.rewardType = this.arenaModel.rewardType
       postData.offlineReward13 = this.arenaModel.offlineReward13
       postData.offlineReward410 = this.arenaModel.offlineReward410
@@ -797,7 +796,7 @@ export default {
           isExper: 0,
           courseCodes: [],
           wordsNum: 20,
-          questionType: [],
+          questionType: [1, 2, 3, 4, 5, 6],
           beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
           useArenaTime: 60,
           arenaEndTime: 0,
@@ -808,6 +807,9 @@ export default {
           replacedItem: null,
           lockRandomWord: false
         }
+        this.$nextTick(_ => {
+          this.$refs.multipleTable.clearSelection()
+        })
         this.$emit('reload')
       })
     }
