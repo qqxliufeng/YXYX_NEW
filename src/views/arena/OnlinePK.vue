@@ -86,7 +86,16 @@
         >
           <template slot-scope="scope">
             <div class="text-cut">
-              {{ scope.row.rewardType === 0 ? '线下奖励' : '线上奖励' }}
+              <el-link
+                v-if="scope.row.rewardType === 0"
+                type="danger"
+                :underline="false"
+              >线下</el-link>
+              <el-link
+                v-else
+                type="primary"
+                :underline="false"
+              >线上</el-link>
             </div>
           </template>
         </el-table-column>
@@ -127,7 +136,10 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
-    <add-arena ref="addArena" />
+    <add-arena
+      ref="addArena"
+      @reload="reload"
+    />
     <arena-details
       ref="arenaDetails"
       :arena-model="arenaItem"
@@ -165,19 +177,14 @@ export default {
     this.getData()
   },
   methods: {
-    statusFormat(item) {
-      switch (item.status) {
-        case 0:
-          return { label: '未开始', type: 'primary' }
-        case 1:
-          return { label: '进行中', type: 'danger' }
-        case 2:
-          return { label: '已结束', type: 'warning' }
-      }
-    },
     reload() {
       this.page = 1
-      this.getData()
+      this.loading = true
+      if (this.status === 0) {
+        this.getData()
+      } else {
+        this.status = 0
+      }
     },
     getData() {
       this.$http({

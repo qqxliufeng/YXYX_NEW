@@ -102,14 +102,10 @@
         <el-form-item label="参赛学校">
           <el-col :span="20">
             <el-button
-              v-if="isSuperAdmin"
               type="primary"
               size="small"
               @click="openSchoolList"
             >查看参赛学校</el-button>
-            <el-link v-else>
-              4123456
-            </el-link>
           </el-col>
         </el-form-item>
         <el-form-item label="参赛学生">
@@ -188,6 +184,7 @@
         >知道了</el-button>
       </div>
     </el-dialog>
+    <!-- 查看参赛的学校 -->
     <el-drawer
       :visible.sync="drawerSchoolList"
       direction="rtl"
@@ -230,6 +227,120 @@
               >{{ scope.row.isOnLine === 0 ? '线下学校': '线上学校' }}</el-link>
             </template>
           </el-table-column>
+        </el-table>
+      </div>
+    </el-drawer>
+    <!--  查看参赛的学生  -->
+    <el-drawer
+      :visible.sync="drawerJoinStu"
+      direction="rtl"
+      :with-header="false"
+      size="50%"
+    >
+      <div class="padding">
+        <div class="flex justify-between align-center">
+          <el-button
+            type="primary"
+            size="mini"
+            @click="drawerJoinStu = false"
+          >关闭</el-button>
+        </div>
+        <el-table
+          v-loading="joinStuLoading"
+          :stripe="tableConfig.stripe"
+          :header-cell-style="tableConfig.headerCellStyle"
+          :data="joinStudentList"
+          :border="tableConfig.border"
+          :size="tableConfig.size"
+          :default-sort="tableConfig.defalutSort"
+          :style="tableConfig.style"
+          height="90vh"
+        >
+          <el-table-column
+            align="center"
+            label="名次"
+            prop="studentName"
+          >
+            <template slot-scope="scope">
+              <table-status
+                v-if="scope.$index < 3"
+                :status="statusFormat(scope.$index)"
+              />
+              <div v-else>{{ scope.$index + 1 }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="学生姓名"
+            prop="studentName"
+            width="120"
+          />
+          <!-- <el-table-column
+            align="center"
+            label="学校名称"
+            prop="schoolName"
+            width="120"
+          /> -->
+          <el-table-column
+            align="center"
+            label="比赛时长"
+          >
+            <template slot-scope="scoped">
+              {{ (scoped.row.useTime / 1000) + '秒' }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="正确数量"
+            prop="correctCount"
+          />
+          <el-table-column
+            align="center"
+            label="错误数量"
+            prop="errorCount"
+          />
+          <el-table-column
+            align="center"
+            label="正确率"
+          >
+            <template slot-scope="scoped">
+              {{ (scoped.row.resultPer * 100) + '%' }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-drawer>
+    <!--  查看未参赛的学生  -->
+    <el-drawer
+      :visible.sync="drawerUnJoinStu"
+      direction="rtl"
+      :with-header="false"
+      size="20%"
+    >
+      <div class="padding">
+        <div class="flex justify-between align-center">
+          <el-button
+            type="primary"
+            size="mini"
+            @click="drawerUnJoinStu = false"
+          >关闭</el-button>
+        </div>
+        <el-table
+          v-loading="unJoinStuLoading"
+          :stripe="tableConfig.stripe"
+          :header-cell-style="tableConfig.headerCellStyle"
+          :data="unJoinStudentList"
+          :border="tableConfig.border"
+          :size="tableConfig.size"
+          :default-sort="tableConfig.defalutSort"
+          :style="tableConfig.style"
+          height="90vh"
+        >
+          <el-table-column
+            align="center"
+            label="学生姓名"
+            prop="studentName"
+          />
         </el-table>
       </div>
     </el-drawer>
@@ -318,9 +429,15 @@ export default {
       dialogFormVisible: false,
       drawerSchoolList: false,
       drawerWordList: false,
+      drawerJoinStu: false,
+      drawerUnJoinStu: false,
+      joinStuLoading: false,
+      unJoinStuLoading: false,
       randomWordLoading: false,
       randomWordList: [],
       schoolList: [],
+      joinStudentList: [],
+      unJoinStudentList: [],
       subjectTypes: [
         {
           name: '拼写(填空题)',
@@ -347,22 +464,6 @@ export default {
           value: 6
         }
       ]
-      // arenaModel: {
-      //   name: '',
-      //   textBookId: '',
-      //   courseCodes: [],
-      //   wordsNum: 20,
-      //   questionType: [],
-      //   beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
-      //   useArenaTime: 60,
-      //   arenaEndTime: 0,
-      //   selectedSchoolList: [],
-      //   rewardType: 0,
-      //   offlineReward13: '',
-      //   offlineReward410: '',
-      //   replacedItem: null,
-      //   lockRandomWord: false
-      // }
     }
   },
   computed: {
@@ -371,6 +472,16 @@ export default {
     }
   },
   methods: {
+    statusFormat(item) {
+      switch (item) {
+        case 0:
+          return { label: '第一名', type: 'warning' }
+        case 1:
+          return { label: '第二名', type: 'danger' }
+        case 2:
+          return { label: '第三名', type: 'info' }
+      }
+    },
     showDialog() {
       this.dialogFormVisible = true
     },
@@ -389,6 +500,8 @@ export default {
       })
     },
     openJoinStu() {
+      this.drawerJoinStu = true
+      this.joinStuLoading = true
       this.$http({
         url: this.$urlPath.queryArenaJoinStudentList,
         methods: this.HTTP_GET,
@@ -396,18 +509,23 @@ export default {
           arenaId: this.arenaModel.arenaId
         }
       }).then(res => {
-        console.log(res)
+        this.joinStuLoading = false
+        this.joinStudentList = res.obj
       })
     },
     openUnJoinStu() {
+      this.drawerUnJoinStu = true
+      this.unJoinStuLoading = true
       this.$http({
         url: this.$urlPath.queryArenaUnJoinStudentList,
         methods: this.HTTP_GET,
         data: {
-          arenaId: this.arenaModel.arenaId
+          arenaId: this.arenaModel.arenaId,
+          textBookId: this.arenaModel.textBookId
         }
       }).then(res => {
-        console.log(res)
+        this.unJoinStuLoading = false
+        this.unJoinStudentList = res.obj
       })
     },
     openSchoolList() {
