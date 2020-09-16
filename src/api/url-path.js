@@ -9,9 +9,9 @@
 
 export const baseImageIp = 'http://ht.youcanedu.net'
 
-// export const baseIp = 'http://192.168.1.103:8881'
+export const baseIp = 'http://192.168.1.103:8881'
 
-export const baseIp = 'http://ht.youcanedu.net:8881'
+// export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
  * 基础模块名字
@@ -393,3 +393,29 @@ export const queryArenaAllWords = baseModuleUrl + 'queryArenaAllWords'
 export const queryArenaWordLike = baseModuleUrl + 'queryArenaWordLike'
 
 // ****************竞技场**************** //
+
+// ****************在线考试**************** //
+
+export const queryExamList = baseModuleUrl + 'queryExamList'
+
+export const queryExamWords = baseModuleUrl + 'queryExamWords'
+
+export const queryExamAllWords = baseModuleUrl + 'queryExamAllWords'
+
+export const queryExamWordLike = baseModuleUrl + 'queryExamWordLike'
+
+export const queryExamCourseLevel = baseModuleUrl + 'queryExamCourseLevel'
+
+export const saveExam = baseModuleUrl + 'saveExam'
+
+export const assignmentExamToClassOrStudent = baseModuleUrl + 'assignmentExamToClassOrStudent'
+
+export const openExam = baseModuleUrl + 'openExam'
+
+export const queryExamToClassOrStudent = baseModuleUrl + 'queryExamToClassOrStudent'
+
+export const queryExamInfo = baseModuleUrl + 'queryExamInfo'
+
+export const queryExamStudentRecord = baseModuleUrl + 'queryExamStudentRecord'
+
+// ****************在线考试**************** //
