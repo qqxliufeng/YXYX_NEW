@@ -40,7 +40,7 @@
         <el-table-column
           align="center"
           label="名称"
-          prop="arenaName"
+          prop="examName"
           width="130"
           fixed="left"
         />
@@ -52,42 +52,35 @@
         <el-table-column
           align="center"
           label="开始时间"
-          prop="beginArenaTime"
+          prop="beginExamTime"
           width="160"
         />
         <el-table-column
           align="center"
-          label="比赛时长"
-          prop="useArenaTime"
+          label="考试时长"
           width="160"
         >
           <template slot-scope="scope">
             <div class="text-cut">
-              {{ scope.row.useArenaTime + '分钟' }}
+              {{ scope.row.useExamTime + '分钟' }}
             </div>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           label="到期时间"
-          prop="endArenaTime"
+          prop="endExamTime"
           width="160"
         />
         <el-table-column
           align="center"
-          label="报名截止时间"
-          prop="comeInArenaEndTime"
-          width="160"
-        />
-        <el-table-column
-          align="center"
-          label="奖励方式"
+          label="考试类型"
           prop="rewardType"
         >
           <template slot-scope="scope">
             <div class="text-cut">
               <el-link
-                v-if="scope.row.rewardType === 0"
+                v-if="scope.row.examType === 0"
                 type="danger"
                 :underline="false"
               >线下</el-link>
@@ -96,6 +89,71 @@
                 type="primary"
                 :underline="false"
               >线上</el-link>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="分配状态"
+          prop="rewardType"
+        >
+          <template slot-scope="scope">
+            <div class="text-cut">
+              <el-link
+                v-if="scope.row.isAssignment === 0"
+                type="danger"
+                :underline="false"
+              >未分配</el-link>
+              <el-link
+                v-else
+                type="primary"
+                :underline="false"
+              >已分配</el-link>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="分配类型"
+          prop="rewardType"
+        >
+          <template slot-scope="scope">
+            <div class="text-cut">
+              <el-link
+                v-if="scope.row.classOrStudent === 0"
+                type="danger"
+                :underline="false"
+              >班级</el-link>
+              <el-link
+                v-else-if="scope.row.classOrStudent === 1"
+                type="primary"
+                :underline="false"
+              >个人</el-link>
+              <el-link
+                v-else
+                type="primary"
+                :underline="false"
+              >暂无</el-link>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="是否发布"
+          prop="rewardType"
+        >
+          <template slot-scope="scope">
+            <div class="text-cut">
+              <el-link
+                v-if="scope.row.isOpen === 0"
+                type="danger"
+                :underline="false"
+              >未发布</el-link>
+              <el-link
+                v-else
+                type="primary"
+                :underline="false"
+              >已发布</el-link>
             </div>
           </template>
         </el-table-column>
@@ -115,14 +173,57 @@
           align="center"
           label="操作"
           fixed="right"
-          width="150"
+          width="200"
         >
           <template slot-scope="scope">
-            <el-button
-              :size="$style.tableButtonSize"
-              type="danger"
-              @click="showDetails(scope.row)"
-            >查看详情</el-button>
+            <div>
+              <el-dropdown
+                split-button
+                type="primary"
+                size="mini"
+                @command="more"
+              >
+                查看
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="a">试卷详情</el-dropdown-item>
+                  <el-dropdown-item command="a">考试成绩</el-dropdown-item>
+                  <el-dropdown-item command="a">分配的班级</el-dropdown-item>
+                  <el-dropdown-item command="a">分配的个人</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <el-dropdown
+                split-button
+                type="danger"
+                size="mini"
+                @command="assignment"
+              >
+                分配
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item :command="{type: 0, item: scope.row}">到班级</el-dropdown-item>
+                  <el-dropdown-item :command="{type: 1, item: scope.row}">到个人</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+            <div class="margin-top">
+              <el-button
+                :size="$style.tableButtonSize"
+                type="warning"
+                style="width: 86px"
+                @click="open(scope.row)"
+              >发布</el-button>
+              <el-dropdown
+                split-button
+                type="success"
+                size="mini"
+                @command="down"
+              >
+                下载
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="a">有答案</el-dropdown-item>
+                  <el-dropdown-item command="a">无答案</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -137,15 +238,19 @@
       @refresh="reloadData"
     />
     <add-test-paper ref="addTestPaper" />
+    <student-list ref="studentList" />
+    <class-list ref="classList" />
   </div>
 </template>
 
 <script>
 import tableMixins from '@/mixins/table-mixins'
 import AddTestPaper from './components/AddTestPaper'
+import StudentList from './components/StudentList'
+import ClassList from './components/ClassList'
 export default {
   name: 'TestPaper',
-  components: { AddTestPaper },
+  components: { AddTestPaper, StudentList, ClassList },
   mixins: [tableMixins],
   data() {
     return {
@@ -183,7 +288,35 @@ export default {
       }).catch(_ => {
         this.onError()
       })
-    }
+    },
+    more() { },
+    assignment({ type, item }) {
+      if (type === 0) {
+        this.$refs.classList.show()
+      } else {
+        this.$refs.studentList.show()
+      }
+    },
+    open(item) {
+      if (item.isAssignment === 0) {
+        this.$errorMsg('请先将此考试信息分配给班级或个人')
+        return
+      }
+      if (item.isOpen === 1) {
+        this.$errorMsg('此考试信息已经发布，请勿重复发布')
+        return
+      }
+      this.$warningConfirm('是否要发布此考试信息？', () => {
+        this.$http({
+          url: this.$urlPath.openExam,
+          methods: this.HTTP_GET,
+          data: {}
+        }).then(res => {
+          console.log(res)
+        })
+      })
+    },
+    down() { }
   }
 }
 </script>

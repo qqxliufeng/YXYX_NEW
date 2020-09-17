@@ -54,7 +54,6 @@
               v-model="paperModel.textBookId"
               style="width: 100%"
               placeholder="请选择教材"
-              @change="textBookChange"
             >
               <el-option
                 v-for="item of textBookList"
@@ -145,17 +144,17 @@
               :max="200"
             />
             <el-button
-              :disabled="paperModel.lockRandomWord"
+              :disabled="lockRandomWord"
               style="margin-left: 5%"
               type="primary"
               size="mini"
-              @click="openWordDrawer"
+              @click="openWordDrawer(true)"
             >选择词语</el-button>
             <el-button
-              :disabled="!paperModel.lockRandomWord"
+              :disabled="!lockRandomWord"
               type="danger"
               size="mini"
-              @click="drawerWordList = true"
+              @click="openWordDrawer(false)"
             >查看词语</el-button>
           </el-col>
         </el-form-item>
@@ -202,12 +201,22 @@
         >确 定</el-button>
       </div>
     </el-dialog>
+    <word-list
+      ref="wordList"
+      :random-word-model="randomWordModel"
+      :all-word-model="allWordModel"
+      :like-word-model="likeWordModel"
+      :lock-random-word="lockRandomWord"
+      @lockRandom="lockRandomHandler"
+    />
   </div>
 </template>
 
 <script>
+import WordList from './WordList'
 export default {
   name: 'AddTestPaper',
+  components: { WordList },
   data() {
     return {
       dialogFormVisible: false,
@@ -231,7 +240,6 @@ export default {
           disabled: true
         }
       ],
-      openWordDrawer: false,
       paperModel: {
         examName: '', // 考试名称
         examType: 1, // 考试类型 0线下 1线上
@@ -244,9 +252,63 @@ export default {
         endLevelCode: '', // 结束关卡
         wordsNum: 5, // 单词数量
         questionType: 1, // 题型 1汉译英(线上、线下) 2英译汉(线下) 3交叉(线下)
-        beginExamTime: 0, // 考试开始时间
-        useExamTime: 10 // 考试用时,单位分钟
+        beginExamTime: new Date().getTime() + 10 * 60 * 1000, // 考试开始时间
+        useExamTime: 10, // 考试用时,单位分钟
+        selectedWordList: [],
+
+        replacedItem: null
+      },
+      lockRandomWord: false,
+      allWordPageModel: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
       }
+    }
+  },
+  computed: {
+    randomWordModel() {
+      return {
+        url: this.$urlPath.queryExamWords,
+        data: {
+          levelCodes: this.paperModel.levelCodes.map(it => it.levelCode).join(','),
+          wordCount: this.paperModel.wordsNum,
+          textBookId: this.paperModel.textBookId
+        }
+      }
+    },
+    allWordModel() {
+      return {
+        url: this.$urlPath.queryExamAllWords,
+        data: {
+          levelCodes: this.paperModel.levelCodes.map(it => it.levelCode).join(','),
+          textBookId: this.paperModel.textBookId
+        }
+      }
+    },
+    likeWordModel() {
+      return {
+        url: this.$urlPath.queryExamWordLike,
+        data: {
+          levelCodes: this.paperModel.levelCodes.map(it => it.levelCode).join(','),
+          textBookId: this.paperModel.textBookId
+        }
+      }
+    },
+    courseObj() {
+      const o = {
+        start: this.paperModel.startCourseCode,
+        end: this.paperModel.endCourseCode
+      }
+      return o
+    },
+    levelObj() {
+      const o = {
+        start: this.paperModel.startLevelCode,
+        end: this.paperModel.endLevelCode,
+        type: '关卡'
+      }
+      return o
     }
   },
   watch: {
@@ -272,8 +334,9 @@ export default {
     },
     'paperModel.endCourseCode'(newVal) {
       if (!newVal) return
-      const result = this.validateCourseCode()
+      const result = this.validateCode(this.courseObj)
       if (result) {
+        this.paperModel.courseCodes = this.calcRange(this.courseObj)
         this.getLevelList()
       }
     },
@@ -282,11 +345,30 @@ export default {
       this.subjectTypes.forEach(it => {
         it.disabled = newVal === 1 ? it.value !== 1 : it.disabled = false
       })
+    },
+    'paperModel.wordsNum'() {
+      this.lockRandomWord = false
     }
   },
   methods: {
     show() {
       this.dialogFormVisible = true
+      this.paperModel = {
+        examName: '', // 考试名称
+        examType: 1, // 考试类型 0线下 1线上
+        textBookId: '', // 教材主键ID
+        courseCodes: [], // 课程item
+        startCourseCode: '', // 开始课程
+        endCourseCode: '', // 结束课程
+        levelCodes: [], // 关卡item
+        startLevelCode: '', // 开始关卡
+        endLevelCode: '', // 结束关卡
+        wordsNum: 5, // 单词数量
+        questionType: 1, // 题型 1汉译英(线上、线下) 2英译汉(线下) 3交叉(线下)
+        beginExamTime: new Date().getTime() + 10 * 60 * 1000, // 考试开始时间
+        useExamTime: 10, // 考试用时,单位分钟
+        selectedWordList: []
+      }
       if (this.textBookList.length === 0) {
         this.getTextBookList()
       }
@@ -329,60 +411,109 @@ export default {
       })
     },
     submitExam() {
-      const resultCourse = this.validateCourseCode()
-      if (resultCourse) {
-        console.log(resultCourse)
+      if (!this.paperModel.examName) {
+        this.$errorMsg('请输入考试名称')
+        return
       }
-      const resultLevel = this.validateLevelCode()
-      if (resultLevel) {
-        console.log(resultLevel)
+      if (!this.paperModel.textBookId) {
+        this.$errorMsg('请选择教材')
+        return
       }
+      const resultCourseCodes = this.validateCode(this.courseObj)
+      if (!resultCourseCodes) {
+        return
+      }
+      this.paperModel.courseCodes = this.calcRange(this.courseObj)
+
+      const resultLevelCodes = this.validateCode(this.levelObj)
+      if (!resultLevelCodes) {
+        return
+      }
+      this.paperModel.levelCodes = this.calcRange(this.levelObj)
+
+      if (this.$refs.wordList.getRandomWord().length === 0) {
+        this.$errorMsg('请选择单词')
+        return
+      }
+
+      if (this.paperModel.beginExamTime < new Date().getTime()) {
+        this.$errorMsg('开始时间必须大于当前时间')
+        return
+      }
+      const postData = {}
+      postData.schoolId = this.$store.getters.schoolId
+      postData.examName = this.paperModel.examName
+      postData.examType = this.paperModel.examType
+      postData.textBookId = this.paperModel.textBookId
+      postData.courseCodes = this.paperModel.courseCodes.map(it => it.courseCode).join(',')
+      postData.levelCodes = this.paperModel.levelCodes.map(it => it.levelCode).join(',')
+      postData.wordsNum = this.paperModel.wordsNum
+      postData.questionType = this.paperModel.questionType
+      postData.beginExamTime = this.paperModel.beginExamTime
+      postData.useExamTime = this.paperModel.useExamTime
+      postData.examWordsList = this.$refs.wordList.getRandomWord()
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.saveExam,
+          methods: this.HTTP_POST,
+          data: {
+            jsonParam: JSON.stringify(postData)
+          }
+        }).then(res => {
+          closeLoading()
+          this.dialogFormVisible = false
+          this.$successMsg('添加成功')
+        }).catch(_ => {
+          closeLoading()
+        })
+      })
     },
-    validateCourseCode() {
-      const startCode = parseInt(this.paperModel.startCourseCode)
-      const endCode = parseInt(this.paperModel.endCourseCode)
+    validateCode({ start, end, type = '课程' }) {
+      const startCode = parseInt(start)
+      const endCode = parseInt(end)
       if (!startCode || !endCode) {
-        this.$errorMsg('请选择开始和结束课程')
+        this.$errorMsg(`请选择开始和结束${type}`)
         return false
       }
       if (startCode - endCode > 0) {
-        this.$errorMsg('结束课程不能小于开始课程')
+        this.$errorMsg(`结束${type}不能小于开始${type}`)
         return false
       }
+      return true
+    },
+    calcRange({ start, end, type = '课程' }) {
+      const startCode = parseInt(start)
+      const endCode = parseInt(end)
       let index = startCode
-      this.paperModel.courseCodes = []
+      const codes = []
       do {
-        const item = this.courseList.find(courseItem => courseItem.courseId === index)
+        const item = type === '课程' ? this.courseList.find(courseItem => courseItem.courseId === index)
+          : this.levelList.find(levelItem => levelItem.courseLevelId === index)
         if (item) {
-          this.paperModel.courseCodes.push(item)
+          codes.push(item)
         }
         index++
       } while (index <= endCode)
-      return true
+      return codes
     },
-    validateLevelCode() {
-      if (!this.paperModel.startLevelCode || !this.paperModel.endLevelCode) {
-        this.$errorMsg('请选择开始和结束课程')
-        return false
-      }
-      const startCode = this.paperModel.startLevelCode
-      const endCode = this.paperModel.endLevelCode
-      if (startCode - endCode > 0) {
-        this.$errorMsg('结束关卡不能小于开始关卡')
-        return false
-      }
-      let index = startCode
-      this.paperModel.levelCodes = []
-      do {
-        const item = this.levelList.find(levelItem => levelItem.courseLevelId === index)
-        if (item) {
-          this.paperModel.levelCodes.push(item)
+    openWordDrawer(init) {
+      if (init) {
+        const resultCourseCodes = this.validateCode(this.courseObj)
+        if (!resultCourseCodes) {
+          return
         }
-        index++
-      } while (index <= endCode)
-      return true
+        const resultLevelCodes = this.validateCode(this.levelObj)
+        if (resultLevelCodes) {
+          this.paperModel.levelCodes = this.calcRange(this.levelObj)
+          this.$nextTick(_ => { this.$refs.wordList.show(init) })
+        }
+      } else {
+        this.$refs.wordList.show(init)
+      }
     },
-    textBookChange() { }
+    lockRandomHandler(result) {
+      this.lockRandomWord = result
+    }
   }
 }
 </script>
