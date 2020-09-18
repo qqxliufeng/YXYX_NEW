@@ -418,4 +418,8 @@ export const queryExamInfo = baseModuleUrl + 'queryExamInfo'
 
 export const queryExamStudentRecord = baseModuleUrl + 'queryExamStudentRecord'
 
+export const downLoadExamNoAnswer = baseModuleUrl + 'downLoadExamNoAnswer'
+
+export const downLoadExamWithAnswer = baseModuleUrl + 'downLoadExamWithAnswer'
+
 // ****************在线考试**************** //

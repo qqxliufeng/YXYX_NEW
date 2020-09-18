@@ -213,10 +213,12 @@
 </template>
 
 <script>
+import userMixins from '@/mixins/user-mixins'
 import WordList from './WordList'
 export default {
   name: 'AddTestPaper',
   components: { WordList },
+  mixins: [userMixins],
   data() {
     return {
       dialogFormVisible: false,
@@ -375,9 +377,10 @@ export default {
     },
     getTextBookList() {
       this.$http({
-        url: this.$urlPath.queryTextBookList,
+        url: this.isOnLineSchool ? this.$urlPath.queryTextBookList : this.$urlPath.querySchoolAndTextBook,
         methods: this.HTTP_GET,
         data: {
+          schoolId: this.$store.getters.schoolId,
           pageNum: 1,
           pageSize: 1000
         }
@@ -452,6 +455,9 @@ export default {
       postData.beginExamTime = this.paperModel.beginExamTime
       postData.useExamTime = this.paperModel.useExamTime
       postData.examWordsList = this.$refs.wordList.getRandomWord()
+      if (this.paperModel.questionType === 1 || this.paperModel.questionType === 2) {
+        postData.examWordsList.forEach(it => { it.questionType = this.paperModel.questionType })
+      }
       this.$showLoading(closeLoading => {
         this.$http({
           url: this.$urlPath.saveExam,

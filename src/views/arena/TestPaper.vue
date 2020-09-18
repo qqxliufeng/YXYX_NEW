@@ -54,7 +54,11 @@
           label="开始时间"
           prop="beginExamTime"
           width="160"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row.beginExamTime | parseTime }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="考试时长"
@@ -71,7 +75,11 @@
           label="到期时间"
           prop="endExamTime"
           width="160"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row.endExamTime | parseTime }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="考试类型"
@@ -185,10 +193,10 @@
               >
                 查看
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="a">试卷详情</el-dropdown-item>
-                  <el-dropdown-item command="a">考试成绩</el-dropdown-item>
-                  <el-dropdown-item command="a">分配的班级</el-dropdown-item>
-                  <el-dropdown-item command="a">分配的个人</el-dropdown-item>
+                  <el-dropdown-item :command="{type: 0, item: scope.row}">单词信息</el-dropdown-item>
+                  <el-dropdown-item :command="{type: 1, item: scope.row}">考试成绩</el-dropdown-item>
+                  <el-dropdown-item :command="{type: 2, item: scope.row}">分配的班级</el-dropdown-item>
+                  <el-dropdown-item :command="{type: 3, item: scope.row}">分配的个人</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
               <el-dropdown
@@ -219,8 +227,8 @@
               >
                 下载
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="a">有答案</el-dropdown-item>
-                  <el-dropdown-item command="a">无答案</el-dropdown-item>
+                  <el-dropdown-item :command="{type: 1, item: scope.row}">有答案</el-dropdown-item>
+                  <el-dropdown-item :command="{type: 0, item: scope.row}">无答案</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -238,8 +246,18 @@
       @refresh="reloadData"
     />
     <add-test-paper ref="addTestPaper" />
-    <student-list ref="studentList" />
-    <class-list ref="classList" />
+    <student-list
+      ref="studentList"
+      @confirm="chooseStudentConfirm"
+    />
+    <class-list
+      ref="classList"
+      @confirm="chooseClassConfirm"
+    />
+    <word-list
+      ref="wordList"
+      :query-info-model="queryInfoModel"
+    />
   </div>
 </template>
 
@@ -248,15 +266,23 @@ import tableMixins from '@/mixins/table-mixins'
 import AddTestPaper from './components/AddTestPaper'
 import StudentList from './components/StudentList'
 import ClassList from './components/ClassList'
+import WordList from './components/WordList'
+import { baseImageIp } from '@/api/url-path'
 export default {
   name: 'TestPaper',
-  components: { AddTestPaper, StudentList, ClassList },
+  components: {
+    AddTestPaper,
+    StudentList,
+    ClassList,
+    WordList
+  },
   mixins: [tableMixins],
   data() {
     return {
       formModelArray: [],
       examItem: null,
-      status: 0
+      status: 0,
+      queryInfoModel: null
     }
   },
   watch: {
@@ -289,15 +315,62 @@ export default {
         this.onError()
       })
     },
-    more() { },
-    assignment({ type, item }) {
-      if (type === 0) {
-        this.$refs.classList.show()
-      } else {
-        this.$refs.studentList.show()
+    more({ type, item }) {
+      this.examItem = item
+      switch (type) {
+        case 0: // 单词详情
+          this.queryInfoModel = {
+            url: this.$urlPath.queryExamInfo,
+            data: {
+              examId: this.examItem.examId
+            }
+          }
+          this.$nextTick(_ => {
+            this.$refs.wordList.showReadOnly()
+          })
+          break
+        case 1: // 考试成绩
+          break
+        case 2: // 查看分配的班级
+          if (item.isAssignment === 0) {
+            this.$errorMsg('此考试信息还未分配')
+            return
+          }
+          if (item.classOrStudent === 1) {
+            this.$errorMsg('此考试已经分配给了个人')
+            return
+          }
+          this.$refs.classList.show('select', this.examItem.examId, this.examItem.classOrStudent)
+          break
+        case 3: // 查看分配的个人
+          if (item.isAssignment === 0) {
+            this.$errorMsg('此考试信息还未分配')
+            return
+          }
+          if (item.classOrStudent === 0) {
+            this.$errorMsg('此考试已经分配给了班级')
+            return
+          }
+          this.$refs.studentList.show('select', this.examItem.examId, this.examItem.classOrStudent)
+          break
       }
     },
+    assignment({ type, item }) {
+      if (item.isAssignment === 1) {
+        this.$errorMsg('此考试信息已经分配过了，请勿重复分配')
+        return
+      }
+      if (type === 0) {
+        item.classOrStudent = 0
+        this.$refs.classList.show('choose')
+      } else {
+        item.classOrStudent = 1
+        this.$refs.studentList.show('choose')
+      }
+      this.examItem = item
+    },
     open(item) {
+      this.examItem = item
       if (item.isAssignment === 0) {
         this.$errorMsg('请先将此考试信息分配给班级或个人')
         return
@@ -307,16 +380,86 @@ export default {
         return
       }
       this.$warningConfirm('是否要发布此考试信息？', () => {
-        this.$http({
-          url: this.$urlPath.openExam,
-          methods: this.HTTP_GET,
-          data: {}
-        }).then(res => {
-          console.log(res)
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: this.$urlPath.openExam,
+            methods: this.HTTP_POST,
+            data: {
+              examId: this.examItem.examId,
+              classOrStudent: this.examItem.classOrStudent,
+              examName: this.examItem.examName
+            }
+          }).then(res => {
+            closeLoading()
+            this.$successMsg('发布成功')
+            this.getData()
+          }).catch(_ => {
+            closeLoading()
+          })
         })
       })
     },
-    down() { }
+    down({ type, item }) {
+      this.examItem = item
+      if (item.isAssignment === 1 && item.isOpen === 1) {
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: type === 1 ? this.$urlPath.downLoadExamWithAnswer : this.$urlPath.downLoadExamNoAnswer,
+            methods: this.HTTP_GET,
+            data: {
+              examId: this.examItem.examId
+            }
+          }).then(res => {
+            closeLoading()
+            window.open(baseImageIp + res.obj.replace('/opt/nginx/yxvue/dist', ''))
+          }).catch(_ => {
+            closeLoading()
+          })
+        })
+      } else {
+        this.$errorMsg('只有已分配并且已发布的考试信息才能下载')
+      }
+    },
+    chooseClassConfirm(classList) {
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.assignmentExamToClassOrStudent,
+          methods: this.HTTP_POST,
+          data: {
+            examId: this.examItem.examId,
+            schoolId: this.$store.getters.schoolId,
+            classOrStudent: 0,
+            classIds: classList.map(it => it.classId).join(',')
+          }
+        }).then(res => {
+          closeLoading()
+          this.$successMsg('分配成功')
+          this.getData()
+        }).catch(_ => {
+          closeLoading()
+        })
+      })
+    },
+    chooseStudentConfirm(studentList) {
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.assignmentExamToClassOrStudent,
+          methods: this.HTTP_POST,
+          data: {
+            examId: this.examItem.examId,
+            schoolId: this.$store.getters.schoolId,
+            classOrStudent: 1,
+            studentIds: studentList.map(it => it.studentId).join(',')
+          }
+        }).then(res => {
+          closeLoading()
+          this.$successMsg('分配成功')
+          this.getData()
+        }).catch(_ => {
+          closeLoading()
+        })
+      })
+    }
   }
 }
 </script>

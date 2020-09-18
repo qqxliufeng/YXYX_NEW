@@ -15,6 +15,7 @@
             @click="drawerWordList = false"
           >关闭</el-button>
           <el-button
+            v-if="!readOnly"
             type="primary"
             size="mini"
             @click="confirmRandomWordList"
@@ -42,6 +43,7 @@
             prop="wordExplain"
           />
           <el-table-column
+            v-if="!readOnly"
             align="center"
             label="操作"
           >
@@ -157,6 +159,10 @@ export default {
       type: Object,
       default: null
     },
+    queryInfoModel: {
+      type: Object,
+      default: null
+    },
     lockRandomWord: {
       type: Boolean,
       default: false
@@ -176,7 +182,8 @@ export default {
         total: 0
       },
       replacedItem: null,
-      likeWord: ''
+      likeWord: '',
+      readOnly: false
     }
   },
   methods: {
@@ -185,6 +192,20 @@ export default {
       if (init) {
         this.getRandomWordList()
       }
+    },
+    showReadOnly() {
+      this.readOnly = true
+      this.drawerWordList = true
+      if (!this.queryInfoModel) return
+      this.randomWordLoading = true
+      this.$http({
+        url: this.queryInfoModel.url,
+        methods: this.HTTP_GET,
+        data: this.queryInfoModel.data
+      }).then(res => {
+        this.randomWordLoading = false
+        this.randomWordList = res.obj
+      })
     },
     getRandomWordList() {
       this.randomWordLoading = true
