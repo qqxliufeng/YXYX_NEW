@@ -9,9 +9,9 @@
 
 export const baseImageIp = 'http://ht.youcanedu.net'
 
-// export const baseIp = 'http://192.168.1.103:8881'
+export const baseIp = 'http://192.168.1.103:8881'
 
-export const baseIp = 'http://ht.youcanedu.net:8881'
+// export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
  * 基础模块名字
@@ -319,6 +319,8 @@ export const cancelGrantTextBookToSchool = baseModuleUrl + 'cancelGrantTextBookT
 export const queryTextBookProgressNo = baseModuleUrl + 'queryTextBookProgressNo'
 
 export const updateStudyCardTextBookJumpSpell = baseModuleUrl + 'updateStudyCardTextBookJumpSpell'
+
+export const updateStudentIsJumpWrite = baseModuleUrl + 'updateStudentIsJumpWrite'
 
 // ****************教材信息**************** //
 

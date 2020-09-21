@@ -469,6 +469,7 @@ export default {
           closeLoading()
           this.dialogFormVisible = false
           this.$successMsg('添加成功')
+          this.$emit('reload')
         }).catch(_ => {
           closeLoading()
         })

@@ -65,19 +65,16 @@
           align="center"
           prop="dept.deptName"
           label="所属部门"
-          show-overflow-tooltip
         />
         <el-table-column
           align="center"
           prop="roles[0].roleName"
           label="用户角色"
           width="100"
-          show-overflow-tooltip
         />
         <el-table-column
           align="center"
           label="状态"
-          show-overflow-tooltip
         >
           <template slot-scope="scope">
             <table-status :status="{ label: scope.row.accountNonLocked ? '正常' : '禁用', type: scope.row.accountNonLocked ? 'primary' : 'danger' }" />

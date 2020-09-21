@@ -54,7 +54,24 @@
           prop="resourceFileUrl"
           label="资源地址"
           show-overflow-tooltip
-        />
+        >
+          <template slot-scope="scope">
+            <div>{{ scope.row.resourceFileUrl || '--' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="拼写状态"
+        >
+          <template slot-scope="scope">
+            <table-status
+              v-if="scope.row.stuTextbookId !== null"
+              :status="{type: scope.row.isJumpWrite === 0 ? 'primary' : 'danger', label: scope.row.isJumpWrite === 0 ? '未跳过' : '已跳过'}"
+            />
+            <div v-else>--</div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="createTime"
@@ -69,19 +86,22 @@
         <el-table-column
           align="center"
           label="状态"
-          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <table-status :status="{type: scope.row.stuTextbookId === null ? 'primary' : 'danger', label: scope.row.stuTextbookId === null ? '未授权' : '已授权'}" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="操作"
         >
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.stuTextbookId === null"
-              type="danger"
+              :disabled="scope.row.stuTextbookId === null"
+              :type="scope.row.isJumpWrite === 1 ? 'primary' : 'danger'"
               size="mini"
-            >未授权</el-button>
-            <el-button
-              v-else
-              type="success"
-              size="mini"
-            >已授权</el-button>
+              @click="jumpWrite(scope.row)"
+            >{{ scope.row.isJumpWrite === 1 ? '恢复拼写' : '跳过拼写' }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -138,10 +158,32 @@ export default {
             }
           }).then(res => {
             this.$successMsg('教材分配成功')
-            this.$closeCurrentView()
+            this.getData()
           })
         })
       }
+    },
+    jumpWrite(item) {
+      const tip = item.isJumpWrite === 0 ? '是否要跳过此教材的拼写功能？' : '是否要恢复此教材的拼写功能？'
+      this.$warningConfirm(tip, _ => {
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: this.$urlPath.updateStudentIsJumpWrite,
+            data: {
+              textBookId: item.textbookId,
+              studentId: this.$route.params.studentId,
+              isJumpWrite: item.isJumpWrite === 0 ? 1 : 0,
+              studentType: 0
+            }
+          }).then(res => {
+            closeLoading()
+            this.$successMsg('设置成功')
+            this.getData()
+          }).catch(_ => {
+            closeLoading()
+          })
+        })
+      })
     },
     canSelectable(row) {
       return row.stuTextbookId === null

@@ -245,7 +245,10 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
-    <add-test-paper ref="addTestPaper" />
+    <add-test-paper
+      ref="addTestPaper"
+      @reload="reload"
+    />
     <student-list
       ref="studentList"
       @confirm="chooseStudentConfirm"
@@ -258,6 +261,10 @@
       ref="wordList"
       :query-info-model="queryInfoModel"
     />
+    <student-score
+      ref="studentScore"
+      :exam-item="examItem"
+    />
   </div>
 </template>
 
@@ -267,6 +274,7 @@ import AddTestPaper from './components/AddTestPaper'
 import StudentList from './components/StudentList'
 import ClassList from './components/ClassList'
 import WordList from './components/WordList'
+import StudentScore from './components/StudentScore'
 import { baseImageIp } from '@/api/url-path'
 export default {
   name: 'TestPaper',
@@ -274,7 +282,8 @@ export default {
     AddTestPaper,
     StudentList,
     ClassList,
-    WordList
+    WordList,
+    StudentScore
   },
   mixins: [tableMixins],
   data() {
@@ -319,6 +328,9 @@ export default {
       this.examItem = item
       switch (type) {
         case 0: // 单词详情
+          if (!this.checkButtonPermission('paper_word_list')) {
+            return
+          }
           this.queryInfoModel = {
             url: this.$urlPath.queryExamInfo,
             data: {
@@ -330,8 +342,17 @@ export default {
           })
           break
         case 1: // 考试成绩
+          if (!this.checkButtonPermission('exam_score')) {
+            return
+          }
+          this.$nextTick(_ => {
+            this.$refs.studentScore.show()
+          })
           break
         case 2: // 查看分配的班级
+          if (!this.checkButtonPermission('exam_class')) {
+            return
+          }
           if (item.isAssignment === 0) {
             this.$errorMsg('此考试信息还未分配')
             return
@@ -343,6 +364,9 @@ export default {
           this.$refs.classList.show('select', this.examItem.examId, this.examItem.classOrStudent)
           break
         case 3: // 查看分配的个人
+          if (!this.checkButtonPermission('exam_stu')) {
+            return
+          }
           if (item.isAssignment === 0) {
             this.$errorMsg('此考试信息还未分配')
             return
@@ -361,15 +385,24 @@ export default {
         return
       }
       if (type === 0) {
+        if (!this.checkButtonPermission('assign_class')) {
+          return
+        }
         item.classOrStudent = 0
         this.$refs.classList.show('choose')
       } else {
+        if (!this.checkButtonPermission('assign_student')) {
+          return
+        }
         item.classOrStudent = 1
         this.$refs.studentList.show('choose')
       }
       this.examItem = item
     },
     open(item) {
+      if (!this.checkButtonPermission('open_exam')) {
+        return
+      }
       this.examItem = item
       if (item.isAssignment === 0) {
         this.$errorMsg('请先将此考试信息分配给班级或个人')
@@ -400,6 +433,15 @@ export default {
       })
     },
     down({ type, item }) {
+      if (type === 1) {
+        if (!this.checkButtonPermission('down_answer')) {
+          return
+        }
+      } else {
+        if (!this.checkButtonPermission('down_no_answer')) {
+          return
+        }
+      }
       this.examItem = item
       if (item.isAssignment === 1 && item.isOpen === 1) {
         this.$showLoading(closeLoading => {
@@ -459,6 +501,9 @@ export default {
           closeLoading()
         })
       })
+    },
+    reload() {
+      this.getData()
     }
   }
 }

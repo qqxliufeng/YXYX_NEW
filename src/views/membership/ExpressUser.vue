@@ -43,6 +43,7 @@
         <el-table-column
           align="center"
           label="所属学校"
+          width="100"
           prop="school.schoolName"
         />
         <el-table-column
@@ -58,14 +59,14 @@
           align="center"
           label="创建时间"
           prop="createTime"
+          width="170"
         >
-          <template slot-scope="scope">{{
-            scope.row.createTime | parseTime
-          }}</template>
+          <template slot-scope="scope">{{ scope.row.createTime | parseTime }}</template>
         </el-table-column>
         <el-table-column
           align="center"
           label="到期时间"
+          width="170"
         >
           <template slot-scope="scope">
             <div v-if="scope.row.endTime">{{ scope.row.endTime | parseTime }}</div>
@@ -219,7 +220,7 @@
     <!-- 添加体验账号对话框 -->
     <!-- 编辑教材对话框 -->
     <el-dialog
-      title="编辑教材"
+      title="绑定/设置拼读状态"
       :visible.sync="editTextBookModel.dialogEditTextBookVisible"
     >
       <el-table
@@ -266,6 +267,33 @@
         >
           <template slot-scope="scope">
             <table-status :status="editTextBookModel.grantStatusFormatter(scope.row)" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="isLock"
+          label="拼写状态"
+        >
+          <template slot-scope="scope">
+            <table-status
+              v-if="scope.row.isJumpWrite !== null"
+              :status="{type: scope.row.isJumpWrite === 0 ? 'primary' : 'danger', label: scope.row.isJumpWrite === 0 ? '未跳过' : '已跳过'}"
+            />
+            <div v-else>--</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="isLock"
+          label="操作"
+        >
+          <template slot-scope="scope">
+            <el-button
+              :disabled="scope.row.isJumpWrite === null"
+              :type="scope.row.isJumpWrite === 1 ? 'primary' : 'danger'"
+              size="mini"
+              @click="jumpWrite(scope.row)"
+            >{{ scope.row.isJumpWrite === 1 ? '恢复拼写' : '跳过拼写' }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -569,6 +597,28 @@ export default {
           this.addTimeModel.dialogAddTimeVisible = false
         }).catch(_ => {
           closeLoading()
+        })
+      })
+    },
+    jumpWrite(item) {
+      const tip = item.isJumpWrite === 0 ? '是否要跳过此教材的拼写功能？' : '是否要恢复此教材的拼写功能？'
+      this.$warningConfirm(tip, _ => {
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: this.$urlPath.updateStudentIsJumpWrite,
+            data: {
+              textBookId: item.textbookId,
+              studentId: this.$route.params.studentId,
+              isJumpWrite: item.isJumpWrite === 0 ? 1 : 0,
+              studentType: 0
+            }
+          }).then(res => {
+            closeLoading()
+            this.$successMsg('设置成功')
+            item.isJumpWrite = item.isJumpWrite === 0 ? 1 : 0
+          }).catch(_ => {
+            closeLoading()
+          })
         })
       })
     }

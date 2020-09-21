@@ -53,6 +53,7 @@
           align="center"
           prop="createTime"
           label="创建时间"
+          width="170"
         />
         <el-table-column
           align="center"

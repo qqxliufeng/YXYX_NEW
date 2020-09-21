@@ -61,15 +61,32 @@
                 <el-link :underline="false">拼读状态：</el-link>
                 <el-link
                   :underline="false"
-                  :type="textbook.isJumpSpell === 0 ? 'danger' : 'primary'"
-                >{{ textbook.isJumpSpell === 0 ? '未跳过' : '已跳过' }}</el-link>
+                  :type="textbook.isJumpSpell === 1 ? 'primary' : 'danger'"
+                >{{ textbook.isJumpSpell === 1 ? '已跳过' : '未跳过' }}</el-link>
               </el-col>
-              <el-col :span="4">
+              <el-col :span="3">
                 <el-button
                   size="mini"
-                  :type="textbook.isJumpSpell === 0 ? 'danger' : 'primary'"
+                  :type="textbook.isJumpSpell === 1 ? 'primary' : 'danger'"
                   @click="jumpSpell(scope.row, textbook)"
-                >{{ textbook.isJumpSpell === 0 ? '跳过拼读' : '恢复拼读' }}</el-button>
+                >{{ textbook.isJumpSpell === 1 ? '恢复拼读' : '跳过拼读' }}</el-button>
+              </el-col>
+              <el-col
+                :span="4"
+                style="margin-top: 5px"
+              >
+                <el-link :underline="false">拼写状态：</el-link>
+                <el-link
+                  :underline="false"
+                  :type="textbook.isJumpWrite === 1 ? 'primary' : 'danger'"
+                >{{ textbook.isJumpWrite === 1 ? '已跳过' : '未跳过' }}</el-link>
+              </el-col>
+              <el-col :span="3">
+                <el-button
+                  size="mini"
+                  :type="textbook.isJumpWrite === 1 ? 'primary' : 'danger'"
+                  @click="jumpWrite(scope.row, textbook)"
+                >{{ textbook.isJumpWrite === 1 ? '恢复拼写' : '跳过拼写' }}</el-button>
               </el-col>
             </el-row>
           </template>
@@ -335,6 +352,28 @@ export default {
             closeLoading()
             this.$successMsg('设置成功')
             textbookItem.isJumpSpell = textbookItem.isJumpSpell === 0 ? 1 : 0
+          }).catch(_ => {
+            closeLoading()
+          })
+        })
+      })
+    },
+    jumpWrite(studyCardItem, textbookItem) {
+      const tip = textbookItem.isJumpWrite === 0 ? '是否要跳过此教材的拼写功能？' : '是否要恢复此教材的拼写功能？'
+      this.$warningConfirm(tip, _ => {
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: this.$urlPath.updateStudentIsJumpWrite,
+            data: {
+              textBookId: textbookItem.textbookId,
+              studyCardId: studyCardItem.studyCardId,
+              isJumpWrite: textbookItem.isJumpWrite === 0 ? 1 : 0,
+              studentType: 1
+            }
+          }).then(res => {
+            closeLoading()
+            this.$successMsg('设置成功')
+            textbookItem.isJumpWrite = textbookItem.isJumpWrite === 0 ? 1 : 0
           }).catch(_ => {
             closeLoading()
           })
