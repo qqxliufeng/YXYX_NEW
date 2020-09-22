@@ -141,6 +141,15 @@
         </el-table-column>
         <el-table-column
           align="center"
+          label="WIFI状态"
+          prop="status"
+        >
+          <template slot-scope="scope">
+            <table-status :status="wifiFormat(scope.row)" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           label="操作"
           fixed="right"
           :width="isSuperAdmin ? 250 : 200"
@@ -195,6 +204,7 @@
                 >已分配的教材</el-dropdown-item>
                 <el-dropdown-item :command="{ tag: 3, item: scope.row }">查询服务记录</el-dropdown-item>
                 <el-dropdown-item :command="{ tag: 4, item: scope.row }">增加服务记录</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 6, item: scope.row }">{{ scope.row.isEnableWifi === 0 ? '开启WIFI' : '关闭WIFI' }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -307,6 +317,9 @@ export default {
       }
       return { label: '未知', type: 'warning' }
     },
+    wifiFormat(item) {
+      return { label: item.isEnableWifi === 0 ? '关闭' : '开启', type: item.isEnableWifi === 0 ? 'danger' : 'success' }
+    },
     onAdd() {
       if (!this.checkButtonPermission('add')) {
         return
@@ -390,6 +403,28 @@ export default {
             params: {
               schoolId: item.schoolId
             }
+          })
+          break
+        case 6:
+          if (!this.checkButtonPermission('set_wifi')) {
+            return
+          }
+          this.$warningConfirm(item.isEnableWifi === 0 ? '是否要开启WIFI' : '是否要关闭WIFI', _ => {
+            this.$showLoading(closeLoading => {
+              this.$http({
+                url: this.$urlPath.updateSchoolIsEnableWifi,
+                data: {
+                  schoolId: item.schoolId,
+                  isEnableWifi: item.isEnableWifi === 0 ? 1 : 0
+                }
+              }).then(res => {
+                this.$successMsg('设置成功')
+                closeLoading()
+                this.getData()
+              }).catch(_ => {
+                closeLoading()
+              })
+            })
           })
           break
       }

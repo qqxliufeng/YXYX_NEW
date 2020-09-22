@@ -196,6 +196,8 @@ export const querySchoolAndTextBook = baseModuleUrl + 'querySchoolAndTextBook'
 
 export const grantTextBooksToSchool = baseModuleUrl + 'grantTextBooksToSchool'
 
+export const updateSchoolIsEnableWifi = baseModuleUrl + 'updateSchoolIsEnableWifi'
+
 // ****************会员管理 --- 学校管理 **************** //
 
 // ****************会员管理 --- 老师管理 **************** //
