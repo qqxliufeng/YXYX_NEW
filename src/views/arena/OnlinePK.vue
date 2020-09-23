@@ -104,17 +104,11 @@
           label="创建时间"
           prop="createTime"
           width="180"
-        >
-          <template slot-scope="scope">
-            <div class="text-cut">
-              {{ scope.row.createTime | parseTime }}
-            </div>
-          </template>
-        </el-table-column>
+        />
         <el-table-column
           align="center"
           label="操作"
-          fixed="right"
+          :fixed="$isPhone ? false : 'right'"
           width="150"
         >
           <template slot-scope="scope">

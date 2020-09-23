@@ -76,3 +76,5 @@ Vue.prototype.$warningConfirm = function (message = '', handlerFunction = null) 
     console.log('取消')
   })
 }
+
+Vue.prototype.$isPhone = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)

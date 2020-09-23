@@ -3,7 +3,7 @@
     <el-dialog
       title="创建考试"
       :visible.sync="dialogFormVisible"
-      width="60%"
+      :width="$isPhone ? '90%' : '60%'"
       top="8vh"
     >
       <el-form
@@ -179,6 +179,7 @@
               :max="200"
             />
             <el-link
+              v-if="!$isPhone"
               type="danger"
               style="width: 20%"
               :underline="false"

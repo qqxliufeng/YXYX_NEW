@@ -3,7 +3,7 @@
     <el-dialog
       title="创建竞技场"
       :visible.sync="dialogFormVisible"
-      width="60%"
+      :width="$isPhone ? '90%' : '60%'"
       top="8vh"
     >
       <el-form
@@ -64,7 +64,7 @@
             <el-input-number
               v-model="arenaModel.wordsNum"
               :min="1"
-              style="width: 50%"
+              :style="{width: $isPhone ? '100%' : '50%'}"
               :max="200"
             />
             <el-button
@@ -117,6 +117,7 @@
               label="描述文字"
             />
             <el-link
+              v-if="!$isPhone"
               type="danger"
               style="width: 20%"
               :underline="false"
@@ -132,6 +133,7 @@
               :max="200"
             />
             <el-link
+              v-if="!$isPhone"
               type="danger"
               :underline="false"
               style="width: 20%"
@@ -239,6 +241,7 @@
       :visible.sync="drawerSchoolList"
       direction="rtl"
       :with-header="false"
+      :size="$isPhone ? '90%' : '40%'"
     >
       <div class="padding">
         <div class="flex justify-between align-center">
@@ -550,7 +553,7 @@ export default {
         this.$errorMsg('请至少选择一个课程')
         return
       }
-      if (this.randomWordList.length === 0) {
+      if (this.$refs.wordList.getRandomWord().length === 0) {
         this.$errorMsg('请选择随机单词')
         return
       }
@@ -599,7 +602,7 @@ export default {
       postData.rewardType = this.arenaModel.rewardType
       postData.offlineReward13 = this.arenaModel.offlineReward13
       postData.offlineReward410 = this.arenaModel.offlineReward410
-      postData.wordsIdList = this.randomWordList.map(it => { return { wordId: it.wordId } })
+      postData.wordsIdList = this.$refs.wordList.getRandomWord().map(it => { return { wordId: it.wordId } })
       postData.arenaSchoolIdList = this.arenaModel.selectedSchoolList.map(it => { return { schoolId: it.schoolId } })
       postData.createSchoolId = this.$store.getters.schoolId
       this.$http({

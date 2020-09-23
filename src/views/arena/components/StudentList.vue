@@ -4,7 +4,7 @@
       :visible.sync="openDrawer"
       direction="rtl"
       :with-header="false"
-      size="40%"
+      :size="$isPhone ? '70%' : '40%'"
     >
       <div class="padding">
         <div class="flex justify-between align-center">

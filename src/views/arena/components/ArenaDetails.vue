@@ -3,7 +3,7 @@
     <el-dialog
       title="竞技场详细信息"
       :visible.sync="dialogFormVisible"
-      width="60%"
+      :width="$isPhone ? '90%' : '60%'"
       top="8vh"
     >
       <el-form

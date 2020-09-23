@@ -180,7 +180,7 @@
         <el-table-column
           align="center"
           label="操作"
-          fixed="right"
+          :fixed="$isPhone ? false : 'right'"
           width="200"
         >
           <template slot-scope="scope">

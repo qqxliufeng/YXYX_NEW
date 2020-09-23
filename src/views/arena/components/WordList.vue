@@ -5,7 +5,7 @@
       :visible.sync="drawerWordList"
       direction="rtl"
       :with-header="false"
-      size="50%"
+      :size="$isPhone ? '80%' : '50%'"
     >
       <div class="padding">
         <div class="flex justify-between align-center">
@@ -71,7 +71,7 @@
       :visible.sync="drawerAllWordList"
       direction="rtl"
       :with-header="false"
-      size="40%"
+      :size="$isPhone ? '80%' : '40%'"
     >
       <div class="padding">
         <div class="flex justify-between align-center">
