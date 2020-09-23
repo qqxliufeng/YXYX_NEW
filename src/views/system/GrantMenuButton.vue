@@ -1,11 +1,3 @@
-<!--
- * @Author: your name
- * @Date: 2020-06-12 16:27:36
- * @LastEditTime: 2020-06-12 17:21:30
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Editv
- * @FilePath: /YXYX_NEW/src/views/system/GrantMenuButton.vue
--->
 <template>
   <div class="container">
     <el-card :body-style="{padding: 0}">
@@ -51,70 +43,6 @@
           </div>
         </el-collapse-item>
       </el-collapse>
-      <!-- <el-table
-        v-loading="loading"
-        :stripe="tableConfig.stripe"
-        :header-cell-style="tableConfig.headerCellStyle"
-        :data="tableData"
-        :border="tableConfig.border"
-        :size="tableConfig.size"
-        :default-sort="tableConfig.defalutSort"
-        :style="tableConfig.style"
-        default-expand-all
-      >
-        <el-table-column
-          type="expand"
-          label="展开/收缩"
-          width="100"
-        >
-          <template slot-scope="scope">
-            <div v-if="scope.row.menuButtons.length > 0">
-              <el-row>
-                <el-col :span="22">
-                  <el-checkbox
-                    v-for="item of scope.row.menuButtons"
-                    :key="item.buttonId"
-                    v-model="item.select"
-                    style="margin-bottom: 10px"
-                  >{{ item.buttonName }}</el-checkbox>
-                </el-col>
-                <el-col :span="2">
-                  <el-button
-                    size="mini"
-                    type="danger"
-                    class="margin-left"
-                    @click="confirmGrantButton(scope.row)"
-                  >确定分配</el-button>
-                </el-col>
-              </el-row>
-            </div>
-            <div
-              v-else
-              class="text-center"
-            >
-              <span>该菜单下暂无按钮选项</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="menuName"
-          label="菜单名称"
-          width
-        />
-        <el-table-column
-          align="center"
-          prop="menuSequence"
-          label="序号"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          align="center"
-          prop="createTime"
-          label="创建时间"
-          width
-        />
-      </el-table> -->
     </el-card>
   </div>
 </template>
@@ -151,17 +79,21 @@ export default {
       })
     },
     getData() {
-      this.$http({
-        url: this.$urlPath.queryMenuAndButtonByUser,
-        methods: this.HTTP_GET,
-        data: {
-          userId: this.$route.params.userId,
-          roleId: this.$route.params.roleId
-        }
-      }).then(res => {
-        this.loading = false
-        this.tableData = res.obj
-        this.menuIds = this.tableData.map(it => it.menuId)
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.queryMenuAndButtonByUser,
+          methods: this.HTTP_GET,
+          data: {
+            userId: this.$route.params.userId,
+            roleId: this.$route.params.roleId
+          }
+        }).then(res => {
+          closeLoading()
+          this.tableData = res.obj
+          this.menuIds = this.tableData.map(it => it.menuId)
+        }).catch(_ => {
+          closeLoading()
+        })
       })
     }
   }
