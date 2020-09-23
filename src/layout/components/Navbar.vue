@@ -19,6 +19,7 @@
             fit="cover"
           />
           <el-link
+            v-if="!$isPhone"
             :underline="false"
             style="margin-right: 20px"
           >您好，{{ name }}，欢迎来到优行后台管理系统</el-link>

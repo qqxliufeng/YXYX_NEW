@@ -40,8 +40,8 @@ export default {
     }
   },
   mounted() {
-    this.tableCardStyle.top = this.$refs.tableHeader ? (this.$refs.tableHeader.$el.offsetHeight + 10 + 'px') : '0'
     this.$nextTick(_ => {
+      this.tableCardStyle.top = this.$refs.tableHeader ? (this.$refs.tableHeader.$el.offsetHeight + 10 + 'px') : '0'
       this.tableConfig.style.myHeight = this.$refs.tableContainer ? (this.$refs.tableContainer.$el.offsetHeight - parseInt(this.tableCardStyle.top) - 25) : 0
     })
     if (this.initData) {

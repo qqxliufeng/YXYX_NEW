@@ -10,6 +10,7 @@
     >
       <template slot="center">
         <el-radio-group
+          v-if="!$isPhone"
           v-model="status"
           size="mini"
           class="margin-left"
@@ -18,6 +19,25 @@
           <el-radio-button :label="1">进行中</el-radio-button>
           <el-radio-button :label="2">已结束</el-radio-button>
         </el-radio-group>
+        <el-select
+          v-else
+          v-model="status"
+          size="mini"
+          class="margin-left"
+        >
+          <el-option
+            label="未开始"
+            :value="0"
+          />
+          <el-option
+            label="进行中"
+            :value="1"
+          />
+          <el-option
+            label="已结束"
+            :value="2"
+          />
+        </el-select>
       </template>
     </table-header>
     <el-card
@@ -42,7 +62,7 @@
           label="名称"
           prop="examName"
           width="130"
-          fixed="left"
+          :fixed="$isPhone ? false : 'left'"
         />
         <el-table-column
           align="center"

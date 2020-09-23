@@ -189,6 +189,7 @@
       :visible.sync="drawerSchoolList"
       direction="rtl"
       :with-header="false"
+      :size="$isPhone ? '80%' : '40%'"
     >
       <div class="padding">
         <div class="flex justify-between align-center">
@@ -235,7 +236,7 @@
       :visible.sync="drawerJoinStu"
       direction="rtl"
       :with-header="false"
-      size="50%"
+      :size="$isPhone ? '90%' : '60%'"
     >
       <div class="padding">
         <div class="flex justify-between align-center">
@@ -244,6 +245,12 @@
             size="mini"
             @click="drawerJoinStu = false"
           >关闭</el-button>
+          <el-button
+            v-if="arenaModel.rewardType === 1"
+            type="danger"
+            size="mini"
+            @click="rewardOnLine"
+          >发放奖品</el-button>
         </div>
         <el-table
           v-loading="joinStuLoading"
@@ -275,12 +282,6 @@
             prop="studentName"
             width="120"
           />
-          <!-- <el-table-column
-            align="center"
-            label="学校名称"
-            prop="schoolName"
-            width="120"
-          /> -->
           <el-table-column
             align="center"
             label="比赛时长"
@@ -307,6 +308,18 @@
               {{ (scoped.row.resultPer * 100) + '%' }}
             </template>
           </el-table-column>
+          <el-table-column
+            align="center"
+            label="奖品发放"
+          >
+            <template slot-scope="scoped">
+              <el-button
+                :size="$style.tableButtonSize"
+                :type="scoped.row.isAward === 0 ? 'danger' : 'success'"
+                @click="rewardOffLine(scoped.row)"
+              >{{ scoped.row.isAward === 0 ? '未发放' : '已发放' }}</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </el-drawer>
@@ -315,7 +328,7 @@
       :visible.sync="drawerUnJoinStu"
       direction="rtl"
       :with-header="false"
-      size="20%"
+      :size="$isPhone ? '40%' : '20%'"
     >
       <div class="padding">
         <div class="flex justify-between align-center">
@@ -540,6 +553,51 @@ export default {
         this.loading = false
         this.schoolList = res.obj
       })
+    },
+    rewardOnLine() {
+      if (this.arenaModel.rewardType === 0 || this.joinStudentList.length === 0) return
+      if (this.joinStudentList[0].isAward === 1) {
+        this.$errorMsg('奖品已发放')
+        return
+      }
+      const endDate = this.arenaModel.endArenaTime.replace(/-/g, '/')
+      if (new Date().getTime() > new Date(endDate).getTime()) {
+        this.$warningConfirm('是否要发放奖品？', () => {
+          this.$showLoading(closeLoading => {
+            this.$http({
+              url: this.$urlPath.isAward,
+              data: {
+                rewardType: this.arenaModel.rewardType,
+                arenaId: this.arenaModel.arenaId
+              }
+            }).then(res => {
+              this.$successMsg('奖品发放成功')
+              this.joinStudentList.forEach(it => { it.isAward = 1 })
+            })
+          })
+        })
+      } else {
+        this.$errorMsg('竞技场还未结束')
+      }
+    },
+    rewardOffLine(studentItem) {
+      if (this.arenaModel.rewardType === 1) return
+      const endDate = this.arenaModel.endArenaTime.replace(/-/g, '/')
+      if (new Date().getTime() > new Date(endDate).getTime()) {
+        this.$http({
+          url: this.$urlPath.isAward,
+          data: {
+            rewardType: this.arenaModel.rewardType,
+            arenaId: this.arenaModel.arenaId,
+            arenaStudentId: studentItem.arenaStudentId
+          }
+        }).then(res => {
+          this.$success('奖品发放成功')
+          this.joinStudentList.forEach(it => { it.isAward = 1 })
+        })
+      } else {
+        this.$errorMsg('竞技场还未结束')
+      }
     }
   }
 }
