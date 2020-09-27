@@ -13,6 +13,7 @@
       @table-header-collapse="onCollapsed"
     />
     <el-card
+      ref="tableContainer"
       :body-style="{ padding: '2px' }"
       class="table-container"
       :style="tableCardStyle"
@@ -26,6 +27,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        :height="tableConfig.style.myHeight"
       >
         <el-table-column
           align="center"
@@ -40,7 +42,6 @@
           align="center"
           label="学生姓名"
           prop="studentName"
-          fixed="left"
           width="120"
         />
         <el-table-column
@@ -113,6 +114,14 @@
         </el-table-column>
         <el-table-column
           align="center"
+          label="视频状态"
+        >
+          <template slot-scope="scope">
+            <table-status :status="jumpVideoStatus(scope.row)" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           label="状态"
           prop="status"
         >
@@ -124,10 +133,25 @@
           align="center"
           label="操作"
           fixed="right"
-          min-width="330"
+          width="120"
         >
           <template slot-scope="scope">
-            <el-button
+            <el-dropdown
+              split-button
+              type="danger"
+              size="mini"
+              @command="handler"
+            >
+              操作
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{type: 0, item: scope.row}">{{ scope.row.status === 0 ? "禁用" : "正常" }}</el-dropdown-item>
+                <el-dropdown-item :command="{type: 1, item: scope.row}">编辑</el-dropdown-item>
+                <el-dropdown-item :command="{type: 2, item: scope.row}">重置密码</el-dropdown-item>
+                <el-dropdown-item :command="{type: 3, item: scope.row}">查看陪伴号</el-dropdown-item>
+                <el-dropdown-item :command="{type: 4, item: scope.row}">{{ scope.row.isJumpVideo === 0 ? "跳过视频" : "恢复视频" }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <!-- <el-button
               :size="$style.tableButtonSize"
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
               @click="changeLockStatus({
@@ -153,7 +177,7 @@
               :size="$style.tableButtonSize"
               type="warning"
               @click="company(scope.row)"
-            >陪伴号</el-button>
+            >陪伴号</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -480,6 +504,12 @@ export default {
         type: item.status === 0 ? 'primary' : 'danger'
       }
     },
+    jumpVideoStatus(item) {
+      return {
+        label: item.isJumpVideo === 0 ? '未跳过' : '已跳过',
+        type: item.isJumpVideo === 0 ? 'primary' : 'danger'
+      }
+    },
     studentTypeStatus(item) {
       switch (item.isTeacher) {
         case 0:
@@ -554,6 +584,53 @@ export default {
         isOnLine: 1, // 是否线上 0否 1是，和学校线上线下一致
         status: 0 // 状态，0正常 1禁用
       }
+    },
+    handler({ type, item }) {
+      switch (type) {
+        case 0:
+          this.changeLockStatus({
+            item,
+            statusField: 'status',
+            data: { studentId: item.studentId },
+            lockUrl: this.$urlPath.lockStudent,
+            unLockUrl: this.$urlPath.unLockStudent
+          })
+          break
+        case 1:
+          this.handlerUpdate(item)
+          break
+        case 2:
+          this.initPassword(item)
+          break
+        case 3:
+          this.company(item)
+          break
+        case 4:
+          this.hanlderJumpVideo(item)
+          break
+      }
+    },
+    hanlderJumpVideo(item) {
+      if (!this.checkButtonPermission('set_jump_video')) {
+        return
+      }
+      this.$warningConfirm(`是否要设置此学生${item.isJumpVideo === 0 ? '跳过' : '恢复'}视频功能？`, () => {
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: this.$urlPath.updateStudentIsJumpVideo,
+            data: {
+              studentId: item.studentId,
+              isJumpVideo: item.isJumpVideo === 0 ? 1 : 0
+            }
+          }).then(res => {
+            this.$successMsg('设置成功')
+            closeLoading()
+            item.isJumpVideo = item.isJumpVideo === 0 ? 1 : 0
+          }).catch(_ => {
+            closeLoading()
+          })
+        })
+      })
     },
     handlerUpdate(item) {
       if (!this.checkButtonPermission('edit')) {

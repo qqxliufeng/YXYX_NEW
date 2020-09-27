@@ -198,6 +198,8 @@ export const grantTextBooksToSchool = baseModuleUrl + 'grantTextBooksToSchool'
 
 export const updateSchoolIsEnableWifi = baseModuleUrl + 'updateSchoolIsEnableWifi'
 
+export const updateSchoolIsAreaLimit = baseModuleUrl + 'updateSchoolIsAreaLimit'
+
 // ****************会员管理 --- 学校管理 **************** //
 
 // ****************会员管理 --- 老师管理 **************** //
@@ -259,6 +261,8 @@ export const studentAssignedTextBook = baseModuleUrl + 'studentAssignedTextBook'
 export const getAllTextBookAndStudent = baseModuleUrl + 'getAllTextBookAndStudent'
 
 export const queryStudentCompanion = baseModuleUrl + 'queryStudentCompanion'
+
+export const updateStudentIsJumpVideo = baseModuleUrl + 'updateStudentIsJumpVideo'
 
 // ****************会员管理 --- 学生管理 **************** //
 

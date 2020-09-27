@@ -150,12 +150,20 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="操作"
-          fixed="right"
-          :width="isSuperAdmin ? 250 : 200"
+          label="区域限制"
         >
           <template slot-scope="scope">
-            <el-button
+            <table-status :status="areaLimitFormat(scope.row)" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="操作"
+          fixed="right"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <!-- <el-button
               v-if="isSuperAdmin"
               :size="$style.tableButtonSize"
               :type="scope.row.status === 0 ? 'danger' : 'warning'"
@@ -180,16 +188,22 @@
               :size="$style.tableButtonSize"
               type="primary"
               @click="$router.push({path: '/'})"
-            >查看详情</el-button>
+            >查看详情</el-button> -->
             <el-dropdown
               style="display: inline-block; margin-left: 10px"
               :size="$style.tableButtonSize"
-              type="success"
+              type="danger"
               split-button
               @command="handleSchoolCommand"
             >
-              更多
+              操作
               <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{ tag: 8, item: scope.row }">{{ scope.row.status === 0 ? "禁用" : "解锁" }}</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 9, item: scope.row }">编辑</el-dropdown-item>
+                <el-dropdown-item
+                  v-if="!isSuperAdmin"
+                  :command="{ tag: 10, item: scope.row }"
+                >查看详情</el-dropdown-item>
                 <el-dropdown-item
                   v-if="scope.row.isOnLine === 1"
                   :command="{ tag: 1, item: scope.row }"
@@ -205,6 +219,7 @@
                 <el-dropdown-item :command="{ tag: 3, item: scope.row }">查询服务记录</el-dropdown-item>
                 <el-dropdown-item :command="{ tag: 4, item: scope.row }">增加服务记录</el-dropdown-item>
                 <el-dropdown-item :command="{ tag: 6, item: scope.row }">{{ scope.row.isEnableWifi === 0 ? '开启WIFI' : '关闭WIFI' }}</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 7, item: scope.row }">{{ (scope.row.isAreaLimit === 0 || scope.row.isAreaLimit === null) ? '开启区域限制' : '关闭区域限制' }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -318,7 +333,10 @@ export default {
       return { label: '未知', type: 'warning' }
     },
     wifiFormat(item) {
-      return { label: item.isEnableWifi === 0 ? '关闭' : '开启', type: item.isEnableWifi === 0 ? 'danger' : 'success' }
+      return { label: item.isEnableWifi === 0 ? '已关闭' : '已开启', type: item.isEnableWifi === 0 ? 'danger' : 'success' }
+    },
+    areaLimitFormat(item) {
+      return { label: (item.isAreaLimit === 0 || item.isAreaLimit === null) ? '未开启' : '已开启', type: (item.isAreaLimit === 0 || item.isAreaLimit === null) ? 'danger' : 'success' }
     },
     onAdd() {
       if (!this.checkButtonPermission('add')) {
@@ -427,7 +445,47 @@ export default {
             })
           })
           break
+        case 7:
+          this.handlerAreaLimit(item)
+          break
+        case 8:
+          this.changeLockStatus({
+            item,
+            statusField: 'status',
+            data: { schoolId: item.schoolId },
+            lockUrl: this.$urlPath.lockSchool,
+            unLockUrl: this.$urlPath.unLockSchool
+          })
+          break
+        case 9:
+          this.editAccountInfo(item)
+          break
+        case 10:
+          this.$router.push({ path: '/' })
+          break
       }
+    },
+    handlerAreaLimit(item) {
+      if (!this.checkButtonPermission('set_area_limit')) {
+        return
+      }
+      this.$warningConfirm(`是否要${(item.isAreaLimit === 0 || item.isAreaLimit === null) ? '开启' : '关闭'}此学校区域限制功能？`, () => {
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: this.$urlPath.updateSchoolIsAreaLimit,
+            data: {
+              schoolId: item.schoolId,
+              isAreaLimit: (item.isAreaLimit === 0 || item.isAreaLimit === null) ? 1 : 0
+            }
+          }).then(res => {
+            this.$successMsg('设置成功')
+            closeLoading()
+            item.isAreaLimit = (item.isAreaLimit === 0 || item.isAreaLimit === null) ? 1 : 0
+          }).catch(_ => {
+            closeLoading()
+          })
+        })
+      })
     },
     addRecordItem() {
       if (!this.recordModel.record) {
