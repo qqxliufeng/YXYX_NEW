@@ -127,7 +127,9 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <div class="text-cut">{{ scope.row.endTime | parseTime('{y}-{m}-{d}') }}</div>
+            <div class="text-cut">
+              {{ scope.row.endTime | parseTime("{y}-{m}-{d}") }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -198,7 +200,9 @@
             >
               操作
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{ tag: 8, item: scope.row }">{{ scope.row.status === 0 ? "禁用" : "解锁" }}</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 8, item: scope.row }">{{
+                  scope.row.status === 0 ? "禁用" : "解锁"
+                }}</el-dropdown-item>
                 <el-dropdown-item :command="{ tag: 9, item: scope.row }">编辑</el-dropdown-item>
                 <el-dropdown-item
                   v-if="!isSuperAdmin"
@@ -218,8 +222,14 @@
                 >已分配的教材</el-dropdown-item>
                 <el-dropdown-item :command="{ tag: 3, item: scope.row }">查询服务记录</el-dropdown-item>
                 <el-dropdown-item :command="{ tag: 4, item: scope.row }">增加服务记录</el-dropdown-item>
-                <el-dropdown-item :command="{ tag: 6, item: scope.row }">{{ scope.row.isEnableWifi === 0 ? '开启WIFI' : '关闭WIFI' }}</el-dropdown-item>
-                <el-dropdown-item :command="{ tag: 7, item: scope.row }">{{ (scope.row.isAreaLimit === 0 || scope.row.isAreaLimit === null) ? '开启区域限制' : '关闭区域限制' }}</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 6, item: scope.row }">{{
+                  scope.row.isEnableWifi === 0 ? "开启WIFI" : "关闭WIFI"
+                }}</el-dropdown-item>
+                <el-dropdown-item :command="{ tag: 7, item: scope.row }">{{
+                  scope.row.isAreaLimit === 0 || scope.row.isAreaLimit === null
+                    ? "开启区域限制"
+                    : "关闭区域限制"
+                }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -333,10 +343,22 @@ export default {
       return { label: '未知', type: 'warning' }
     },
     wifiFormat(item) {
-      return { label: item.isEnableWifi === 0 ? '已关闭' : '已开启', type: item.isEnableWifi === 0 ? 'danger' : 'success' }
+      return {
+        label: item.isEnableWifi === 0 ? '已关闭' : '已开启',
+        type: item.isEnableWifi === 0 ? 'danger' : 'success'
+      }
     },
     areaLimitFormat(item) {
-      return { label: (item.isAreaLimit === 0 || item.isAreaLimit === null) ? '未开启' : '已开启', type: (item.isAreaLimit === 0 || item.isAreaLimit === null) ? 'danger' : 'success' }
+      return {
+        label:
+          item.isAreaLimit === 0 || item.isAreaLimit === null
+            ? '未开启'
+            : '已开启',
+        type:
+          item.isAreaLimit === 0 || item.isAreaLimit === null
+            ? 'danger'
+            : 'success'
+      }
     },
     onAdd() {
       if (!this.checkButtonPermission('add')) {
@@ -427,23 +449,28 @@ export default {
           if (!this.checkButtonPermission('set_wifi')) {
             return
           }
-          this.$warningConfirm(item.isEnableWifi === 0 ? '是否要开启WIFI' : '是否要关闭WIFI', _ => {
-            this.$showLoading(closeLoading => {
-              this.$http({
-                url: this.$urlPath.updateSchoolIsEnableWifi,
-                data: {
-                  schoolId: item.schoolId,
-                  isEnableWifi: item.isEnableWifi === 0 ? 1 : 0
-                }
-              }).then(res => {
-                this.$successMsg('设置成功')
-                closeLoading()
-                this.getData()
-              }).catch(_ => {
-                closeLoading()
+          this.$warningConfirm(
+            item.isEnableWifi === 0 ? '是否要开启WIFI' : '是否要关闭WIFI',
+            _ => {
+              this.$showLoading(closeLoading => {
+                this.$http({
+                  url: this.$urlPath.updateSchoolIsEnableWifi,
+                  data: {
+                    schoolId: item.schoolId,
+                    isEnableWifi: item.isEnableWifi === 0 ? 1 : 0
+                  }
+                })
+                  .then(res => {
+                    this.$successMsg('设置成功')
+                    closeLoading()
+                    this.getData()
+                  })
+                  .catch(_ => {
+                    closeLoading()
+                  })
               })
-            })
-          })
+            }
+          )
           break
         case 7:
           this.handlerAreaLimit(item)
@@ -469,23 +496,31 @@ export default {
       if (!this.checkButtonPermission('set_area_limit')) {
         return
       }
-      this.$warningConfirm(`是否要${(item.isAreaLimit === 0 || item.isAreaLimit === null) ? '开启' : '关闭'}此学校区域限制功能？`, () => {
-        this.$showLoading(closeLoading => {
-          this.$http({
-            url: this.$urlPath.updateSchoolIsAreaLimit,
-            data: {
-              schoolId: item.schoolId,
-              isAreaLimit: (item.isAreaLimit === 0 || item.isAreaLimit === null) ? 1 : 0
-            }
-          }).then(res => {
-            this.$successMsg('设置成功')
-            closeLoading()
-            item.isAreaLimit = (item.isAreaLimit === 0 || item.isAreaLimit === null) ? 1 : 0
-          }).catch(_ => {
-            closeLoading()
+      this.$warningConfirm(
+        `是否要${item.isAreaLimit === 0 || item.isAreaLimit === null ? '开启' : '关闭'
+        }此学校区域限制功能？`,
+        () => {
+          this.$showLoading(closeLoading => {
+            this.$http({
+              url: this.$urlPath.updateSchoolIsAreaLimit,
+              data: {
+                schoolId: item.schoolId,
+                isAreaLimit:
+                  item.isAreaLimit === 0 || item.isAreaLimit === null ? 1 : 0
+              }
+            })
+              .then(res => {
+                this.$successMsg('设置成功')
+                closeLoading()
+                item.isAreaLimit =
+                  item.isAreaLimit === 0 || item.isAreaLimit === null ? 1 : 0
+              })
+              .catch(_ => {
+                closeLoading()
+              })
           })
-        })
-      })
+        }
+      )
     },
     addRecordItem() {
       if (!this.recordModel.record) {
