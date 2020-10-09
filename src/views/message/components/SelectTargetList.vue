@@ -184,7 +184,7 @@ export default {
     }
   },
   methods: {
-    showList(mode = 0) {
+    showSchoolList(mode = 0) {
       this.openSchoolDrawer = true
       this.schoolLoading = true
       this.mode = mode

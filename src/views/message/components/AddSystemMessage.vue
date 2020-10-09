@@ -147,7 +147,7 @@ export default {
       })
     },
     selectTarget() {
-      this.$refs.selectTargetList.showList(this.messageModel.sendType)
+      this.$refs.selectTargetList.showSchoolList(this.messageModel.sendType)
     }
   }
 }
