@@ -431,3 +431,17 @@ export const downLoadExamNoAnswer = baseModuleUrl + 'downLoadExamNoAnswer'
 export const downLoadExamWithAnswer = baseModuleUrl + 'downLoadExamWithAnswer'
 
 // ****************在线考试**************** //
+
+// ****************消息--系统消息**************** //
+
+export const querySystemMessage = baseModuleUrl + 'querySystemMessage'
+
+export const querySystemMessageToList = baseModuleUrl + 'querySystemMessageToList'
+
+export const saveSystemMessage = baseModuleUrl + 'saveSystemMessage'
+
+export const sendSystemMessage = baseModuleUrl + 'sendSystemMessage'
+
+export const withdrawSystemMessage = baseModuleUrl + 'withdrawSystemMessage'
+
+// ****************消息--系统消息**************** //

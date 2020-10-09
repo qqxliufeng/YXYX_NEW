@@ -1,5 +1,5 @@
 <template>
-  <div>message</div>
+  <div class="container">功能开发中…</div>
 </template>
 
 <script>

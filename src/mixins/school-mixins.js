@@ -55,9 +55,17 @@ export default {
     getRoleList(callback) {
       this.enginData(this.$urlPath.queryRoles, 'roleList', 100, callback)
     },
+    /**
+     * 获取所有的班级
+     */
     getClassList(callback) {
       this.enginData(this.$urlPath.querySchoolClass, 'classList', 100, callback)
     },
+    /**
+     * 根据学校获取所有的班级
+     * @param {*} callback 回调
+     * @param {*} schoolId 学校id
+     */
     getClassListBySchoolId(callback, schoolId) {
       this.enginData(this.$urlPath.querySchoolClassBySchool, 'classList', 100, callback, schoolId)
     },

@@ -7,8 +7,6 @@ import { menuButtonModel } from '@/utils/app-config'
 const hiddenMenuList = [
   '/system/menuButton',
   '/material/distribution',
-  '/message',
-  // '/arena',
   '/integral'
 ]
 
@@ -16,39 +14,6 @@ const affixMenuList = [
   // '/system/group'
 ]
 
-// /system
-// permission.js:121 /system/group
-// permission.js:121 /system/department
-// permission.js:121 /system/roles
-// permission.js:121 /system/menu
-// permission.js:121 /system/menuButton
-// permission.js:121 /system/learningcard
-// permission.js:121 /system/feedback
-// permission.js:121 /system/logmanagement
-// permission.js:121 /message
-// permission.js:121 /message/group
-// permission.js:121 /message/school
-// permission.js:121 /membership
-// permission.js:121 /membership/vipshcool
-// permission.js:121 /membership/vipteacher
-// permission.js:121 /membership/vipclass
-// permission.js:121 /membership/vipstudent
-// permission.js:121 /material
-// permission.js:121 /material/material
-// permission.js:121 /material/distribution
-// permission.js:121 /material/course
-// permission.js:121 /material/video
-// permission.js:121 /material/question
-// permission.js:121 /material/words
-// permission.js:121 /arena
-// permission.js:121 /arena/online
-// permission.js:121 /arena/testpaper
-// permission.js:121 /integral
-// permission.js:121 /integral/set
-// permission.js:121 /integral/order
-// permission.js:121 /luckdraw
-// permission.js:121 /luckdraw/prize
-// permission.js:121 /luckdraw/lucklist
 const pathMapName = new Map()
 pathMapName.set('group', 'Group')
 pathMapName.set('department', 'Department')
@@ -62,6 +27,7 @@ pathMapName.set('appversion', 'AppVersion')
 pathMapName.set('crontabmanager', 'CrontabManager')
 pathMapName.set('groupmessage', 'GroupMessage')
 pathMapName.set('schoolmessage', 'SchoolMessage')
+pathMapName.set('systemmessage', 'SystemMessage')
 pathMapName.set('vipshcool', 'VIPShcool')
 pathMapName.set('vipteacher', 'VIPTeacher')
 pathMapName.set('vipclass', 'VIPClass')
@@ -77,6 +43,7 @@ const pathToFileName = new Map()
 pathToFileName.set('/system/crontabmanager', '/system/CrontabManager')
 pathToFileName.set('/message/groupmessage', '/message/GroupMessage')
 pathToFileName.set('/message/schoolmessage', '/message/SchoolMessage')
+pathToFileName.set('/message/systemmessage', '/message/SystemMessage')
 pathToFileName.set('/membership/expressuser', '/membership/ExpressUser')
 pathToFileName.set('/arena/online', '/arena/OnlinePK')
 pathToFileName.set('/arena/testpaper', '/arena/TestPaper')
