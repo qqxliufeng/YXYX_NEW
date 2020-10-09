@@ -439,6 +439,7 @@ export default {
   methods: {
     showDialog() {
       this.dialogFormVisible = true
+      this.arenaModel.beginArenaTime = new Date().getTime() + 10 * 60 * 1000
       if (this.textbookList.length === 0) {
         this.getTextBookList()
       }
