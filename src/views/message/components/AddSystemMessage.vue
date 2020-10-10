@@ -38,7 +38,10 @@
               v-model="messageModel.sendType"
               size="small"
             >
-              <el-radio-button :label="3">全平台</el-radio-button>
+              <el-radio-button
+                v-if="isSuperAdmin"
+                :label="3"
+              >全平台</el-radio-button>
               <el-radio-button :label="0">学校</el-radio-button>
               <el-radio-button :label="1">班级</el-radio-button>
               <el-radio-button :label="2">个人</el-radio-button>
@@ -50,6 +53,13 @@
               class="margin-left"
               @click="selectTarget"
             >{{ selectTip }}</el-button>
+            <el-button
+              v-if="messageModel.sendType !== 3 && (messageModel.schools.length > 0 || messageModel.classes.length > 0 || messageModel.students.lenght > 0)"
+              size="small"
+              type="success"
+              class="margin-left"
+              @click="seeTarget"
+            >查看列表</el-button>
           </el-col>
         </el-form-item>
       </el-form>
@@ -69,16 +79,21 @@
         >{{ loading ? '发布中…' : '确  定' }}</el-button>
       </div>
     </el-dialog>
-    <SelectTargetList ref="selectTargetList" />
+    <SelectTargetList
+      ref="selectTargetList"
+      @confirm="selectedTargetConfirm"
+    />
+    <TargetDetails ref="targetDetails" />
   </div>
 </template>
 
 <script>
 import userMixins from '@/mixins/user-mixins'
 import SelectTargetList from './SelectTargetList'
+import TargetDetails from './TargetDetails'
 export default {
   name: 'AddSystemMessage',
-  components: { SelectTargetList },
+  components: { SelectTargetList, TargetDetails },
   mixins: [userMixins],
   data() {
     return {
@@ -87,10 +102,10 @@ export default {
       messageModel: {
         title: '',
         messageContent: '',
-        sendType: this.isSuperAdmin ? 3 : 1, // 0学校 1班级 2个人 3全平台
-        schoolId: '', // 学校主键ID
-        classId: '', // 班级主键ID
-        studentId: '' // 学生主键ID
+        sendType: this.isSuperAdmin ? 3 : 0, // 0学校 1班级 2个人 3全平台
+        schools: [], // 学校主键ID
+        classes: [], // 班级主键ID
+        students: [] // 学生主键ID
       }
     }
   },
@@ -107,16 +122,23 @@ export default {
       }
     }
   },
+  watch: {
+    'messageModel.sendType'() {
+      this.messageModel.schools = []
+      this.messageModel.classes = []
+      this.messageModel.students = []
+    }
+  },
   methods: {
     showDialog() {
       this.loading = false
       this.messageModel = {
         title: '',
         messageContent: '',
-        sendType: this.isSuperAdmin ? 3 : 1,
-        schoolId: '',
-        classId: '',
-        studentId: ''
+        sendType: this.isSuperAdmin ? 3 : 0,
+        schools: [], // 学校主键ID
+        classes: [], // 班级主键ID
+        students: [] // 学生主键ID
       }
       this.dialogFormVisible = true
     },
@@ -129,14 +151,48 @@ export default {
         this.$errorMsg('请输入消息内容')
         return
       }
+
+      if (this.messageModel.sendType === 0 && this.messageModel.schools.length === 0) {
+        this.$errorMsg('请至少选择一个学校')
+        return
+      }
+      if (this.messageModel.sendType === 1 && this.messageModel.classes.length === 0) {
+        this.$errorMsg('请至少选择一个班级')
+        return
+      }
+      if (this.messageModel.sendType === 2 && this.messageModel.students.length === 0) {
+        this.$errorMsg('请至少选择一个学生')
+        return
+      }
+      const systemMessageToList = []
+      this.messageModel.sendType === 0 && this.messageModel.schools.forEach(item => {
+        systemMessageToList.push({
+          schoolId: item.schoolId
+        })
+      })
+      this.messageModel.sendType === 1 && this.messageModel.classes.forEach(item => {
+        systemMessageToList.push({
+          schoolId: item.schoolId,
+          classId: item.classId
+        })
+      })
+      this.messageModel.sendType === 2 && this.messageModel.students.forEach(item => {
+        systemMessageToList.push({
+          schoolId: item.schoolId,
+          classId: item.classId,
+          studentId: item.studentId
+        })
+      })
       this.loading = true
       this.$http({
         url: this.$urlPath.saveSystemMessage,
         data: {
           title: this.messageModel.title,
           messageContent: this.messageModel.messageContent,
-          sendType: this.messageModel.sendType
-        }
+          sendType: this.messageModel.sendType,
+          systemMessageToList: systemMessageToList
+        },
+        contentType: 'application/json; charset=UTF-8'
       }).then(res => {
         this.loading = false
         this.dialogFormVisible = false
@@ -148,6 +204,26 @@ export default {
     },
     selectTarget() {
       this.$refs.selectTargetList.showSchoolList(this.messageModel.sendType)
+    },
+    seeTarget() {
+      let data = null
+      if (this.messageModel.sendType === 0) {
+        data = this.messageModel.schools
+      } else if (this.messageModel.sendType === 1) {
+        data = this.messageModel.classes
+      } else if (this.messageModel.sendType === 2) {
+        data = this.messageModel.students
+      }
+      this.$refs.targetDetails.show({}, data)
+    },
+    selectedTargetConfirm({ mode = 0, val }) {
+      if (mode === 0) {
+        this.messageModel.schools = val
+      } else if (mode === 1) {
+        this.messageModel.classes = val
+      } else if (mode === 2) {
+        this.messageModel.students = val
+      }
     }
   }
 }

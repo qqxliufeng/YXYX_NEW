@@ -14,6 +14,7 @@
             @click="openSchoolDrawer = false"
           >关闭</el-button>
           <el-button
+            v-if="mode === 0"
             type="primary"
             size="mini"
             @click="confirmSchool"
@@ -72,6 +73,7 @@
             @click="openClassDrawer = false"
           >关闭</el-button>
           <el-button
+            v-if="mode === 1"
             type="primary"
             size="mini"
             @click="confirmClass"
@@ -127,7 +129,7 @@
           <el-button
             type="danger"
             size="mini"
-            @click="openDrawer = false"
+            @click="openStudentDrawer = false"
           >关闭</el-button>
           <el-button
             type="primary"
@@ -140,13 +142,13 @@
           v-loading="studentLoading"
           :stripe="tableConfig.stripe"
           :header-cell-style="tableConfig.headerCellStyle"
-          :data="tableData"
+          :data="studentList"
           :border="tableConfig.border"
           :size="tableConfig.size"
           :default-sort="tableConfig.defalutSort"
           :style="tableConfig.style"
           height="90vh"
-          @selection-change="handleSelectionChange"
+          @selection-change="handleStudentSelectionChange"
         >
           <el-table-column
             type="selection"
@@ -157,6 +159,11 @@
             label="姓名"
             prop="studentName"
           />
+          <el-table-column
+            align="center"
+            label="手机号码"
+            prop="studentPhone"
+          />
         </el-table>
       </div>
     </el-drawer>
@@ -166,9 +173,10 @@
 <script>
 import tableMixins from '@/mixins/table-mixins'
 import schoolMixins from '@/mixins/school-mixins'
+import userMixins from '@/mixins/user-mixins'
 export default {
   name: 'SelectTargetList',
-  mixins: [tableMixins, schoolMixins],
+  mixins: [tableMixins, schoolMixins, userMixins],
   data() {
     return {
       mode: 0, // 0学校 1班级 2个人,
@@ -179,8 +187,11 @@ export default {
       classLoading: false,
       studentLoading: false,
       studentList: [],
-      selectedSchool: null,
-      selectClass: null
+      tempSchool: null,
+      tempClass: null,
+      selectedSchools: null,
+      selectedClasses: null,
+      selectedStudents: null
     }
   },
   methods: {
@@ -192,22 +203,89 @@ export default {
         this.schoolLoading = false
       })
     },
-    handleSchoolSelectionChange() { },
+    handleSchoolSelectionChange(val) {
+      this.selectedSchools = val
+    },
+    handleClassSelectionChange(val) {
+      this.selectedClasses = val
+    },
+    handleStudentSelectionChange(val) {
+      this.selectedStudents = val
+    },
     chooseClass(schoolItem) {
-      this.selectedSchool = schoolItem
+      this.tempSchool = schoolItem
       this.classLoading = true
       this.openClassDrawer = true
+      this.openSchoolDrawer = false
       this.getClassListBySchoolId(_ => {
         this.classLoading = false
       }, schoolItem.schoolId)
     },
-    handleClassSelectionChange() { },
     chooseStudent(classItem) {
-      this.selectClass = classItem
+      this.tempClass = classItem
+      this.studentLoading = true
+      this.openStudentDrawer = true
+      this.openClassDrawer = false
+      this.$http({
+        url: this.$urlPath.queryStudentListLike,
+        methods: this.HTTP_GET,
+        data: {
+          schoolId: this.tempSchool.schoolId,
+          classId: this.tempClass.classId,
+          pageNum: 1,
+          pageSize: 1000
+        }
+      }).then(res => {
+        this.studentLoading = false
+        this.studentList = res.obj.list
+      }).catch(_ => {
+        this.studentLoading = false
+      })
     },
-    confirmSchool() { },
-    confirmClass() { },
-    confirmStudent() { }
+    confirmSchool() {
+      if (!this.selectedSchools || this.selectedSchools.length === 0) {
+        this.$errorMsg('请至少选择一个学校')
+        return
+      }
+      this.openSchoolDrawer = false
+      this.$emit('confirm', { mode: this.mode, val: this.selectedSchools })
+    },
+    confirmClass() {
+      if (!this.selectedClasses || this.selectedClasses.length === 0) {
+        this.$errorMsg('请至少选择一个班级')
+        return
+      }
+      this.openClassDrawer = false
+      this.$emit('confirm', {
+        mode: this.mode, val: this.selectedClasses.map(it => {
+          return {
+            schoolId: this.tempSchool.schoolId,
+            schoolName: this.tempSchool.schoolName,
+            classId: it.classId,
+            className: it.className
+          }
+        })
+      })
+    },
+    confirmStudent() {
+      if (!this.selectedStudents || this.selectedStudents.length === 0) {
+        this.$errorMsg('请至少选择一个学生')
+        return
+      }
+      this.openStudentDrawer = false
+      this.$emit('confirm', {
+        mode: this.mode, val: this.selectedStudents.map(it => {
+          return {
+            schoolId: this.tempSchool.schoolId,
+            schoolName: this.tempSchool.schoolName,
+            classId: this.tempClass.classId,
+            className: this.tempClass.className,
+            studentId: it.studentId,
+            studentName: it.studentName
+          }
+        })
+      })
+    }
   }
 }
 </script>

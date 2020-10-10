@@ -54,7 +54,13 @@
           label="目标群体"
         >
           <template slot-scope="scope">
-            <table-status :status="targetFormat(scope.row)" />
+            <div>
+              <table-status :status="targetFormat(scope.row)" />
+              <el-link
+                v-if="scope.row.sendType !== 3"
+                @click="seeTargetMore(scope.row)"
+              >查看详情</el-link>
+            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -117,6 +123,7 @@
       ref="addSystemMessage"
       @reload="reloadData"
     />
+    <target-details ref="targetDetails" />
   </div>
 </template>
 
@@ -124,9 +131,10 @@
 import tableMixins from '@/mixins/table-mixins'
 import userMixins from '@/mixins/user-mixins'
 import AddSystemMessage from './components/AddSystemMessage'
+import TargetDetails from './components/TargetDetails'
 export default {
   name: 'SystemMessage',
-  components: { AddSystemMessage },
+  components: { AddSystemMessage, TargetDetails },
   mixins: [tableMixins, userMixins],
   data() {
     return {
@@ -160,7 +168,7 @@ export default {
       switch (item.sendType) {
         case 0:
           return {
-            type: 'wanring',
+            type: 'warning',
             label: '学校'
           }
         case 1:
@@ -236,6 +244,9 @@ export default {
     },
     showDetail(item) {
       this.$alert(item.messageContent, item.title, null)
+    },
+    seeTargetMore(item) {
+      this.$refs.targetDetails.show(item)
     }
   }
 }
