@@ -75,16 +75,12 @@ export default {
     statusFormatter(item) {
       // 0未分配教材 1已分配教材 2未激活 3已激活 4已到期
       switch (item.status) {
-        case 0:
-          return { label: '未分配教材', type: 'danger' }
-        case 1:
-          return { label: '已分配教材', type: 'primary' }
         case 2:
-          return { label: '未激活', type: 'danger' }
+          return { label: '未激活', type: 'warning' }
         case 3:
-          return { label: '已激活', type: 'primary' }
+          return { label: '已激活', type: 'success' }
         case 4:
-          return { label: '已到期', type: 'primary' }
+          return { label: '已到期', type: 'danger' }
       }
     },
     endTimeFormatter(item) {
@@ -100,6 +96,8 @@ export default {
       this.dialogEditVisible = true
       this.tempItem.studyCardId = item.studyCardId
       this.tempItem.status = item.status
+      this.tempItem.isBind = item.isBind
+      this.tempItem.studentId = item.studentId || 0
       this.endTime = item.endTime
     },
     handleEditDialogConfirm() {

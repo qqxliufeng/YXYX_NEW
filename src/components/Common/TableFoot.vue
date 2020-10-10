@@ -4,18 +4,25 @@
       :body-style="{padding: '5px'}"
       style="width: 100%; text-align: center"
     >
-      <el-pagination
-        style="width: 100%"
-        :total="total"
-        :page-size="pageSize"
-        :current-page.sync="currentPage"
-        layout="total, prev, pager, next, jumper"
-        @current-change="currentChange"
-        @prev-click="prevClick"
-        @next-click="nextClick"
-      />
+      <div class="flex justify-center align-center">
+        <el-pagination
+          :total="total"
+          :page-size="pageSize"
+          :current-page.sync="currentPage"
+          layout="total, prev, pager, next, jumper"
+          @current-change="currentChange"
+          @prev-click="prevClick"
+          @next-click="nextClick"
+        />
+        <el-button
+          class="margin-left"
+          type="danger"
+          icon="el-icon-refresh"
+          circle
+          @click="refresh"
+        />
+      </div>
     </el-card>
-    <!-- <el-button type="danger" icon="el-icon-refresh" circle @click="refresh" /> -->
   </div>
 </template>
 

@@ -190,7 +190,8 @@ export default {
           title: this.messageModel.title,
           messageContent: this.messageModel.messageContent,
           sendType: this.messageModel.sendType,
-          systemMessageToList: systemMessageToList
+          systemMessageToList: systemMessageToList,
+          createSchoolId: this.$store.getters.schoolId
         },
         contentType: 'application/json; charset=UTF-8'
       }).then(res => {

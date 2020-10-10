@@ -93,19 +93,36 @@
           width="150"
         >
           <template slot-scope="scope">
-            <el-button
-              v-if="scope.row.status === 0"
-              :size="$style.tableButtonSize"
-              type="primary"
-              @click="publish(scope.row)"
-            >发布</el-button>
-            <el-button
-              v-else-if="scope.row.status === 1"
-              :size="$style.tableButtonSize"
-              type="danger"
-              @click="withdraw(scope.row)"
-            >撤回</el-button>
-            <div v-else>--</div>
+            <div v-if="isSuperAdmin">
+              <el-button
+                v-if="scope.row.status === 0"
+                :size="$style.tableButtonSize"
+                type="primary"
+                @click="publish(scope.row)"
+              >发布</el-button>
+              <el-button
+                v-else-if="scope.row.status === 1"
+                :size="$style.tableButtonSize"
+                type="danger"
+                @click="withdraw(scope.row)"
+              >撤回</el-button>
+              <div v-else>--</div>
+            </div>
+            <div v-else>
+              <el-button
+                v-if="scope.row.status === 0 && scope.row.createSchoolId === $store.getters.schoolId"
+                :size="$style.tableButtonSize"
+                type="primary"
+                @click="publish(scope.row)"
+              >发布</el-button>
+              <el-button
+                v-else-if="scope.row.status === 1 && scope.row.createSchoolId === $store.getters.schoolId"
+                :size="$style.tableButtonSize"
+                type="danger"
+                @click="withdraw(scope.row)"
+              >撤回</el-button>
+              <div v-else>--</div>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -189,6 +206,9 @@ export default {
       }
     },
     onAdd() {
+      if (!this.checkButtonPermission('sys_msg_add')) {
+        return
+      }
       this.$refs.addSystemMessage.showDialog()
     },
     getData() {
@@ -205,6 +225,9 @@ export default {
       })
     },
     publish(item) {
+      if (!this.checkButtonPermission('sys_msg_pub')) {
+        return
+      }
       this.$warningConfirm('是否要发布此系统消息？', _ => {
         this.$showLoading(closeLoading => {
           this.$http({
@@ -225,6 +248,9 @@ export default {
       })
     },
     withdraw(item) {
+      if (!this.checkButtonPermission('sys_msg_back')) {
+        return
+      }
       this.$warningConfirm('确定要撤回此系统消息，撤回后不可再发布此消息。', _ => {
         this.$showLoading(closeLoading => {
           this.$http({

@@ -96,7 +96,11 @@
           prop="cardCode"
           label="学习卡编码"
           width="100"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row.cardType + scope.row.cardCode }}
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="cardErcode"

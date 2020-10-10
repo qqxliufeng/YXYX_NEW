@@ -136,7 +136,7 @@
               type="danger"
               :size="$style.tableButtonSize"
               @click="textBookList(scope.row)"
-            >授权教材</el-button>
+            >编辑教材</el-button>
             <el-button
               type="warning"
               :size="$style.tableButtonSize"

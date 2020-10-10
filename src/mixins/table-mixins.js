@@ -66,6 +66,7 @@ export default {
       this.total = 0
     },
     reloadData() {
+      this.loading = true
       this.resetData()
       this.getData()
     },

@@ -50,7 +50,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="加盟类型">
-          <el-col :span="10">
+          <el-col :span="15">
             <el-radio-group v-model="schoolModel.schoolType">
               <el-radio :label="0">普通加盟校</el-radio>
               <el-radio :label="1">独家加盟</el-radio>
