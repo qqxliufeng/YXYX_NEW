@@ -39,7 +39,7 @@
           align="center"
           label="消息标题"
           prop="title"
-          width="130"
+          width="150"
           fixed="left"
           show-overflow-tooltip
         >
@@ -55,18 +55,22 @@
         >
           <template slot-scope="scope">
             <div>
-              <table-status :status="targetFormat(scope.row)" />
+              <el-link :underline="false" :type="targetFormat(scope.row).type" @click="seeTargetMore(scope.row)">
+                {{ targetFormat(scope.row).label }}
+                <i v-if="scope.row.sendType !== 3" class="el-icon-view el-icon--right" />
+              </el-link>
+              <!-- <table-status :status="targetFormat(scope.row)" />
               <el-link
                 v-if="scope.row.sendType !== 3"
                 @click="seeTargetMore(scope.row)"
-              >查看详情</el-link>
+              >查看详情</el-link> -->
             </div>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           label="消息内容"
-          width="250"
+          width="350"
         >
           <template slot-scope="scope">
             <div
@@ -272,7 +276,7 @@ export default {
       this.$alert(item.messageContent, item.title, null)
     },
     seeTargetMore(item) {
-      this.$refs.targetDetails.show(item)
+      item.sendType !== 3 && this.$refs.targetDetails.show(item)
     }
   }
 }

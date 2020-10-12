@@ -7,6 +7,8 @@ import { menuButtonModel } from '@/utils/app-config'
 const hiddenMenuList = [
   '/system/menuButton',
   '/material/distribution',
+  '/message/groupmessage',
+  '/message/schoolmessage',
   '/integral'
 ]
 

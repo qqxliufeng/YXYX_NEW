@@ -16,9 +16,10 @@
         />
         <el-button
           class="margin-left"
-          type="danger"
+          type="success"
           icon="el-icon-refresh"
           circle
+          size="mini"
           @click="refresh"
         />
       </div>
