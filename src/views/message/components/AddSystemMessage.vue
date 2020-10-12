@@ -54,7 +54,7 @@
               @click="selectTarget"
             >{{ selectTip }}</el-button>
             <el-button
-              v-if="messageModel.sendType !== 3 && (messageModel.schools.length > 0 || messageModel.classes.length > 0 || messageModel.students.lenght > 0)"
+              v-show="messageModel.sendType !== 3 && (messageModel.schools.length > 0 || messageModel.classes.length > 0 || messageModel.students.length > 0)"
               size="small"
               type="success"
               class="margin-left"

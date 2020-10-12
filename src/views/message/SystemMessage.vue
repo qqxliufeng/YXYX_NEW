@@ -52,6 +52,7 @@
         <el-table-column
           align="center"
           label="目标群体"
+          width="100"
         >
           <template slot-scope="scope">
             <div>
@@ -85,6 +86,7 @@
           align="center"
           label="消息状态"
           prop="status"
+          width="100"
         >
           <template slot-scope="scope">
             <table-status :status="statusFormat(scope.row)" />
