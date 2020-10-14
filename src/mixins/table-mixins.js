@@ -8,7 +8,7 @@ export default {
         },
         stripe: true,
         border: true,
-        size: 'large',
+        size: 'small',
         defaultSort: {
           prop: 'id',
           order: 'descending'

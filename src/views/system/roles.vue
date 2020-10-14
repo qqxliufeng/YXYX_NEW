@@ -7,6 +7,7 @@
       @onadd="onAdd"
     />
     <el-card
+      ref="tableContainer"
       :body-style="{padding: 0}"
       class="table-container"
       :style="tableCardStyle"
@@ -20,6 +21,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        :height="tableConfig.style.myHeight"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -45,7 +47,7 @@
           label="所属部门"
         >
           <template slot-scope="scope">
-            <el-link>{{ scope.row.dept.deptName | emptyFormat }}</el-link>
+            {{ scope.row.dept.deptName | emptyFormat }}
           </template>
         </el-table-column>
         <el-table-column
