@@ -1,11 +1,17 @@
 <template>
   <div class="container">
     <table-header
+      ref="tableHeader"
       title="基本操作"
       :show-delete="false"
       @onadd="onAdd"
     />
-    <el-card :body-style="{padding: 0}">
+    <el-card
+      ref="tableContainer"
+      :body-style="{padding: 0}"
+      class="table-container"
+      :style="tableCardStyle"
+    >
       <el-table
         v-loading="loading"
         :stripe="tableConfig.stripe"
@@ -17,6 +23,7 @@
         :style="tableConfig.style"
         default-expand-all
         row-key="menuId"
+        :height="tableConfig.style.myHeight"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
         <el-table-column

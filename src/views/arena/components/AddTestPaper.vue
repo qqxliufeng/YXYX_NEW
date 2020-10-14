@@ -26,9 +26,10 @@
               v-model="paperModel.examType"
               size="mini"
             >
-              <el-radio-button :label="1">线上</el-radio-button>
-              <el-radio-button :label="0">线下</el-radio-button>
+              <el-radio-button :label="1">app考试</el-radio-button>
+              <el-radio-button :label="0">线下试卷</el-radio-button>
             </el-radio-group>
+            <el-link :underline="false" type="danger" class="margin-left">请注意试卷使用范围</el-link>
           </el-col>
         </el-form-item>
         <el-form-item label="选择题型">
