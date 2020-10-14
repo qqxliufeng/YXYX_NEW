@@ -3,167 +3,172 @@
     id="content-wrapper"
     class="container"
   >
-    <table-header
-      ref="tableHeader"
-      title="查询内容"
-      :form-model-array="formModelArray"
-      :show-delete="false"
-      :show-add="isSuperAdmin"
-      :show-search="true"
-      :can-collapse="true"
-      @onsearch="onSearch"
-      @onadd="onAdd"
-      @table-header-collapse="onCollapsed"
-    >
-      <template slot="other">
-        <el-button
-          v-if="isSuperAdmin"
-          type="danger"
-          size="mini"
-          @click="downExcel"
-        >下载Excel模板</el-button>
-      </template>
-    </table-header>
-    <el-card
-      :body-style="{padding: 0}"
-      class="table-container"
-      :style="tableCardStyle"
-    >
-      <el-table
-        v-loading="loading"
-        :stripe="tableConfig.stripe"
-        :header-cell-style="tableConfig.headerCellStyle"
-        :data="tableData"
-        :border="tableConfig.border"
-        :size="tableConfig.size"
-        :default-sort="tableConfig.defalutSort"
-        :style="tableConfig.style"
-      >
-        <el-table-column
-          align="center"
-          label="序号"
-          fixed="left"
+    <el-tabs v-model="activeName" style="margin: 3px">
+      <el-tab-pane label="词汇教材" name="first" class="tab-container">
+        <table-header
+          ref="tableHeader"
+          title="查询内容"
+          :form-model-array="formModelArray"
+          :show-delete="false"
+          :show-add="isSuperAdmin"
+          :show-search="true"
+          :can-collapse="true"
+          @onsearch="onSearch"
+          @onadd="onAdd"
+          @table-header-collapse="onCollapsed"
         >
-          <template slot-scope="scope">
-            {{ scope.$index + 1 }}
+          <template slot="other">
+            <el-button
+              v-if="isSuperAdmin"
+              type="danger"
+              size="mini"
+              @click="downExcel"
+            >下载Excel模板</el-button>
           </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="textbookName"
-          label="教材名称"
-          fixed="left"
-          width="150"
-        />
-        <el-table-column
-          align="center"
-          label="体验教材"
+        </table-header>
+        <el-card
+          :body-style="{padding: 0}"
+          class="table-container"
+          :style="tableCardStyle"
         >
-          <template slot-scope="scope">
-            <table-status :status="{ label: scope.row.isExper === 1 ? '是' : '否', type: scope.row.isExper === 1 ? 'danger' : 'primary'}" />
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="教材类型"
-          :formatter="typeFormatter"
-        />
-        <el-table-column
-          align="center"
-          label="教材类别"
-          :formatter="categoryFormatter"
-        />
-        <el-table-column
-          align="center"
-          prop="textbookVersion"
-          label="教材版本"
-        />
-        <!-- <el-table-column
+          <el-table
+            v-loading="loading"
+            :stripe="tableConfig.stripe"
+            :header-cell-style="tableConfig.headerCellStyle"
+            :data="tableData"
+            :border="tableConfig.border"
+            :size="tableConfig.size"
+            :default-sort="tableConfig.defalutSort"
+            :style="tableConfig.style"
+          >
+            <el-table-column
+              align="center"
+              label="序号"
+              fixed="left"
+            >
+              <template slot-scope="scope">
+                {{ scope.$index + 1 }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="textbookName"
+              label="教材名称"
+              fixed="left"
+              width="150"
+            />
+            <el-table-column
+              align="center"
+              label="体验教材"
+            >
+              <template slot-scope="scope">
+                <table-status :status="{ label: scope.row.isExper === 1 ? '是' : '否', type: scope.row.isExper === 1 ? 'danger' : 'primary'}" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="教材类型"
+              :formatter="typeFormatter"
+            />
+            <el-table-column
+              align="center"
+              label="教材类别"
+              :formatter="categoryFormatter"
+            />
+            <el-table-column
+              align="center"
+              prop="textbookVersion"
+              label="教材版本"
+            />
+            <!-- <el-table-column
           align="center"
           prop="unLockCoins"
           label="解锁优钻"
         /> -->
-        <el-table-column
-          align="center"
-          label="包含视频"
-          :formatter="videoFormatter"
-        />
-        <el-table-column
-          align="center"
-          label="配对练习"
-          :formatter="exercisesFormatter"
-        />
-        <el-table-column
-          align="center"
-          label="开放状态"
-          :formatter="openFormatter"
-        />
-        <el-table-column
-          v-if="isSuperAdmin"
-          align="center"
-          prop="createTime"
-          label="创建时间"
-          width="160"
-        >
-          <template slot-scope="scope">
-            <div>{{ scope.row.createTime | parseTime }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="status"
-          label="状态"
-        >
-          <template slot-scope="scope">
-            <table-status :status="statusFormatter(scope.row)" />
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="操作"
-          :width="isSuperAdmin ? 250 : 120"
-          fixed="right"
-        >
-          <template slot-scope="scope">
-            <el-button
+            <el-table-column
+              align="center"
+              label="包含视频"
+              :formatter="videoFormatter"
+            />
+            <el-table-column
+              align="center"
+              label="配对练习"
+              :formatter="exercisesFormatter"
+            />
+            <el-table-column
+              align="center"
+              label="开放状态"
+              :formatter="openFormatter"
+            />
+            <el-table-column
               v-if="isSuperAdmin"
-              type="primary"
-              :size="$style.tableButtonSize"
-              @click="handlerUpdate(scope.row)"
-            >编辑</el-button>
-            <el-button
-              v-if="isSuperAdmin"
-              type="danger"
-              :size="$style.tableButtonSize"
-              @click="deleteItem(scope.row)"
-            >删除</el-button>
-            <el-dropdown
-              v-if="isSuperAdmin"
-              style="display: inline-block; margin-left: 10px"
-              :size="$style.tableButtonSize"
-              type="success"
-              split-button
-              @command="handleMaterialCommand"
+              align="center"
+              prop="createTime"
+              label="创建时间"
+              width="160"
             >
-              更多
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{tag: 1, item: scope.row}">查看已授权的学校</el-dropdown-item>
-                <el-dropdown-item :command="{tag: 2, item: scope.row}">生成/编辑教材</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
-    <table-foot
-      :total="total"
-      :page-size="pageSize"
-      :page-num="page"
-      @prev-click="prevClick"
-      @next-click="nextClick"
-      @current-change="currentChange"
-      @refresh="reloadData"
-    />
+              <template slot-scope="scope">
+                <div>{{ scope.row.createTime | parseTime }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="status"
+              label="状态"
+            >
+              <template slot-scope="scope">
+                <table-status :status="statusFormatter(scope.row)" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="操作"
+              :width="isSuperAdmin ? 250 : 120"
+              fixed="right"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  v-if="isSuperAdmin"
+                  type="primary"
+                  :size="$style.tableButtonSize"
+                  @click="handlerUpdate(scope.row)"
+                >编辑</el-button>
+                <el-button
+                  v-if="isSuperAdmin"
+                  type="danger"
+                  :size="$style.tableButtonSize"
+                  @click="deleteItem(scope.row)"
+                >删除</el-button>
+                <el-dropdown
+                  v-if="isSuperAdmin"
+                  style="display: inline-block; margin-left: 10px"
+                  :size="$style.tableButtonSize"
+                  type="success"
+                  split-button
+                  @command="handleMaterialCommand"
+                >
+                  更多
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item :command="{tag: 1, item: scope.row}">查看已授权的学校</el-dropdown-item>
+                    <el-dropdown-item :command="{tag: 2, item: scope.row}">生成/编辑教材</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
+        <table-foot
+          :total="total"
+          :page-size="pageSize"
+          :page-num="page"
+          @prev-click="prevClick"
+          @next-click="nextClick"
+          @current-change="currentChange"
+          @refresh="reloadData"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="语法教材" name="second" class="tab-container">配置管理</el-tab-pane>
+    </el-tabs>
     <!-- 增加教材对话框 -->
     <el-dialog
       :title="mode === 'add' ? '添加教材' : '编辑教材信息'"
@@ -531,6 +536,7 @@ export default {
   mixins: [tableMixins, textBookMixins, userMixins],
   data() {
     return {
+      activeName: 'first',
       textbookTypes,
       textbookCategorys,
       textbookVersion,
@@ -818,6 +824,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+>>> .el-tabs__header{
+  margin: 0 0 5px
+}
 >>> .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

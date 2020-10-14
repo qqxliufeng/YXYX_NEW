@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-bottom: 5px">
+  <div>
     <el-card :body-style="{padding: '0px'}">
       <div
         slot="header"

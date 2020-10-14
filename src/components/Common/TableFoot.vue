@@ -70,13 +70,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-.footer-wrapper {
-  margin-top: 5px;
-  position: absolute;
-  left: 5px;
-  right: 5px;
-  bottom: 0;
-  box-sizing: border-box;
-}
-</style>

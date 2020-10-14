@@ -67,6 +67,16 @@ body .el-table__fixed::before {
   overflow-y: scroll;
 }
 
+.tab-container{
+  height: calc(100vh - 148px);
+  padding-top: 5px;
+}
+
+.tab-container .table-container{
+  left: 0px;
+  right: 0px;
+}
+
 .table-container {
   position: absolute;
   top: 0;
@@ -74,6 +84,20 @@ body .el-table__fixed::before {
   right: 5px;
   bottom: 50px;
   overflow-y: scroll;
+}
+
+.tab-container .footer-wrapper{
+  left: 0px;
+  right: 0px;
+}
+
+.footer-wrapper {
+  margin-top: 5px;
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 0;
+  box-sizing: border-box;
 }
 
 .dialog-container {
