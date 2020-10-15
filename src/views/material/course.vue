@@ -84,14 +84,20 @@ export default {
     MaterialTableHeader
   },
   mixins: [tableMixins],
+  data() {
+    return {
+      textbookId: 0
+    }
+  },
   methods: {
     onChangeValue({ textbookId }) {
       this.page = 0
       this.loading = true
-      this.getData(textbookId)
+      this.textbookId = textbookId
+      this.getData()
     },
-    getData(textbookId) {
-      if (!textbookId) {
+    getData() {
+      if (!this.textbookId) {
         this.loading = false
         return
       }
@@ -99,7 +105,7 @@ export default {
         url: this.$urlPath.queryCourseByTextBook,
         methods: this.HTTP_GET,
         data: {
-          textbookId,
+          textbookId: this.textbookId,
           pageNum: this.page,
           pageSize: this.pageSize
         }

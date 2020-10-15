@@ -100,7 +100,8 @@ export default {
   mixins: [tableMixins],
   data() {
     return {
-      textbookId: ''
+      textbookId: 0,
+      courseCode: 0
     }
   },
   methods: {
@@ -114,10 +115,11 @@ export default {
       this.loading = true
       this.page = 1
       this.textbookId = textbookId
-      this.getData(textbookId, courseCode)
+      this.courseCode = courseCode
+      this.getData()
     },
-    getData(textbookId, courseCode) {
-      if (!textbookId) {
+    getData() {
+      if (!this.textbookId || !this.courseCode) {
         this.loading = false
         return
       }
@@ -125,8 +127,8 @@ export default {
         url: this.$urlPath.queryCourseLevel,
         methods: this.HTTP_GET,
         data: {
-          textbookId,
-          courseCode,
+          textbookId: this.textbookId,
+          courseCode: this.courseCode,
           pageNum: this.page,
           pageSize: this.pageSize
         }

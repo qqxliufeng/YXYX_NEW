@@ -50,28 +50,26 @@
               <el-link
                 v-if="scope.row.isOnLine === 0"
                 :underline="false"
-                type="warning"
-              >线下</el-link>
+                type="danger"
+              >线下
+                <span v-if="isSuperAdmin">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    content="线下的学校可以进行分配学习教材"
+                    placement="right"
+                  >
+                    <a
+                      type="danger"
+                      @click="grantToOffSchool(scope.row)"
+                    >分配教材</a>
+                  </el-tooltip>
+                </span></el-link>
               <el-link
                 v-else
                 :underline="false"
                 type="primary"
               >线上</el-link>
-            </div>
-            <div v-if="scope.row.isOnLine === 0 && isSuperAdmin">
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="线下的学校可以进行分配学习教材"
-                placement="right"
-              >
-                <el-link
-                  style="font-size: 10px"
-                  size="mini"
-                  type="danger"
-                  @click.native="grantToOffSchool(scope.row)"
-                >分配教材</el-link>
-              </el-tooltip>
             </div>
           </template>
         </el-table-column>

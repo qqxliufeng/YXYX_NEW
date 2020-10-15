@@ -114,16 +114,22 @@ export default {
   mixins: [tableMixins],
   data() {
     return {
-      baseImageIp
+      baseImageIp,
+      textbookId: 0,
+      courseCode: 0,
+      levelCode: 0
     }
   },
   methods: {
     onChangeValue({ textbookId, courseCode, levelCode }) {
       this.page = 0
-      this.getData(textbookId, courseCode, levelCode)
+      this.textbookId = textbookId
+      this.courseCode = courseCode
+      this.levelCode = levelCode
+      this.getData()
     },
-    getData(textbookId, courseCode, levelCode) {
-      if (!textbookId) {
+    getData() {
+      if (!this.textbookId || !this.courseCode || !this.levelCode) {
         this.loading = false
         return
       }
@@ -131,9 +137,9 @@ export default {
         url: this.$urlPath.queryCourseLevelGroup,
         methods: this.HTTP_GET,
         data: {
-          textbookId,
-          courseCode,
-          levelCode,
+          textbookId: this.textbookId,
+          courseCode: this.courseCode,
+          levelCode: this.levelCode,
           pageNum: this.page,
           pageSize: this.pageSize
         }

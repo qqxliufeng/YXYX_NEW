@@ -122,6 +122,7 @@
       :total="total"
       :page-size="pageSize"
       :page-num="page"
+      :show-refresh="false"
       @prev-click="prevClick"
       @next-click="nextClick"
       @current-change="currentChange"

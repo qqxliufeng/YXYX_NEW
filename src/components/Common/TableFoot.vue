@@ -15,6 +15,7 @@
           @next-click="nextClick"
         />
         <el-button
+          v-if="showRefresh"
           class="margin-left"
           type="success"
           icon="el-icon-refresh"
@@ -42,6 +43,10 @@ export default {
     pageSize: {
       type: Number,
       default: 10
+    },
+    showRefresh: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
