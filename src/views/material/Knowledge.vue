@@ -11,7 +11,15 @@
       @onsearch="onSearch"
       @onadd="onAdd"
       @table-header-collapse="onCollapsed"
-    />
+    >
+      <template slot="other">
+        <el-button
+          type="danger"
+          size="mini"
+          @click="downExcel"
+        >下载Excel模板</el-button>
+      </template>
+    </table-header>
     <el-card
       ref="tableContainer"
       :body-style="{padding: 0}"
@@ -32,6 +40,15 @@
         <el-table-column
           align="center"
           label="序号"
+          fixed="left"
+        >
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="唯一标识符"
           fixed="left"
           prop="knowledgeId"
         />
@@ -69,6 +86,7 @@
           align="center"
           label="操作"
           fixed="right"
+          width="150"
         >
           <template slot-scope="scope">
             <el-button
@@ -271,7 +289,8 @@ export default {
           })
         }
       })
-    }
+    },
+    downExcel() {}
   }
 }
 </script>
