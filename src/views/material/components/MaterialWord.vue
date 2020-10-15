@@ -22,6 +22,7 @@
       </template>
     </table-header>
     <el-card
+      ref="tableContainer"
       :body-style="{padding: 0}"
       class="table-container"
       :style="tableCardStyle"
@@ -35,6 +36,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        :height="tableConfig.style.myHeight"
       >
         <el-table-column
           align="center"
@@ -176,16 +178,6 @@
             />
           </el-col>
         </el-form-item>
-        <!-- <el-form-item label="所需优钻">
-          <el-col :span="$style.dialogColSpan">
-            <el-input-number
-              v-model="materialModel.unLockCoins"
-              :min="1"
-              size="small"
-              style="width: 100%"
-            />
-          </el-col>
-        </el-form-item> -->
         <el-form-item label="教材类型">
           <el-col :span="$style.dialogColSpan">
             <el-select
@@ -194,10 +186,8 @@
               placeholder="请选择教材类型"
             >
               <el-option
-                v-for="item of textbookTypes"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                label="词汇"
+                :value="0"
               />
             </el-select>
           </el-col>
@@ -449,24 +439,24 @@ import userMixins from '@/mixins/user-mixins'
 import { getToken } from '@/utils/auth'
 import { baseIp } from '@/api/url-path'
 import { getImagePath } from '@/filters'
-const textbookTypes = [
-  {
-    label: '词汇',
-    value: 0
-  },
-  {
-    label: '语法',
-    value: 1
-  },
-  {
-    label: '综合',
-    value: 2
-  },
-  {
-    label: '拼读',
-    value: 3
-  }
-]
+// const textbookTypes = [
+//   {
+//     label: '词汇',
+//     value: 0
+//   },
+//   {
+//     label: '语法',
+//     value: 1
+//   },
+//   {
+//     label: '综合',
+//     value: 2
+//   },
+//   {
+//     label: '拼读',
+//     value: 3
+//   }
+// ]
 const textbookCategorys = [
   {
     label: 'YouCan',
@@ -528,7 +518,7 @@ export default {
   mixins: [tableMixins, textBookMixins, userMixins],
   data() {
     return {
-      textbookTypes,
+      // textbookTypes,
       textbookCategorys,
       textbookVersion,
       formModelArray: [
@@ -540,15 +530,15 @@ export default {
           span: 5,
           type: 'input'
         },
-        {
-          id: 2,
-          value: '',
-          label: '教材类型',
-          name: 'textbookType',
-          span: 5,
-          type: 'select',
-          selectOptions: textbookTypes
-        },
+        // {
+        //   id: 2,
+        //   value: '',
+        //   label: '教材类型',
+        //   name: 'textbookType',
+        //   span: 5,
+        //   type: 'select',
+        //   selectOptions: textbookTypes
+        // },
         {
           id: 3,
           value: '',

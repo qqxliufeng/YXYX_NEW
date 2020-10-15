@@ -43,7 +43,7 @@
         <el-table-column
           align="center"
           label="所属学校"
-          width="100"
+          width="150"
           prop="school.schoolName"
         />
         <el-table-column

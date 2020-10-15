@@ -9,9 +9,9 @@
 
 export const baseImageIp = 'http://ht.youcanedu.net'
 
-// export const baseIp = 'http://192.168.1.103:8881'
+export const baseIp = 'http://192.168.1.103:8881'
 
-export const baseIp = 'http://ht.youcanedu.net:8881'
+// export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
  * 基础模块名字
@@ -445,3 +445,27 @@ export const sendSystemMessage = baseModuleUrl + 'sendSystemMessage'
 export const withdrawSystemMessage = baseModuleUrl + 'withdrawSystemMessage'
 
 // ****************消息--系统消息**************** //
+
+// ****************知识点管理**************** //
+
+export const queryKnowledgeList = baseModuleUrl + 'queryKnowledgeList'
+
+export const saveKnowledge = baseModuleUrl + 'saveKnowledge'
+
+export const editKnowledge = baseModuleUrl + 'editKnowledge'
+
+// ****************知识点管理**************** //
+
+// ****************考点管理**************** //
+
+// export const querySystemMessage = baseModuleUrl + 'querySystemMessage'
+
+// export const querySystemMessageToList = baseModuleUrl + 'querySystemMessageToList'
+
+// export const saveSystemMessage = baseModuleUrl + 'saveSystemMessage'
+
+// export const sendSystemMessage = baseModuleUrl + 'sendSystemMessage'
+
+// export const withdrawSystemMessage = baseModuleUrl + 'withdrawSystemMessage'
+
+// ****************考点管理**************** //
