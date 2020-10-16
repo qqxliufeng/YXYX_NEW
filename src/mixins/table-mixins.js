@@ -54,6 +54,9 @@ export default {
   // beforeDestroy() {
   //   this.$root.$off('refresh_table')
   // },
+  activated() {
+    this.$refs.table && this.$refs.table.doLayout()
+  },
   methods: {
     onCollapsed() {
       const tempTop = this.tableCardStyle.top

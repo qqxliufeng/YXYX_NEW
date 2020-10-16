@@ -146,7 +146,7 @@
             >
               更多
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{tag: 1, item: scope.row}">查看已授权的学校</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 1, item: scope.row}">查看已授权的线下学校</el-dropdown-item>
                 <el-dropdown-item :command="{tag: 2, item: scope.row}">生成/编辑教材</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

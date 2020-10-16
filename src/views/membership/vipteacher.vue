@@ -13,7 +13,8 @@
       @table-header-collapse="onCollapsed"
     />
     <el-card
-      :body-style="{ padding: '2px' }"
+      ref="tableContainer"
+      :body-style="{ padding: 0 }"
       class="table-container"
       :style="tableCardStyle"
     >
@@ -26,6 +27,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        :height="tableConfig.style.myHeight"
       >
         <el-table-column
           align="center"

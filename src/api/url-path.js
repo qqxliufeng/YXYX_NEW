@@ -458,11 +458,11 @@ export const editKnowledge = baseModuleUrl + 'editKnowledge'
 
 // ****************考点管理**************** //
 
-// export const querySystemMessage = baseModuleUrl + 'querySystemMessage'
+export const queryKnowledgeExamList = baseModuleUrl + 'queryKnowledgeExamList'
 
-// export const querySystemMessageToList = baseModuleUrl + 'querySystemMessageToList'
+export const saveKnowledgeExam = baseModuleUrl + 'saveKnowledgeExam'
 
-// export const saveSystemMessage = baseModuleUrl + 'saveSystemMessage'
+export const editKnowledgeExam = baseModuleUrl + 'editKnowledgeExam'
 
 // export const sendSystemMessage = baseModuleUrl + 'sendSystemMessage'
 

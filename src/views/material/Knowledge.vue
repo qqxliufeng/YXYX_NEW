@@ -11,15 +11,7 @@
       @onsearch="onSearch"
       @onadd="onAdd"
       @table-header-collapse="onCollapsed"
-    >
-      <template slot="other">
-        <el-button
-          type="danger"
-          size="mini"
-          @click="downExcel"
-        >下载Excel模板</el-button>
-      </template>
-    </table-header>
+    />
     <el-card
       ref="tableContainer"
       :body-style="{padding: 0}"
@@ -27,6 +19,7 @@
       :style="tableCardStyle"
     >
       <el-table
+        ref="table"
         v-loading="loading"
         :stripe="tableConfig.stripe"
         :header-cell-style="tableConfig.headerCellStyle"
@@ -41,6 +34,7 @@
           align="center"
           label="序号"
           fixed="left"
+          width="100"
         >
           <template slot-scope="scope">
             {{ scope.$index + 1 }}
@@ -49,14 +43,14 @@
         <el-table-column
           align="center"
           label="唯一标识符"
-          fixed="left"
           prop="knowledgeId"
+          fixed="left"
+          width="100"
         />
         <el-table-column
           align="center"
           prop="knowledgeCode"
           label="编码"
-          fixed="left"
         />
         <el-table-column
           align="center"
@@ -86,7 +80,7 @@
           align="center"
           label="操作"
           fixed="right"
-          width="150"
+          width="200"
         >
           <template slot-scope="scope">
             <el-button
@@ -268,9 +262,8 @@ export default {
             closeLoading()
             this.$successMsg('知识点添加成功')
             this.reloadData()
-          }).catch(error => {
+          }).catch(_ => {
             closeLoading()
-            this.$errorMsg(error)
           })
         } else {
           this.$http({
@@ -289,8 +282,7 @@ export default {
           })
         }
       })
-    },
-    downExcel() {}
+    }
   }
 }
 </script>
