@@ -330,6 +330,24 @@ export const updateStudentIsJumpWrite = baseModuleUrl + 'updateStudentIsJumpWrit
 
 // ****************教材信息**************** //
 
+// ****************语法教材信息**************** //
+
+export const queryGrammarTextBookList = baseModuleUrl + 'queryGrammarTextBookList'
+
+export const saveGrammarTextBook = baseModuleUrl + 'saveGrammarTextBook'
+
+export const editGrammarTextBook = baseModuleUrl + 'editGrammarTextBook'
+
+export const deleteGrammarTextBook = baseModuleUrl + 'deleteGrammarTextBook'
+
+export const uploadGrammarTextBookExcelTemplate = baseModuleUrl + 'uploadGrammarTextBookExcelTemplate'
+
+export const importExcelTextBookPractice = baseModuleUrl + 'importExcelTextBookPractice'
+
+export const uploadGrammarTextBookCoverImage = baseModuleUrl + 'uploadGrammarTextBookCoverImage'
+
+// ****************语法教材信息**************** //
+
 // ****************课程信息**************** //
 
 export const queryCourseByTextBook = baseModuleUrl + 'queryCourseByTextBook'

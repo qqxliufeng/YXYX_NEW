@@ -203,7 +203,7 @@ export default {
       dialogFormVisible: false,
       mode: 'add',
       examPointModel: {
-        knowledgExamId: '', // 考点主键ID
+        knowledgeExamId: '', // 考点主键ID
         knowledgeId: '', // 所属知识点ID
         knowledgeExamCode: '', // 考点编码
         knowledgeExamName: ''// 考点名称
@@ -236,7 +236,7 @@ export default {
         return
       }
       this.dialogFormVisible = true
-      this.examPointModel.knowledgExamId = ''
+      this.examPointModel.knowledgeExamId = ''
       this.examPointModel.knowledgeId = ''
       this.examPointModel.knowledgeExamCode = ''
       this.examPointModel.knowledgeExamName = ''
@@ -276,7 +276,7 @@ export default {
       }
       this.dialogFormVisible = true
       this.mode = 'edit'
-      this.examPointModel.knowledgExamId = item.knowledgExamId
+      this.examPointModel.knowledgeExamId = item.knowledgeExamId
       this.examPointModel.knowledgeId = item.knowledgeId
       this.examPointModel.knowledgeExamCode = item.knowledgeExamCode.replace('exam_', '')
       this.examPointModel.knowledgeExamName = item.knowledgeExamName
@@ -327,7 +327,7 @@ export default {
           this.$http({
             url: this.$urlPath.editKnowledgeExam,
             data: {
-              knowledgExamId: this.examPointModel.knowledgExamId,
+              knowledgeExamId: this.examPointModel.knowledgeExamId,
               knowledgeExamName: this.examPointModel.knowledgeExamName.trim(),
               knowledgeExamCode: 'exam_' + this.examPointModel.knowledgeExamCode.trim(),
               knowledgeId: this.examPointModel.knowledgeId

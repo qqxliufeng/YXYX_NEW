@@ -4,7 +4,7 @@
     class="container"
   >
     <el-tabs v-model="activeName" style="margin: 3px">
-      <el-tab-pane label="词汇教材" name="first" class="tab-container">
+      <el-tab-pane label="词汇教材" name="first" class="tab-container" lazy>
         <MaterialWord />
       </el-tab-pane>
       <el-tab-pane label="语法教材" name="second" class="tab-container" lazy>
@@ -22,7 +22,7 @@ export default {
   components: { MaterialWord, MaterailGrammar },
   data() {
     return {
-      activeName: 'first'
+      activeName: 'second'
     }
   }
 }

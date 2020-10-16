@@ -77,11 +77,6 @@
           prop="textbookVersion"
           label="教材版本"
         />
-        <!-- <el-table-column
-          align="center"
-          prop="unLockCoins"
-          label="解锁优钻"
-        /> -->
         <el-table-column
           align="center"
           label="包含视频"

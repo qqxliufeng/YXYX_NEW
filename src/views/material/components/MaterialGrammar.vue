@@ -77,11 +77,6 @@
           prop="textbookVersion"
           label="教材版本"
         />
-        <!-- <el-table-column
-          align="center"
-          prop="unLockCoins"
-          label="解锁优钻"
-        /> -->
         <el-table-column
           align="center"
           label="包含视频"
@@ -245,22 +240,6 @@
             <el-radio-group v-model="materialModel.isHasVideo">
               <el-radio :label="0">有</el-radio>
               <el-radio :label="1">没有</el-radio>
-            </el-radio-group>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="配对练习">
-          <el-col :span="$style.dialogColSpan">
-            <el-radio-group v-model="materialModel.isHasExercises">
-              <el-radio :label="0">有</el-radio>
-              <el-radio :label="1">没有</el-radio>
-            </el-radio-group>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="教材状态">
-          <el-col :span="$style.dialogColSpan">
-            <el-radio-group v-model="materialModel.status">
-              <el-radio :label="0">正常</el-radio>
-              <el-radio :label="1">禁用</el-radio>
             </el-radio-group>
           </el-col>
         </el-form-item>
@@ -441,58 +420,18 @@ import { baseIp } from '@/api/url-path'
 import { getImagePath } from '@/filters'
 const textbookCategorys = [
   {
-    label: 'YouCan',
+    label: '中考',
     value: 0
   },
   {
-    label: '拳心同步',
+    label: '小升初',
     value: 1
-  },
-  {
-    label: '智能英语',
-    value: 2
   }
 ]
 const textbookVersion = [
   {
-    label: '人教版',
-    value: '人教版'
-  },
-  {
-    label: '大纲版',
-    value: '大纲版'
-  },
-  {
-    label: '鲁教版',
-    value: '鲁教版'
-  },
-  {
-    label: '外研社版',
-    value: '外研社版'
-  },
-  {
-    label: '冀教版',
-    value: '冀教版'
-  },
-  {
-    label: '北师大版',
-    value: '北师大版'
-  },
-  {
-    label: '仁爱版',
-    value: '仁爱版'
-  },
-  {
-    label: '译林牛津版',
-    value: '译林牛津版'
-  },
-  {
-    label: '上海牛津版',
-    value: '上海牛津版'
-  },
-  {
-    label: '上海新世纪版',
-    value: '上海新世纪版'
+    label: '综合版',
+    value: '综合版'
   }
 ]
 export default {
@@ -535,13 +474,11 @@ export default {
         unLockCoins: 0, // 解锁所需优钻
         textbookType: 1, // 教材类型 0词汇 1语法 2体验 3自然拼读
         textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
-        textbookVersion: '人教版', // 教材版本主键ID
+        textbookVersion: '综合版', // 教材版本主键ID
         isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
         isExper: 0, // 是否体验版 0 否 1是
         schoolIds: '', // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
         isHasVideo: 0, // 是否有视频 0是 1否
-        isHasExercises: 0, // 是否有配对练习 0是 1否
-        status: 0, // 教材状态 0正常 1禁用
         coverUrl: '' // 教材封面
       },
       mode: 'add',
@@ -549,7 +486,7 @@ export default {
       dialogGrantSchoolVisible: false,
       grantSchoolLoading: false,
       grantSchoolTableData: [],
-      uploadCoverUrl: baseIp + this.$urlPath.uploadTextBookCoverImage,
+      uploadCoverUrl: baseIp + this.$urlPath.uploadGrammarTextBookCoverImage,
       headers: {
         'Authorization': `Bearer ${getToken()}`
       },
@@ -567,8 +504,16 @@ export default {
     this.getData()
   },
   methods: {
+    categoryFormatter(item) {
+      switch (item.textbookCategory) {
+        case 0:
+          return '中考'
+        case 1:
+          return '小升初'
+      }
+    },
     initData() {
-      this.likeSearchUrl = this.$urlPath.queryTextBookListLike
+      this.likeSearchUrl = this.$urlPath.queryGrammarTextBookList
     },
     getAddressInfo(item) {
       if (item.addressDetailList && item.addressDetailList.length > 0) {
@@ -588,19 +533,17 @@ export default {
         unLockCoins: 0, // 解锁所需优钻
         textbookType: 1, // 教材类型 0词汇 1语法 2体验 3自然拼读
         textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
-        textbookVersion: '人教版', // 教材版本
+        textbookVersion: '综合版', // 教材版本
         isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
         isExper: 0,
         schoolIds: '', // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
         isHasVideo: 0, // 是否有视频 0是 1否
-        isHasExercises: 0, // 是否有配对练习 0是 1否
-        status: 0, // 教材状态 0正常 1禁用
         coverUrl: '' // 教材封面
       }
     },
     getData() {
       this.$http({
-        url: this.$urlPath.queryTextBookList,
+        url: this.$urlPath.queryGrammarTextBookList,
         methods: this.HTTP_GET,
         data: {
           pageNum: this.page,
@@ -658,7 +601,7 @@ export default {
       this.$showLoading(closeLoading => {
         if (this.mode === 'add') {
           this.$http({
-            url: this.$urlPath.saveTextBook,
+            url: this.$urlPath.saveGrammarTextBook,
             data: this.materialModel
           }).then(res => {
             closeLoading()
@@ -684,7 +627,7 @@ export default {
           })
         } else {
           this.$http({
-            url: this.$urlPath.updateTextBook,
+            url: this.$urlPath.editGrammarTextBook,
             data: this.materialModel
           }).then(res => {
             closeLoading()
@@ -712,8 +655,6 @@ export default {
       this.materialModel.isExper = item.isExper
       this.materialModel.schoolIds = item.schoolIds // 学校主键ID，多个学校则主键用逗号隔开即可，如：1,2,3,4
       this.materialModel.isHasVideo = item.isHasVideo // 是否有视频 0是 1否
-      this.materialModel.isHasExercises = item.isHasExercises // 是否有配对练习 0是 1否
-      this.materialModel.status = item.status// 教材状态 0正常 1禁用
       this.materialModel.coverUrl = item.coverUrl
       if (this.materialModel.coverUrl) {
         this.fileList.push(
@@ -730,7 +671,7 @@ export default {
       }
       this.$warningConfirm('确定要删除此教材信息，删除后不可恢复。', _ => {
         this.$http({
-          url: this.$urlPath.deleteTextBook,
+          url: this.$urlPath.deleteGrammarTextBook,
           data: {
             textbookId: item.textbookId
           }
@@ -745,7 +686,7 @@ export default {
         return
       }
       this.$http({
-        url: this.$urlPath.uploadTextBookExcelTemplate,
+        url: this.$urlPath.uploadGrammarTextBookExcelTemplate,
         methods: this.HTTP_GET,
         data: {},
         responseType: `blob`
