@@ -3,12 +3,22 @@
     <table-header
       v-if="isSuperAdmin || !isOnLineSchool"
       ref="tableHeader"
-      title="基本操作"
+      title="教材类别"
       :show-search="false"
       :show-add="true"
       :show-delete="false"
       @onadd="onAdd"
-    />
+    >
+      <template slot="center">
+        <el-radio-group
+          v-model="materialType"
+          size="mini"
+          class="margin-left"
+        >
+          <el-radio-button v-for="item of $materialTypes" :key="item.value" :label="item.value">{{ item.name }}</el-radio-button>
+        </el-radio-group>
+      </template>
+    </table-header>
     <el-card
       :body-style="{ padding: '2px' }"
       class="table-container"
@@ -142,6 +152,23 @@
       :visible.sync="dialogFormVisible"
     >
       <el-form class="dialog-container">
+        <el-form-item label="教材类别">
+          <el-col :span="$style.dialogColSpan">
+            <el-select
+              v-model="addExpressUserModel.materialType"
+              style="width: 100%"
+              class="filter-item"
+              placeholder="请选择教材类别"
+            >
+              <el-option
+                v-for="item of $materialTypes"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
         <el-form-item label="学校名称">
           <el-col :span="$style.dialogColSpan">
             <el-select
@@ -361,6 +388,7 @@ export default {
   data() {
     return {
       addExpressUserModel: {
+        materialType: 0,
         isOnline: '', // 线上线下
         schoolId: '', // 学校主键ID
         experNum: 1, // 生成的体验账户数量
@@ -390,7 +418,8 @@ export default {
         disabledDate(date) {
           return date < new Date()
         }
-      }
+      },
+      materialType: 0
     }
   },
   watch: {
@@ -402,6 +431,9 @@ export default {
       } else {
         this.isOnLineSchoolTip = ''
       }
+    },
+    materialType() {
+      this.getData()
     }
   },
   mounted() {

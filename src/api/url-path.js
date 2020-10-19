@@ -356,7 +356,9 @@ export const queryCourseLevel = baseModuleUrl + 'queryCourseLevel'
 
 export const queryCourseLevelGroup = baseModuleUrl + 'queryCourseLevelGroup'
 
-export const udpateGroupVideoUrl = baseModuleUrl + 'udpateGroupVideoUrl'
+export const updateGroupVideoUrl = baseModuleUrl + 'updateGroupVideoUrl'
+
+export const updateCourseLevelVideoUrl = baseModuleUrl + 'updateCourseLevelVideoUrl'
 
 // ****************课程信息**************** //
 
@@ -487,3 +489,19 @@ export const editKnowledgeExam = baseModuleUrl + 'editKnowledgeExam'
 // export const withdrawSystemMessage = baseModuleUrl + 'withdrawSystemMessage'
 
 // ****************考点管理**************** //
+
+// ****************语法练习**************** //
+
+export const queryPracticeList = baseModuleUrl + 'queryPracticeList'
+
+export const savePractice = baseModuleUrl + 'savePractice'
+
+export const editPractice = baseModuleUrl + 'editPractice'
+
+export const deletePractice = baseModuleUrl + 'deletePractice'
+
+export const updatePracticeIsDisable = baseModuleUrl + 'updatePracticeIsDisable'
+
+export const updatePracticeIsEnable = baseModuleUrl + 'updatePracticeIsEnable'
+
+// ****************语法练习**************** //

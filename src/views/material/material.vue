@@ -22,7 +22,7 @@ export default {
   components: { MaterialWord, MaterailGrammar },
   data() {
     return {
-      activeName: 'second'
+      activeName: 'first'
     }
   }
 }

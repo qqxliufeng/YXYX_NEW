@@ -95,6 +95,10 @@ export default {
     showLevel: {
       type: Boolean,
       default: false
+    },
+    materialType: {
+      type: String,
+      default: 'word'
     }
   },
   data() {
@@ -161,7 +165,7 @@ export default {
     }
   },
   mounted() {
-    this.getMaterialList(_ => {
+    this.getMaterialList(this.materialType === 'word' ? this.$urlPath.queryTextBookList : this.$urlPath.queryGrammarTextBookList, _ => {
       if (this.materialList && this.materialList.length > 0) {
         this.materialId = this.materialList[0].textbookId
       } else {

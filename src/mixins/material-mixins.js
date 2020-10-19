@@ -8,8 +8,8 @@ export default {
     }
   },
   methods: {
-    getMaterialList(callback) {
-      this.enginData({ url: this.$urlPath.queryTextBookList, dataName: 'materialList', callback })
+    getMaterialList(url = this.$urlPath.queryTextBookList, callback) {
+      this.enginData({ url, dataName: 'materialList', callback })
     },
     getCourseList(textbookId, callback) {
       this.enginData({ url: this.$urlPath.queryCourseByTextBook, postData: { textbookId }, dataName: 'courseList', callback })

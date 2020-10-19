@@ -44,7 +44,7 @@
           align="center"
           label="唯一标识符"
           fixed="left"
-          prop="knowledgeId"
+          prop="knowledgeExamId"
           width="100"
         />
         <el-table-column

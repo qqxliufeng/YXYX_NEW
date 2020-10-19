@@ -407,6 +407,46 @@
       </div>
     </el-dialog>
     <!-- 查看教材授权的学校对话框 -->
+    <!-- 上传对话框 -->
+    <el-dialog
+      title="上传教材"
+      :visible.sync="dialogUploadFormVisible"
+    >
+      <el-form class="dialog-container">
+        <el-form-item>
+          <el-col :span="22">
+            <el-upload
+              ref="excelUpload"
+              class="upload-wrapper text-center"
+              drag
+              action="http://"
+              :on-change="changeGrammarExcel"
+              :on-remove="removeGrammarExcel"
+              :auto-upload="false"
+            >
+              <i class="el-icon-upload" />
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            </el-upload>
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          @click="dialogUploadFormVisible = false"
+        >取消</el-button>
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          :loading="uploadExcelLoading"
+          @click="handlerUploadFormConfirm"
+        >确定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 增加教材对话框 -->
   </div>
 </template>
 
@@ -418,6 +458,7 @@ import userMixins from '@/mixins/user-mixins'
 import { getToken } from '@/utils/auth'
 import { baseIp } from '@/api/url-path'
 import { getImagePath } from '@/filters'
+import axios from 'axios'
 const textbookCategorys = [
   {
     label: '中考',
@@ -484,13 +525,16 @@ export default {
       mode: 'add',
       dialogFormVisible: false,
       dialogGrantSchoolVisible: false,
+      dialogUploadFormVisible: false,
       grantSchoolLoading: false,
       grantSchoolTableData: [],
       uploadCoverUrl: baseIp + this.$urlPath.uploadGrammarTextBookCoverImage,
       headers: {
         'Authorization': `Bearer ${getToken()}`
       },
-      fileList: []
+      fileList: [],
+      excelFormData: new FormData(),
+      uploadExcelLoading: false
     }
   },
   watch: {
@@ -576,17 +620,53 @@ export default {
           if (!this.checkButtonPermission('gene_material')) {
             return
           }
-          this.$router.push({
-            name: 'GenerateMaterial',
-            params: {
-              textbookId: item.textbookId
-            }
-          })
+          if (item.progressNo === 0) {
+            this.dialogUploadFormVisible = true
+            this.$nextTick(_ => {
+              this.$refs.excelUpload.clearFiles()
+              this.excelFormData.delete('excelFile')
+              this.excelFormData.append('textbookId', item.textbookId)
+            })
+          } else {
+            this.$errorMsg('已经上传过模板，请勿重复上传')
+          }
           break
         case 3:
           this.jumpSpell(item)
           break
       }
+    },
+    changeGrammarExcel(file, fileList) {
+      this.excelFormData.append('excelFile', file.raw)
+    },
+    removeGrammarExcel(file, fileList) {
+      this.excelFormData.delete('excelFile')
+    },
+    handlerUploadFormConfirm() {
+      if (this.excelFormData.get('excelFile') === null) {
+        this.$errorMsg('请上传教材模板文件')
+        return
+      }
+      this.uploadExcelLoading = true
+      axios.post(baseIp + this.$urlPath.importExcelTextBookPractice, this.excelFormData, {
+        headers: this.headers
+      }).then(res => {
+        this.dialogUploadFormVisible = false
+        this.uploadExcelLoading = false
+        if (res.status === 200) {
+          if (res.data.status === 200) {
+            this.$successMsg('文件上传成功')
+            this.getData()
+          } else {
+            this.$errorMsg(res.data.msg)
+          }
+        } else {
+          this.$errorMsg('文件上传失败')
+        }
+      }).catch(_ => {
+        this.uploadExcelLoading = false
+        this.$errorMsg('文件上传失败')
+      })
     },
     handlerFormConfirm() {
       if (!this.materialModel.textbookName) {
@@ -609,17 +689,6 @@ export default {
             this.grantSchoolLoading = false
             this.$successMsg('教材添加成功')
             this.getData()
-            this.$nextTick(_ => {
-              this.$warningConfirm('教材基本信息创建成功，是否要创建教材其它信息？', _ => {
-                this.$router.push({
-                  name: 'GenerateMaterial',
-                  params: {
-                    textbookId: res.obj,
-                    progressNo: 0
-                  }
-                })
-              })
-            })
           }).catch(_ => {
             closeLoading()
             this.dialogFormVisible = false
