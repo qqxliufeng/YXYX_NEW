@@ -181,21 +181,6 @@ export default {
      * 生成搜索对象
      */
     generatorFormObj(formModelArray = []) {
-      // const form = {}
-      // form['pageNum'] = this.page
-      // form['pageSize'] = this.pageSize
-      // formModelArray.forEach(it => {
-      //   const name = it.name
-      //   const value = it.value
-      //   if (value instanceof Array) {
-      //     value.forEach((i, index) => {
-      //       form[it.name[index]] = i
-      //     })
-      //   } else {
-      //     form[name] = value
-      //   }
-      // })
-      // return form
       return formModelArray.reduce((acc, cur) => {
         if (cur.name instanceof Array) {
           cur.name.reduce((a, c, index) => {

@@ -49,9 +49,15 @@
         </el-table-column>
         <el-table-column
           align="center"
+          prop="textbookId"
+          label="唯一标识"
+          fixed="left"
+          width="100"
+        />
+        <el-table-column
+          align="center"
           prop="textbookName"
           label="教材名称"
-          fixed="left"
           width="150"
         />
         <el-table-column

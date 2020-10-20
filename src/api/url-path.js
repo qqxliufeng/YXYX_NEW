@@ -505,3 +505,19 @@ export const updatePracticeIsDisable = baseModuleUrl + 'updatePracticeIsDisable'
 export const updatePracticeIsEnable = baseModuleUrl + 'updatePracticeIsEnable'
 
 // ****************语法练习**************** //
+
+// ****************语法闯关**************** //
+
+export const queryPracticePassList = baseModuleUrl + 'queryPracticePassList'
+
+export const savePracticePass = baseModuleUrl + 'savePracticePass'
+
+export const editPracticePass = baseModuleUrl + 'editPracticePass'
+
+export const deletePracticePass = baseModuleUrl + 'deletePracticePass'
+
+export const updatePracticePassIsDisable = baseModuleUrl + 'updatePracticePassIsDisable'
+
+export const updatePracticePassIsEnable = baseModuleUrl + 'updatePracticePassIsEnable'
+
+// ****************语法闯关**************** //

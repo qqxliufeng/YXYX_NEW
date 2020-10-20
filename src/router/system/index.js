@@ -39,7 +39,7 @@ export default [
         }
       },
       {
-        path: '/textbooklist/:studyCardId/:studyCardCode/:studyCardErcode',
+        path: '/textbooklist/:studyCardId/:studyCardCode/:studyCardErcode/:textbookType',
         component: () => import('@/views/system/TextBookList.vue'),
         name: 'TextBookList',
         meta: {

@@ -10,13 +10,19 @@
       @onadd="onAdd"
     >
       <template slot="center">
-        <el-radio-group
+        <el-select
           v-model="materialType"
-          size="mini"
           class="margin-left"
+          size="small"
+          placeholder="请选择教材"
         >
-          <el-radio-button v-for="item of $materialTypes" :key="item.value" :label="item.value">{{ item.name }}</el-radio-button>
-        </el-radio-group>
+          <el-option
+            v-for="item of $materialTypes"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          />
+        </el-select>
       </template>
     </table-header>
     <el-card
@@ -382,9 +388,10 @@
 import tableMixins from '../../mixins/table-mixins'
 import userMixins from '../../mixins/user-mixins'
 import schoolMixins from '../../mixins/school-mixins'
+import materialTypeMixins from '@/mixins/material-type-mixins'
 export default {
   name: 'ExpressUser',
-  mixins: [tableMixins, userMixins, schoolMixins],
+  mixins: [tableMixins, userMixins, schoolMixins, materialTypeMixins],
   data() {
     return {
       addExpressUserModel: {

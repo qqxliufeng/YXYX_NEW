@@ -23,7 +23,7 @@
       >
         <el-table-column
           align="center"
-          label="ID"
+          label="唯一标识"
           prop="levelgroupId"
           fixed="left"
         />
@@ -31,27 +31,23 @@
           align="center"
           label="关卡编号"
           prop="levelCode"
-          fixed="left"
         />
         <el-table-column
           align="center"
           label="分组编号"
           prop="groupCode"
-          fixed="left"
         />
         <el-table-column
           align="center"
           label="分组名称"
           prop="groupName"
           width="150"
-          fixed="left"
-          show-overflow-tooltip
         />
         <el-table-column
           align="center"
           label="视频地址"
           prop="groupVideo"
-          width="450"
+          width="300"
         >
           <template slot-scope="scope">
             <el-link

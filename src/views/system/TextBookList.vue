@@ -175,6 +175,9 @@ export default {
     async getData() {
       const res = await this.$http({
         url: this.$urlPath.queryAllTextBookVersion,
+        data: {
+          textbookType: this.$route.params.textbookType
+        },
         methods: this.HTTP_GET
       })
       this.loading = false
@@ -196,7 +199,8 @@ export default {
         methods: this.HTTP_GET,
         data: {
           studyCardId: this.$route.params.studyCardId,
-          textbookVersion: row.textbookVersion
+          textbookVersion: row.textbookVersion,
+          textbookType: this.$route.params.textbookType
         }
       })
       row.textBookList = res.obj

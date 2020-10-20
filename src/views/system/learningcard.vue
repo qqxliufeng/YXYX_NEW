@@ -2,7 +2,7 @@
   <div class="container">
     <table-header
       ref="tableHeader"
-      title="基本操作"
+      title="教材类别"
       :form-model-array="formModelArray"
       :show-delete="false"
       :show-add="false"
@@ -10,6 +10,21 @@
       @onsearch="onSearch"
       @table-header-collapse="onCollapsed"
     >
+      <template slot="center">
+        <el-select
+          v-model="materialType"
+          class="margin-left"
+          size="small"
+          placeholder="请选择教材"
+        >
+          <el-option
+            v-for="item of $materialTypes"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          />
+        </el-select>
+      </template>
       <template slot="other">
         <el-button
           type="warning"
@@ -64,8 +79,7 @@
           align="center"
           prop="cardErcode"
           label="二维码"
-          width="380"
-          show-overflow-tooltip
+          width="300"
         />
         <el-table-column
           align="center"
@@ -161,6 +175,24 @@
       :visible.sync="dialogFormVisible"
     >
       <el-form class="dialog-container">
+        <el-form-item
+          label="教材的类别"
+        >
+          <el-col :span="$style.dialogColSpan">
+            <el-select
+              v-model="generatorCardObj.cardSource"
+              style="width: 100%"
+              placeholder="请选择教材"
+            >
+              <el-option
+                v-for="item of $materialTypes"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
         <el-form-item
           label="学习卡类型"
           prop="parentDeptId"
@@ -345,10 +377,11 @@
 <script>
 import tableMixins from '../../mixins/table-mixins'
 import studyCardMixins from '../../mixins/study-card-mixins'
+import materialTypeMixins from '../../mixins/material-type-mixins'
 import { blobToExecl } from '../../api/common'
 export default {
   name: 'StudyCard',
-  mixins: [tableMixins, studyCardMixins],
+  mixins: [tableMixins, studyCardMixins, materialTypeMixins],
   data() {
     return {
       formModelArray: [
@@ -402,6 +435,7 @@ export default {
         }
       ],
       generatorCardObj: {
+        cardSource: 0,
         cardType: 'P',
         studyCardNum: 1,
         validityMonth: 1
@@ -436,7 +470,8 @@ export default {
               url: this.$urlPath.uploadStudyCardExcel,
               methods: this.HTTP_GET,
               data: {
-                studyCardIds: ids
+                studyCardIds: ids,
+                cardSource: this.materialType
               },
               responseType: `blob`
             }).then(res => {
@@ -464,7 +499,8 @@ export default {
         methods: this.HTTP_GET,
         data: {
           pageNum: this.page,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          cardSource: this.materialType
         }
       }).then(res => {
         this.onSuccess(res.obj)

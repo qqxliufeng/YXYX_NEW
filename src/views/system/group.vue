@@ -16,6 +16,7 @@
       :style="tableCardStyle"
     >
       <el-table
+        ref="table"
         v-loading="loading"
         :stripe="tableConfig.stripe"
         :header-cell-style="tableConfig.headerCellStyle"

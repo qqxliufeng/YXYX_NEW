@@ -49,9 +49,15 @@
         </el-table-column>
         <el-table-column
           align="center"
+          prop="textbookId"
+          label="唯一标识"
+          fixed="left"
+          width="100"
+        />
+        <el-table-column
+          align="center"
           prop="textbookName"
           label="教材名称"
-          fixed="left"
           width="150"
         />
         <el-table-column
@@ -81,11 +87,6 @@
           align="center"
           label="包含视频"
           :formatter="videoFormatter"
-        />
-        <el-table-column
-          align="center"
-          label="配对练习"
-          :formatter="exercisesFormatter"
         />
         <el-table-column
           align="center"
@@ -628,7 +629,7 @@ export default {
               this.excelFormData.append('textbookId', item.textbookId)
             })
           } else {
-            this.$errorMsg('已经上传过模板，请勿重复上传')
+            this.$errorMsg('已经上传过数据，请勿重复上传')
           }
           break
         case 3:

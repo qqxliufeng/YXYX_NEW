@@ -4,7 +4,9 @@ export default {
     return {
       materialList: [],
       courseList: [],
-      levelList: []
+      levelList: [],
+      knowledgeList: [],
+      knowledgeExamList: []
     }
   },
   methods: {
@@ -16,6 +18,12 @@ export default {
     },
     getLevelList(textbookId, courseCode, callback) {
       this.enginData({ url: this.$urlPath.queryCourseLevel, postData: { textbookId, courseCode }, dataName: 'levelList', callback })
+    },
+    getKnowledgeList(callback) {
+      this.enginData({ url: this.$urlPath.queryKnowledgeList, postData: {}, dataName: 'knowledgeList', pageSize: 1000, callback })
+    },
+    getKnowledgeExamList(callback) {
+      this.enginData({ url: this.$urlPath.queryKnowledgeExamList, postData: {}, dataName: 'knowledgeExamList', pageSize: 1000, callback })
     },
     enginData({ url, postData, dataName, pageSize = 100, callback }) {
       const loadingInstance = Loading.service({

@@ -7,16 +7,8 @@ export default {
           value: 'P'
         },
         {
-          label: '小学体验卡',
-          value: 'TP'
-        },
-        {
           label: '初中正式卡',
           value: 'M'
-        },
-        {
-          label: '初中体验卡',
-          value: 'TM'
         }
       ],
       grantTextBookLoading: false,
@@ -123,7 +115,8 @@ export default {
         params: {
           studyCardId: item.studyCardId,
           studyCardCode: item.cardCode,
-          studyCardErcode: item.cardErcode
+          studyCardErcode: item.cardErcode,
+          textbookType: item.cardSource
         }
       })
     },
