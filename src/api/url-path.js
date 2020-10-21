@@ -9,9 +9,9 @@
 
 export const baseImageIp = 'http://ht.youcanedu.net'
 
-export const baseIp = 'http://192.168.1.103:8881'
+// export const baseIp = 'http://192.168.1.103:8881'
 
-// export const baseIp = 'http://ht.youcanedu.net:8881'
+export const baseIp = 'http://ht.youcanedu.net:8881'
 
 /**
  * 基础模块名字
@@ -419,6 +419,8 @@ export const isAward = baseModuleUrl + 'isAward'
 export const queryArenaAllWords = baseModuleUrl + 'queryArenaAllWords'
 
 export const queryArenaWordLike = baseModuleUrl + 'queryArenaWordLike'
+
+export const queryArenaPracticePassList = baseModuleUrl + 'queryArenaPracticePassList'
 
 // ****************竞技场**************** //
 

@@ -310,6 +310,7 @@ export default {
               cardType: it.cardType,
               cardNum: it.cardNum,
               cardCode: it.cardCode,
+              textbookType: it.materialType,
               textbookIds: it.tempTextbookIds.join(',')
             }
           })

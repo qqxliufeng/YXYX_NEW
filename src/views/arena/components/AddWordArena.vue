@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="创建竞技场"
+      title="创建 词汇 竞技场"
       :visible.sync="dialogFormVisible"
       :width="$isPhone ? '90%' : '60%'"
       top="8vh"
@@ -369,6 +369,7 @@ export default {
       linkWord: '',
       arenaModel: {
         name: '',
+        textbookType: 0,
         textBookId: '',
         isExper: 0, // 是否是体验教材：0 不是 1是
         courseCodes: [],
@@ -454,7 +455,8 @@ export default {
         data: {
           schoolId: this.$store.getters.schoolId,
           pageNum: 1,
-          pageSize: 1000
+          pageSize: 1000,
+          textbookType: 0
         }
       }).then(res => {
         this.textbookList = res.obj.list
@@ -591,6 +593,7 @@ export default {
         }
       }
       const postData = {}
+      postData.textbookType = this.arenaModel.textbookType
       postData.arenaName = this.arenaModel.name
       postData.textBookId = this.arenaModel.textBookId
       postData.isExper = this.arenaModel.isExper
@@ -620,6 +623,7 @@ export default {
         this.randomWordList = []
         this.arenaModel = {
           name: '',
+          textbookType: 0,
           textBookId: '',
           isExper: 0,
           courseCodes: [],
@@ -647,6 +651,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

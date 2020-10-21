@@ -3,30 +3,14 @@
     <table-header
       v-if="isSuperAdmin || !isOnLineSchool"
       ref="tableHeader"
-      title="教材类别"
+      title="查询内容"
       :show-search="false"
       :show-add="true"
       :show-delete="false"
       @onadd="onAdd"
-    >
-      <template slot="center">
-        <el-select
-          v-model="materialType"
-          class="margin-left"
-          size="small"
-          placeholder="请选择教材"
-        >
-          <el-option
-            v-for="item of $materialTypes"
-            :key="item.value"
-            :label="item.name"
-            :value="item.value"
-          />
-        </el-select>
-      </template>
-    </table-header>
+    />
     <el-card
-      :body-style="{ padding: '2px' }"
+      :body-style="{ padding: 0 }"
       class="table-container"
       :style="tableCardStyle"
     >
@@ -425,8 +409,7 @@ export default {
         disabledDate(date) {
           return date < new Date()
         }
-      },
-      materialType: 0
+      }
     }
   },
   watch: {
@@ -439,8 +422,8 @@ export default {
         this.isOnLineSchoolTip = ''
       }
     },
-    materialType() {
-      this.getData()
+    'addExpressUserModel.materialType'() {
+      this.getExpressTextBookList()
     }
   },
   mounted() {
@@ -465,6 +448,14 @@ export default {
       if (!this.checkButtonPermission('add')) {
         return
       }
+      this.addExpressUserModel = {
+        materialType: 0,
+        isOnline: '', // 线上线下
+        schoolId: '', // 学校主键ID
+        experNum: 1, // 生成的体验账户数量
+        textbookIds: '', // 账号可授权的教材主键，逗号隔开
+        textbookNum: 1 // 校长可授权的教材数量
+      }
       this.dialogFormVisible = true
     },
     getData() {
@@ -486,7 +477,8 @@ export default {
         methods: this.HTTP_GET,
         data: {
           pageNum: 0,
-          pageSize: 1000
+          pageSize: 1000,
+          textbookType: this.addExpressUserModel.materialType
         }
       }).then(res => {
         this.textBookList = res.obj.list

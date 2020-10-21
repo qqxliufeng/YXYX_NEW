@@ -1,7 +1,7 @@
 <template>
   <div v-if="arenaModel">
     <el-dialog
-      title="竞技场详细信息"
+      title="词汇竞技场详细信息"
       :visible.sync="dialogFormVisible"
       :width="$isPhone ? '90%' : '60%'"
       top="8vh"

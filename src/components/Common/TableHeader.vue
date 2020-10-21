@@ -129,7 +129,7 @@ export default {
   data() {
     return {
       level: this.$privinceData,
-      isCollapse: true
+      isCollapse: false
     }
   },
   watch: {

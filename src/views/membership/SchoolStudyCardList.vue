@@ -2,11 +2,27 @@
   <div class="container">
     <table-header
       ref="tableHeader"
-      :title="$route.params.schoolName + ' 下'+ (Number($route.params.type) === 1 ? '已分配' : '未分配') +'的学习卡信息'"
+      :title="$route.params.schoolName + ' 下'+ (Number($route.params.type) === 1 ? ' 已分配 ' : ' 未分配 ') +'的学习卡信息'"
       :show-add="false"
       :show-delete="false"
       :show-search="false"
-    />
+    >
+      <template slot="center">
+        <el-select
+          v-model="materialType"
+          class="margin-left"
+          size="small"
+          placeholder="请选择教材"
+        >
+          <el-option
+            v-for="item of $materialTypes"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          />
+        </el-select>
+      </template>
+    </table-header>
     <el-card
       :body-style="{padding: 0}"
       class="table-container"
@@ -105,7 +121,7 @@
           align="center"
           prop="cardErcode"
           label="二维码"
-          width="400"
+          width="300"
         />
         <el-table-column
           align="center"
@@ -180,7 +196,8 @@
                 params: {
                   studyCardId: scope.row.studyCardId,
                   studyCardCode: scope.row.cardCode,
-                  studyCardErcode: scope.row.cardErcode
+                  studyCardErcode: scope.row.cardErcode,
+                  textbookType: materialType
                 }
               })"
             >授权教材</el-button>
@@ -301,9 +318,10 @@
 import tableMixins from '../../mixins/table-mixins'
 import studyCardMixins from '../../mixins/study-card-mixins'
 import userMixins from '../../mixins/user-mixins'
+import materialTypeMixins from '@/mixins/material-type-mixins'
 export default {
   name: 'SchoolStudyCardList',
-  mixins: [tableMixins, studyCardMixins, userMixins],
+  mixins: [tableMixins, studyCardMixins, userMixins, materialTypeMixins],
   mounted() {
     this.getData()
   },
@@ -318,7 +336,8 @@ export default {
         data: {
           pageNum: this.page,
           pageSize: this.pageSize,
-          schoolId: this.$route.params.schoolId
+          schoolId: this.$route.params.schoolId,
+          cardSource: this.materialType
         }
       }).then(res => {
         this.onSuccess(res.obj)

@@ -7,11 +7,14 @@
       :show-add="true"
       :show-delete="false"
       :show-search="true"
+      :can-collapse="true"
       @onadd="onAdd"
       @onsearch="onSearch"
+      @table-header-collapse="onCollapsed"
     />
     <el-card
-      :body-style="{ padding: '2px' }"
+      ref="tableContainer"
+      :body-style="{ padding: 0 }"
       class="table-container"
       :style="tableCardStyle"
     >
@@ -24,6 +27,7 @@
         :size="tableConfig.size"
         :default-sort="tableConfig.defalutSort"
         :style="tableConfig.style"
+        :height="tableConfig.style.myHeight"
       >
         <el-table-column
           align="center"
@@ -163,32 +167,6 @@
           width="120"
         >
           <template slot-scope="scope">
-            <!-- <el-button
-              v-if="isSuperAdmin"
-              :size="$style.tableButtonSize"
-              :type="scope.row.status === 0 ? 'danger' : 'warning'"
-              @click="
-                changeLockStatus({
-                  item: scope.row,
-                  statusField: 'status',
-                  data: { schoolId: scope.row.schoolId },
-                  lockUrl: $urlPath.lockSchool,
-                  unLockUrl: $urlPath.unLockSchool
-                })
-              "
-            >{{ scope.row.status === 0 ? "禁用" : "解锁" }}</el-button>
-            <el-button
-              v-if="isSuperAdmin"
-              :size="$style.tableButtonSize"
-              type="primary"
-              @click="editAccountInfo(scope.row)"
-            >编辑</el-button>
-            <el-button
-              v-if="!isSuperAdmin"
-              :size="$style.tableButtonSize"
-              type="primary"
-              @click="$router.push({path: '/'})"
-            >查看详情</el-button> -->
             <el-dropdown
               style="display: inline-block; margin-left: 10px"
               :size="$style.tableButtonSize"
@@ -210,10 +188,10 @@
                   v-if="scope.row.isOnLine === 1"
                   :command="{ tag: 1, item: scope.row }"
                 >已分配的学习卡</el-dropdown-item>
-                <el-dropdown-item
+                <!-- <el-dropdown-item
                   v-if="scope.row.isOnLine === 1 && isSuperAdmin"
                   :command="{ tag: 2, item: scope.row }"
-                >未分配的学习卡</el-dropdown-item>
+                >未分配的学习卡</el-dropdown-item> -->
                 <el-dropdown-item
                   v-if="scope.row.isOnLine === 0"
                   :command="{ tag: 5, item: scope.row }"
@@ -295,15 +273,23 @@ export default {
           type: 'input'
         },
         {
-          id: 4,
+          id: 2,
           value: '',
-          label: '经营地址',
-          name: 'addressDetail',
+          label: '校长名称',
+          name: 'schoolLeaderName',
           span: 5,
           type: 'input'
         },
         {
-          id: 5,
+          id: 3,
+          value: '',
+          label: '联系方式',
+          name: 'schoolTel',
+          span: 5,
+          type: 'input'
+        },
+        {
+          id: 4,
           value: [],
           label: '省/市/区',
           name: ['province', 'city', 'area'],
@@ -545,5 +531,3 @@ export default {
   }
 }
 </script>
-
-<style></style>

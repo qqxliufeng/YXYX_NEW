@@ -42,8 +42,11 @@
         <el-table-column
           align="center"
           label="教材类型"
-          :formatter="typeFormatter"
-        />
+        >
+          <template slot-scope="scope">
+            <table-status :status="{ label: scope.row.textbookType === 0 ? '词汇' : '语法', type: scope.row.textbookType === 0 ? 'primary' : 'success' }" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="教材类别"

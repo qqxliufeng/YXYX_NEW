@@ -60,8 +60,10 @@ export default {
   methods: {
     onCollapsed() {
       const tempTop = this.tableCardStyle.top
-      this.tableCardStyle.top = this.$refs.tableHeader ? (this.$refs.tableHeader.$el.offsetHeight + 10 + 'px') : '0'
-      this.tableConfig.style.myHeight = this.tableConfig.style.myHeight + (parseInt(tempTop) - parseInt(this.tableCardStyle.top))
+      setTimeout(_ => {
+        this.tableCardStyle.top = this.$refs.tableHeader ? (this.$refs.tableHeader.$el.offsetHeight + 10 + 'px') : '0'
+        this.tableConfig.style.myHeight = this.tableConfig.style.myHeight + (parseInt(tempTop) - parseInt(this.tableCardStyle.top))
+      }, 100)
     },
     resetData() {
       this.tableData = []

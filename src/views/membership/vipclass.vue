@@ -290,7 +290,7 @@
             <el-input-number
               v-model="reviewModel.reviewWordNum"
               style="width: 100%"
-              :min="30"
+              :min="1"
               :max="100"
             />
           </el-col>

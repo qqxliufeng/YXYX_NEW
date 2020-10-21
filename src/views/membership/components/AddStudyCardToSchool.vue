@@ -30,7 +30,16 @@
           <div v-if="studyCardParams.length > 0">
             <el-row>
               <el-col
-                :span="6"
+                :span="5"
+                class="text-center"
+              >
+                <el-link
+                  :underline="false"
+                  type="primary"
+                >教材类别</el-link>
+              </el-col>
+              <el-col
+                :span="5"
                 class="text-center"
               >
                 <el-link
@@ -39,7 +48,7 @@
                 >学习卡类型</el-link>
               </el-col>
               <el-col
-                :span="6"
+                :span="5"
                 class="text-center"
               >
                 <el-link
@@ -48,7 +57,7 @@
                 >学习卡数量</el-link>
               </el-col>
               <el-col
-                :span="6"
+                :span="5"
                 class="text-center"
               >
                 <el-link
@@ -57,7 +66,7 @@
                 >学习卡教材</el-link>
               </el-col>
               <el-col
-                :span="6"
+                :span="4"
                 class="text-center"
               >
                 <el-link
@@ -72,12 +81,30 @@
               style="margin-bottom: 10px; border-bottom: 1px solid #f5f5f5; padding-bottom: 5px"
             >
               <el-col
-                :span="6"
+                :span="5"
+                class="text-center"
+              >
+                <el-select
+                  v-model="item.materialType"
+                  placeholder="教材类别"
+                  style="width: 70%"
+                  @change="materialTypeChange"
+                >
+                  <el-option
+                    v-for="materialType of $materialTypes"
+                    :key="materialType.value"
+                    :label="materialType.name"
+                    :value="materialType.value"
+                  />
+                </el-select>
+              </el-col>
+              <el-col
+                :span="5"
                 class="text-center"
               >
                 <el-select
                   v-model="item.cardType"
-                  placeholder="请选择学习卡类型"
+                  placeholder="学习卡类型"
                   style="width: 70%"
                   filterable
                 >
@@ -90,7 +117,7 @@
                 </el-select>
               </el-col>
               <el-col
-                :span="6"
+                :span="5"
                 class="text-center"
               >
                 <el-input-number
@@ -100,7 +127,7 @@
                 />
               </el-col>
               <el-col
-                :span="6"
+                :span="5"
                 class="text-center text-cut"
               >
                 <el-link
@@ -109,7 +136,7 @@
                 >{{ item.textbookNames || '点击选择学习卡教材' }}</el-link>
               </el-col>
               <el-col
-                :span="6"
+                :span="4"
                 class="text-center text-cut"
               >
                 <el-button
@@ -178,16 +205,8 @@ export default {
           label: '小学正式卡'
         },
         {
-          value: 'TP',
-          label: '小学体验卡'
-        },
-        {
           value: 'M',
           label: '初中正式卡'
-        },
-        {
-          value: 'TM',
-          label: '初中体验卡'
         }
       ],
       textbookList: [],
@@ -198,9 +217,14 @@ export default {
     }
   },
   methods: {
+    materialTypeChange() {
+      console.log('change')
+      this.textbookList = []
+    },
     addStudyCard() {
       const item = {
         id: new Date().getTime(),
+        materialType: 0, // 教材类别，默认是词汇
         cardType: '',
         cardNum: 1, //			  学习卡数量(批量增加方式)
         cardCode: '', //		  学习卡编码(查询学习卡编码方式,暂时不增加此字段)
@@ -216,7 +240,7 @@ export default {
       if (this.textbookList.length === 0) {
         this.tableLoading = true
         this.$http({
-          url: this.$urlPath.queryTextBookList,
+          url: this.getMaterialUrl(item.materialType),
           methods: this.HTTP_GET,
           data: {
             pageNum: 0,
@@ -246,6 +270,14 @@ export default {
             this.$refs.multiTable.toggleRowSelection(row, true)
           })
         })
+      }
+    },
+    getMaterialUrl(type) {
+      switch (type) {
+        case 0 :
+          return this.$urlPath.queryTextBookList
+        case 1:
+          return this.$urlPath.queryGrammarTextBookList
       }
     },
     deleteTextBookItem(item) {

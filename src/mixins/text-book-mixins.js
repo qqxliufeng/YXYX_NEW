@@ -31,7 +31,7 @@ export default {
       return item.isHasVideo === 0 ? '是' : '否'
     },
     exercisesFormatter(item) {
-      return item.isHasExercises === 0 ? '是' : '否'
+      return item.textbookType === 0 ? item.isHasExercises === 0 ? '是' : '否' : '--'
     },
     openFormatter(item) {
       return item.isOpenUser === 0 ? '是' : '否'
