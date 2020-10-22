@@ -55,24 +55,6 @@
           label="班级人数"
           prop="classPersonNum"
         />
-        <!-- <el-table-column
-          align="center"
-          label="复习教材"
-          prop="classPersonNum"
-        >
-          <template slot-scope="scope">
-            <div>{{ scope.row.reviewTextBookId ? scope.row.reviewTextBookId : '--' }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="单词数量"
-          prop="classPersonNum"
-        >
-          <template slot-scope="scope">
-            <div>{{ scope.row.reviewWordNum ? scope.row.reviewWordNum : '--' }}</div>
-          </template>
-        </el-table-column> -->
         <el-table-column
           align="center"
           label="创建时间"
@@ -101,7 +83,7 @@
           <template slot-scope="scope">
             <el-button
               :size="$style.tableButtonSize"
-              :type="scope.row.status === 0 ? 'danger' : 'warning'"
+              :type="scope.row.status === 0 ? 'danger' : 'success'"
               @click="changeLockStatus({item: scope.row, statusField: 'status', data: { classId: scope.row.classId }, lockUrl: $urlPath.lockSchoolClass, unLockUrl: $urlPath.unLockSchoolClass})"
             >{{ scope.row.status === 0 ? "禁用" : "解锁" }}</el-button>
             <el-button
@@ -109,11 +91,19 @@
               type="primary"
               @click="handlerUpdate(scope.row)"
             >编辑</el-button>
-            <el-button
-              :size="$style.tableButtonSize"
-              type="success"
-              @click="handlerReview(scope.row)"
-            >复习管理</el-button>
+            <el-dropdown
+              split-button
+              type="danger"
+              size="mini"
+              class="margin-left-sm"
+              @command="handler"
+            >
+              更多
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{type: 0, item: scope.row}">复习管理</el-dropdown-item>
+                <el-dropdown-item :command="{type: 1, item: scope.row}">添加学生</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -247,26 +237,6 @@
             />
           </el-col>
         </el-form-item>
-        <!-- <el-form-item
-          v-if="reviewModel.isOnLineSchool"
-          label="教材版本"
-        >
-          <el-col :span="$style.dialogColSpan">
-            <el-select
-              v-model="reviewModel.textBookVersion"
-              style="width: 100%"
-              class="filter-item"
-              placeholder="请选择教材版本"
-            >
-              <el-option
-                v-for="item of reviewModel.textBookVersions"
-                :key="item.textbookVersion"
-                :label="item.textbookVersion"
-                :value="item.textbookVersion"
-              />
-            </el-select>
-          </el-col>
-        </el-form-item> -->
         <el-form-item label="选择教材">
           <el-col :span="$style.dialogColSpan">
             <el-select
@@ -456,6 +426,16 @@ export default {
         note: ''
       }
     },
+    handler({ type, item }) {
+      switch (type) {
+        case 0:
+          this.handlerReview(item)
+          break
+        case 1:
+          this.handlerAddStudent(item)
+          break
+      }
+    },
     handlerUpdate(item) {
       if (!this.checkButtonPermission('edit')) {
         return
@@ -528,6 +508,11 @@ export default {
         this.loadOffLineTextBook(item)
       }
       this.dialogReviewVisible = true
+    },
+    handlerAddStudent(item) {
+      if (!this.checkButtonPermission('add_stu')) {
+        return
+      }
     },
     loadAllTextBook() {
       this.$http({

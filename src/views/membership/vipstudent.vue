@@ -101,7 +101,11 @@
           prop="address"
           width="200"
           show-overflow-tooltip
-        />
+        >
+          <template slot-scope="scope">
+            <div>{{ scope.row.address || '----' }}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="创建时间"
@@ -149,35 +153,9 @@
                 <el-dropdown-item :command="{type: 2, item: scope.row}">重置密码</el-dropdown-item>
                 <el-dropdown-item :command="{type: 3, item: scope.row}">查看陪伴号</el-dropdown-item>
                 <el-dropdown-item :command="{type: 4, item: scope.row}">{{ scope.row.isJumpVideo === 0 ? "跳过视频" : "恢复视频" }}</el-dropdown-item>
+                <el-dropdown-item v-if="scope.row.isOnLine === 1" :command="{type: 5, item: scope.row}">查看已分配的学习卡</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <!-- <el-button
-              :size="$style.tableButtonSize"
-              :type="scope.row.status === 0 ? 'danger' : 'warning'"
-              @click="changeLockStatus({
-                item: scope.row,
-                statusField: 'status',
-                data: { studentId: scope.row.studentId },
-                lockUrl: $urlPath.lockStudent,
-                unLockUrl: $urlPath.unLockStudent
-              })"
-            >{{ scope.row.status === 0 ? "禁用" : "正常" }}</el-button>
-            <el-button
-              :size="$style.tableButtonSize"
-              type="primary"
-              @click="handlerUpdate(scope.row)"
-            >编辑</el-button>
-            <el-button
-              :size="$style.tableButtonSize"
-              type="success"
-              @click="initPassword(scope.row)"
-            >重置密码</el-button>
-            <el-button
-              :disabled="scope.row.isTeacher === 1 || scope.row.isTeacher === 5"
-              :size="$style.tableButtonSize"
-              type="warning"
-              @click="company(scope.row)"
-            >陪伴号</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -224,7 +202,6 @@
           <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="studentModel.classId"
-              :disabled="mode === 'edit'"
               style="width: 100%"
               class="filter-item"
               placeholder="请选择班级名称"
@@ -244,13 +221,7 @@
         >
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.isTeacher">
-              <!-- <el-radio :label="0">线上非VIP</el-radio> -->
-              <el-radio :label="5">线下学生</el-radio>
-              <el-radio :label="1">陪伴号</el-radio>
-              <!-- <el-radio :label="2">线上VIP</el-radio> -->
-              <el-radio :label="3">校长</el-radio>
-              <el-radio :label="4">老师</el-radio>
-              <el-radio :label="6">特殊用户</el-radio>
+              <el-radio v-for="item of tempStudentTypes" :key="item.value" :label="item.value" :disabled="!item.isEnable">{{ item.label }}</el-radio>
             </el-radio-group>
             <span class="text-red margin-left">（注：请谨慎选择账号类型）</span>
           </el-col>
@@ -326,7 +297,6 @@
       </div>
     </el-dialog>
     <!-- 增加学生对话框 -->
-
     <!-- 查看陪伴号对话框 -->
     <el-dialog
       title="陪伴账号"
@@ -361,6 +331,69 @@
       </div>
     </el-dialog>
     <!-- 查看陪伴号对话框 -->
+
+    <!-- 查看线上学生已经分配的学习卡 -->
+    <el-drawer
+      :visible.sync="openDrawer"
+      direction="rtl"
+      :with-header="false"
+      size="60%"
+    >
+      <div class="padding">
+        <div class="flex justify-between align-center">
+          <el-button
+            type="danger"
+            size="mini"
+            @click="openDrawer = false"
+          >关闭</el-button>
+        </div>
+        <el-table
+          v-loading="studyCardListLoading"
+          :stripe="tableConfig.stripe"
+          :header-cell-style="tableConfig.headerCellStyle"
+          :data="studyCardList"
+          :border="tableConfig.border"
+          :size="tableConfig.size"
+          :default-sort="tableConfig.defalutSort"
+          :style="tableConfig.style"
+          height="90vh"
+        >
+          <el-table-column
+            align="center"
+            label="学习卡编码"
+            prop="className"
+            width="120"
+          >
+            <template slot-scope="scope">
+              <div>{{ scope.row.cardType + scope.row.cardCode }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="二维码"
+            prop="className"
+          >
+            <template slot-scope="scope">
+              <el-link type="primary" @click="showQrcode(scope.row.cardErcode)">{{ scope.row.cardErcode }}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="有效期（月）"
+            prop="validityMonth"
+            width="100"
+          />
+          <el-table-column
+            align="center"
+            label="到期日期"
+            prop="endTime"
+            width="100"
+          />
+        </el-table>
+      </div>
+    </el-drawer>
+    <!-- 查看线上学生已经分配的学习卡 -->
+    <Qrcode ref="qrcode" />
   </div>
 </template>
 
@@ -428,6 +461,51 @@ export default {
           type: 'input'
         }
       ],
+      studentTypes: [
+        {
+          label: '线上非VIP',
+          value: 0,
+          group: 1,
+          isEnable: false
+        },
+        {
+          label: '陪伴号',
+          value: 1,
+          group: 1,
+          isEnable: false
+        },
+        {
+          label: '线上VIP',
+          value: 2,
+          group: 1,
+          isEnable: false
+        },
+        {
+          label: '校长',
+          value: 3,
+          group: 2,
+          isEnable: true
+        },
+        // {
+        //   label: '老师',
+        //   value: 4,
+        //   group: 2,
+        //   isEnable: true
+        // },
+        {
+          label: '线下学生',
+          value: 5,
+          group: 0,
+          isEnable: true
+        },
+        {
+          label: '特殊用户',
+          value: 6,
+          group: 2,
+          isEnable: true
+        }
+      ],
+      tempStudentTypes: [],
       dialogFormVisible: false,
       mode: 'add',
       studentModel: {
@@ -447,7 +525,10 @@ export default {
       myClassList: [],
       isOnLineSchoolTip: '',
       dialogCompanyVisible: false,
-      companyItem: null
+      companyItem: null,
+      openDrawer: false,
+      studyCardList: [],
+      studyCardListLoading: false
     }
   },
   watch: {
@@ -474,6 +555,12 @@ export default {
         const schoolItem = this.schoolList.find(it => it.schoolId === newVal)
         this.studentModel.isOnLine = schoolItem.isOnLine
         this.isOnLineSchoolTip = schoolItem.isOnLine === 1 ? '当前学校为线上学校' : '当前学校为线下学校'
+        this.tempStudentTypes = this.studentTypes.filter(it => it.group === schoolItem.isOnLine || it.group === 2)
+        if (schoolItem.isOnLine === 1) {
+          this.tempStudentTypes.forEach(it => { it.isEnable = it.value === 3 || it.value === 6 })
+        } else {
+          this.tempStudentTypes.forEach(it => { it.isEnable = true })
+        }
         this.getMyCalssList(newVal)
       } else {
         this.isOnLineSchoolTip = ''
@@ -567,6 +654,9 @@ export default {
           this.onError(error)
         })
     },
+    showQrcode(code) {
+      this.$refs.qrcode.show(code)
+    },
     onAdd() {
       if (!this.checkButtonPermission('add')) {
         return
@@ -608,6 +698,26 @@ export default {
         case 4:
           this.hanlderJumpVideo(item)
           break
+        case 5:
+          if (item.isOnLine !== 1) {
+            this.$errorMsg('只有线上学生才生查看学习卡列表')
+            return
+          }
+          this.openDrawer = true
+          this.studyCardListLoading = true
+          this.$http({
+            url: this.$urlPath.queryStudentStudyCardList,
+            methods: this.HTTP_GET,
+            data: {
+              studentId: item.studentId
+            }
+          }).then(res => {
+            this.studyCardListLoading = false
+            this.studyCardList = res.obj
+          }).catch(_ => {
+            this.studyCardListLoading = false
+          })
+          break
       }
     },
     hanlderJumpVideo(item) {
@@ -636,6 +746,8 @@ export default {
       if (!this.checkButtonPermission('edit')) {
         return
       }
+      this.tempStudentTypes = this.studentTypes.filter(it => it.group === item.isOnLine || it.group === 2)
+      this.tempStudentTypes.forEach(it => { it.isEnable = item.isOnLine !== 1 })
       this.dialogFormVisible = true
       this.mode = 'edit'
       this.studentModel.studentId = item.studentId

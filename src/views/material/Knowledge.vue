@@ -232,8 +232,21 @@ export default {
       if (!this.checkButtonPermission('delete')) {
         return
       }
-      this.$warningConfirm('确定要删除此知识点吗？', _ => {
-        console.log('删除')
+      this.$warningConfirm('确定要删除此知识点吗，删除后不可恢复？', _ => {
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: this.$urlPath.deleteKnowledge,
+            data: {
+              knowledgeId: item.knowledgeId
+            }
+          }).then(res => {
+            closeLoading()
+            this.$successMsg('删除成功')
+            this.getData()
+          }).catch(_ => {
+            closeLoading()
+          })
+        })
       })
     },
     handlerFormConfirm() {

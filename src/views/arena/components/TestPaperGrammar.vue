@@ -2,7 +2,6 @@
   <div>
     <table-header
       ref="tableHeader"
-      :form-model-array="formModelArray"
       :show-add="true"
       :show-delete="false"
       :show-search="true"
@@ -66,8 +65,8 @@
         />
         <el-table-column
           align="center"
-          label="单词数量"
-          prop="wordsNum"
+          label="题目数量"
+          prop="practicePassNum"
         />
         <el-table-column
           align="center"
@@ -213,7 +212,7 @@
               >
                 查看
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item :command="{type: 0, item: scope.row}">单词信息</el-dropdown-item>
+                  <el-dropdown-item :command="{type: 0, item: scope.row}">题目信息</el-dropdown-item>
                   <el-dropdown-item :command="{type: 1, item: scope.row}">考试成绩</el-dropdown-item>
                   <el-dropdown-item :command="{type: 2, item: scope.row}">分配的班级</el-dropdown-item>
                   <el-dropdown-item :command="{type: 3, item: scope.row}">分配的个人</el-dropdown-item>
@@ -265,7 +264,7 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
-    <add-test-paper
+    <add-grammar-test-paper
       ref="addTestPaper"
       @reload="reload"
     />
@@ -277,41 +276,121 @@
       ref="classList"
       @confirm="chooseClassConfirm"
     />
-    <word-list
-      ref="wordList"
-      :query-info-model="queryInfoModel"
-    />
     <student-score
       ref="studentScore"
       :exam-item="examItem"
     />
+    <!--  选择的题目  -->
+    <el-drawer
+      :visible.sync="drawerSubjectList"
+      direction="rtl"
+      :with-header="false"
+      size="60%"
+    >
+      <div class="padding">
+        <div class="flex justify-between align-center">
+          <el-button
+            type="primary"
+            size="mini"
+            @click="drawerWordList = false"
+          >关闭</el-button>
+        </div>
+        <el-table
+          v-loading="subjectListLoading"
+          :stripe="tableConfig.stripe"
+          :header-cell-style="tableConfig.headerCellStyle"
+          :data="subjectList"
+          :border="tableConfig.border"
+          :size="tableConfig.size"
+          :default-sort="tableConfig.defalutSort"
+          :style="tableConfig.style"
+          height="90vh"
+        >
+          <el-table-column
+            align="center"
+            label="题目"
+            prop="subject"
+          >
+            <template slot-scope="scope">
+              <div style="white-space: pre">{{ scope.row.subject }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="答案"
+            prop="answer"
+            width="80"
+          >
+            <template slot-scope="scope">
+              <el-link type="primary" size="mini" @click="showAnswerList(scope.row)">{{ scope.row.answer }}</el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-drawer>
+    <!-- 显示答案选项列表 -->
+    <el-dialog
+      title="答案解析"
+      :visible.sync="dialogAnswerListVisible"
+    >
+      <div v-if="tempItem" class="padding">
+        <h3 style="margin-bottom: 20px; white-space: pre-wrap; over-flow:">{{ tempItem && (tempItem.subject + '单选') }}</h3>
+        <h4 style="margin-bottom: 20px; white-space: pre-wrap; over-flow:">{{ tempItem.meaning }}</h4>
+        <h4 style="margin-bottom: 40px; ">{{ '题目来源：' + tempItem.source }}</h4>
+        <h4 :style="{ color: tempItem.answer.indexOf('A') !== -1 ? '#67C23A' : '#909399', marginLeft: '20px' }">
+          A：{{ tempItem && tempItem.aOption }}
+        </h4>
+        <h4 :style="{ color: tempItem.answer.indexOf('B') !== -1 ? '#67C23A' : '#909399', marginLeft: '20px' }">
+          B：{{ tempItem && tempItem.bOption }}
+        </h4>
+        <h4 :style="{ color: tempItem.answer.indexOf('C') !== -1 ? '#67C23A' : '#909399', marginLeft: '20px' }">
+          C：{{ tempItem && tempItem.cOption }}
+        </h4>
+        <h4 :style="{ color: tempItem.answer.indexOf('D') !== -1 ? '#67C23A' : '#909399', marginLeft: '20px' }">
+          D：{{ tempItem && tempItem.dOption }}
+        </h4>
+        <h4 class="text-red">解析：{{ tempItem.analysis }}</h4>
+      </div>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          :size="$style.dialogButtonSize"
+          type="primary"
+          @click="dialogAnswerListVisible = false"
+        >我知道了</el-button>
+      </div>
+    </el-dialog>
+    <!-- 显示答案选项列表 -->
   </div>
 </template>
 
 <script>
 import tableMixins from '@/mixins/table-mixins'
-import AddTestPaper from './AddTestPaper'
+import AddGrammarTestPaper from './AddGrammarTestPaper'
 import StudentList from './StudentList'
 import ClassList from './ClassList'
-import WordList from './WordList'
 import StudentScore from './StudentScore'
 import { baseImageIp } from '@/api/url-path'
 export default {
   name: 'TestPaperGrammar',
   components: {
-    AddTestPaper,
+    AddGrammarTestPaper,
     StudentList,
     ClassList,
-    WordList,
     StudentScore
   },
   mixins: [tableMixins],
   data() {
     return {
-      formModelArray: [],
       examItem: null,
       status: 0,
-      queryInfoModel: null
+      subjectListLoading: false,
+      drawerSubjectList: false,
+      subjectList: [],
+      dialogAnswerListVisible: false,
+      tempItem: null
     }
   },
   watch: {
@@ -336,7 +415,8 @@ export default {
           schoolId: this.$store.getters.schoolId,
           pageNum: this.page,
           pageSize: this.pageSize,
-          status: this.status
+          status: this.status,
+          textbookType: 1
         }
       }).then(res => {
         this.onSuccess(res.obj)
@@ -347,18 +427,23 @@ export default {
     more({ type, item }) {
       this.examItem = item
       switch (type) {
-        case 0: // 单词详情
+        case 0: // 题目
           if (!this.checkButtonPermission('paper_word_list')) {
             return
           }
-          this.queryInfoModel = {
-            url: this.$urlPath.queryExamInfo,
+          this.drawerSubjectList = true
+          this.subjectListLoading = true
+          this.$http({
+            url: this.$urlPath.queryExamPracticePassInfo,
+            methods: this.HTTP_GET,
             data: {
               examId: this.examItem.examId
             }
-          }
-          this.$nextTick(_ => {
-            this.$refs.wordList.showReadOnly()
+          }).then(res => {
+            this.subjectListLoading = false
+            this.subjectList = res.obj
+          }).catch(_ => {
+            this.subjectListLoading = false
           })
           break
         case 1: // 考试成绩
@@ -524,6 +609,10 @@ export default {
     },
     reload() {
       this.getData()
+    },
+    showAnswerList(item) {
+      this.tempItem = item
+      this.dialogAnswerListVisible = true
     }
   }
 }

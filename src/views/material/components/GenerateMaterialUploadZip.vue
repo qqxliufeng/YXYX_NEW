@@ -48,7 +48,7 @@
               <div
                 slot="tip"
                 class="el-upload__tip"
-              >上传例句文件zip</div>
+              >上传例句文件，名称为：egs.zip</div>
             </el-upload>
           </el-col>
           <el-col :span="8">
@@ -65,7 +65,7 @@
               <div
                 slot="tip"
                 class="el-upload__tip"
-              >上传图片文件zip</div>
+              >上传图片文件，名称为：changed-image.zip</div>
             </el-upload>
           </el-col>
           <el-col :span="8">
@@ -82,7 +82,7 @@
               <div
                 slot="tip"
                 class="el-upload__tip"
-              >上传mp3文件zip</div>
+              >上传单词mp3文件，名称为：mp3.zip</div>
             </el-upload>
           </el-col>
         </el-row>

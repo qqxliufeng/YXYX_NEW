@@ -264,6 +264,8 @@ export const queryStudentCompanion = baseModuleUrl + 'queryStudentCompanion'
 
 export const updateStudentIsJumpVideo = baseModuleUrl + 'updateStudentIsJumpVideo'
 
+export const queryStudentStudyCardList = baseModuleUrl + 'queryStudentStudyCardList'
+
 // ****************会员管理 --- 学生管理 **************** //
 
 // ****************会员管理 --- 体验账号管理 **************** //
@@ -446,6 +448,8 @@ export const queryExamToClassOrStudent = baseModuleUrl + 'queryExamToClassOrStud
 
 export const queryExamInfo = baseModuleUrl + 'queryExamInfo'
 
+export const queryExamPracticePassInfo = baseModuleUrl + 'queryExamPracticePassInfo'
+
 export const queryExamStudentRecord = baseModuleUrl + 'queryExamStudentRecord'
 
 export const downLoadExamNoAnswer = baseModuleUrl + 'downLoadExamNoAnswer'
@@ -476,6 +480,8 @@ export const saveKnowledge = baseModuleUrl + 'saveKnowledge'
 
 export const editKnowledge = baseModuleUrl + 'editKnowledge'
 
+export const deleteKnowledge = baseModuleUrl + 'deleteKnowledge'
+
 // ****************知识点管理**************** //
 
 // ****************考点管理**************** //
@@ -485,6 +491,8 @@ export const queryKnowledgeExamList = baseModuleUrl + 'queryKnowledgeExamList'
 export const saveKnowledgeExam = baseModuleUrl + 'saveKnowledgeExam'
 
 export const editKnowledgeExam = baseModuleUrl + 'editKnowledgeExam'
+
+export const deleteKnowledgeExam = baseModuleUrl + 'deleteKnowledgeExam'
 
 // export const sendSystemMessage = baseModuleUrl + 'sendSystemMessage'
 

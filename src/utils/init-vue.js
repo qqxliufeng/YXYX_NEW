@@ -25,12 +25,17 @@ Vue.config.productionTip = false
 Vue.prototype.$successMsg = function (message = '') {
   this.$message({
     message: message,
-    type: 'success'
+    type: 'success',
+    duration: 5000
   })
 }
 
 Vue.prototype.$errorMsg = function (message = '') {
-  this.$message.error(message)
+  this.$message({
+    message,
+    type: 'error',
+    duration: 5000
+  })
 }
 
 Vue.prototype.$closeView = function (path) {

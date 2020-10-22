@@ -39,12 +39,14 @@ import * as filters from './filters' // global filters
 import TableFoot from './components/Common/TableFoot.vue'
 import TableHeader from './components/Common/TableHeader.vue'
 import TableStatus from './components/Common/TableStatus.vue'
+import Qrcode from './components/Common/Qrcode.vue'
 
 import './utils/init-vue.js'
 
 Vue.component('TableFoot', TableFoot)
 Vue.component('TableHeader', TableHeader)
 Vue.component('TableStatus', TableStatus)
+Vue.component('Qrcode', Qrcode)
 Vue.component(CollapseTransition.name, CollapseTransition)
 
 Vue.use(Element, {

@@ -8,7 +8,7 @@
         slot="header"
         class="flex justify-between"
       >
-        <span class="title text-bold">更改图片名称</span>
+        <span class="title text-bold">更改图片名称，图片格式为：jpg</span>
         <el-link
           v-if="currentStep < shouldStep"
           size="mini"
@@ -50,8 +50,13 @@
             slot="tip"
             class="el-upload__tip"
           >
-            <div>1、图片压缩包内的文件夹命名必须为：images.zip</div>
-            <div>2、文件名称不能包含中文</div>
+            <div class="text-center">
+              <ul class="tip-wrapper">
+                <li>图片压缩包内的文件夹命名必须为：images.zip</li>
+                <li>文件名称不能包含中文</li>
+                <li>图片格式为：jpg</li>
+              </ul>
+            </div>
           </div>
         </el-upload>
       </div>
@@ -162,6 +167,11 @@ export default {
     font-size: 14px;
     color: #333;
     margin-top: 10px;
+  }
+  .tip-wrapper{
+    text-align: left;
+    width: 40%;
+    margin: 0 auto;
   }
 }
 </style>

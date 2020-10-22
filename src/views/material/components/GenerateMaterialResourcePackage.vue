@@ -15,17 +15,16 @@
           type="danger"
         >未开始</el-link>
         <el-button
-          v-else-if="currentStep === shouldStep"
           :loading="generateResourceLoading"
           type="primary"
           size="mini"
           @click="generateResourcePackage"
         >生成资源包</el-button>
-        <el-link
+        <!-- <el-link
           v-else
           :loading="generateResourceLoading"
           type="success"
-        >已完成</el-link>
+        >已完成</el-link> -->
       </div>
       <div
         v-if="currentStep > shouldStep"

@@ -265,7 +265,7 @@
       @current-change="currentChange"
       @refresh="reloadData"
     />
-    <add-test-paper
+    <add-word-test-paper
       ref="addTestPaper"
       @reload="reload"
     />
@@ -290,7 +290,7 @@
 
 <script>
 import tableMixins from '@/mixins/table-mixins'
-import AddTestPaper from './AddTestPaper'
+import AddWordTestPaper from './AddWordTestPaper'
 import StudentList from './StudentList'
 import ClassList from './ClassList'
 import WordList from './WordList'
@@ -299,7 +299,7 @@ import { baseImageIp } from '@/api/url-path'
 export default {
   name: 'TestPaperWord',
   components: {
-    AddTestPaper,
+    AddWordTestPaper,
     StudentList,
     ClassList,
     WordList,
@@ -336,7 +336,8 @@ export default {
           schoolId: this.$store.getters.schoolId,
           pageNum: this.page,
           pageSize: this.pageSize,
-          status: this.status
+          status: this.status,
+          textbookType: 0
         }
       }).then(res => {
         this.onSuccess(res.obj)

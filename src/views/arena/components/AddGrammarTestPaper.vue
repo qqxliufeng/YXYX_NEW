@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="创建考试"
+      title="创建 语法 考试"
       :visible.sync="dialogFormVisible"
       :width="$isPhone ? '90%' : '60%'"
       top="8vh"
@@ -35,7 +35,7 @@
         <el-form-item label="选择题型">
           <el-col :span="20">
             <el-radio-group
-              v-model="paperModel.questionType"
+              v-model="paperModel.practicePassType"
               size="mini"
             >
               <el-radio-button
@@ -136,27 +136,14 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="随机选词">
+        <el-form-item label="题目数量">
           <el-col :span="20">
             <el-input-number
-              v-model="paperModel.wordsNum"
-              :min="5"
-              style="width: 50%"
+              v-model="paperModel.practicePassNum"
+              :min="1"
+              style="width: 100%"
               :max="200"
             />
-            <el-button
-              :disabled="lockRandomWord"
-              style="margin-left: 5%"
-              type="primary"
-              size="mini"
-              @click="openWordDrawer(true)"
-            >选择词语</el-button>
-            <el-button
-              :disabled="!lockRandomWord"
-              type="danger"
-              size="mini"
-              @click="openWordDrawer(false)"
-            >查看词语</el-button>
           </el-col>
         </el-form-item>
         <el-form-item label="开始时间">
@@ -203,23 +190,13 @@
         >确 定</el-button>
       </div>
     </el-dialog>
-    <word-list
-      ref="wordList"
-      :random-word-model="randomWordModel"
-      :all-word-model="allWordModel"
-      :like-word-model="likeWordModel"
-      :lock-random-word="lockRandomWord"
-      @lockRandom="lockRandomHandler"
-    />
   </div>
 </template>
 
 <script>
 import userMixins from '@/mixins/user-mixins'
-import WordList from './WordList'
 export default {
-  name: 'AddTestPaper',
-  components: { WordList },
+  name: 'AddGrammarTestPaper',
   mixins: [userMixins],
   data() {
     return {
@@ -229,22 +206,13 @@ export default {
       levelList: [],
       subjectTypes: [
         {
-          name: '汉译英',
-          value: 1,
+          name: '单选',
+          value: 0,
           disabled: false
-        },
-        {
-          name: '英译汉',
-          value: 2,
-          disabled: true
-        },
-        {
-          name: '交叉',
-          value: 3,
-          disabled: true
         }
       ],
       paperModel: {
+        textbookType: 1,
         examName: '', // 考试名称
         examType: 1, // 考试类型 0线下 1线上
         textBookId: '', // 教材主键ID
@@ -254,51 +222,14 @@ export default {
         levelCodes: [], // 关卡item
         startLevelCode: '', // 开始关卡
         endLevelCode: '', // 结束关卡
-        wordsNum: 5, // 单词数量
-        questionType: 1, // 题型 1汉译英(线上、线下) 2英译汉(线下) 3交叉(线下)
+        practicePassNum: 5, // 题目数量
+        practicePassType: 0, // 0 单选
         beginExamTime: new Date().getTime() + 10 * 60 * 1000, // 考试开始时间
-        useExamTime: 10, // 考试用时,单位分钟
-        selectedWordList: [],
-
-        replacedItem: null
-      },
-      lockRandomWord: false,
-      allWordPageModel: {
-        currentPage: 1,
-        pageSize: 10,
-        total: 0
+        useExamTime: 10 // 考试用时,单位分钟
       }
     }
   },
   computed: {
-    randomWordModel() {
-      return {
-        url: this.$urlPath.queryExamWords,
-        data: {
-          levelCodes: this.paperModel.levelCodes.map(it => it.levelCode).join(','),
-          wordCount: this.paperModel.wordsNum,
-          textBookId: this.paperModel.textBookId
-        }
-      }
-    },
-    allWordModel() {
-      return {
-        url: this.$urlPath.queryExamAllWords,
-        data: {
-          levelCodes: this.paperModel.levelCodes.map(it => it.levelCode).join(','),
-          textBookId: this.paperModel.textBookId
-        }
-      }
-    },
-    likeWordModel() {
-      return {
-        url: this.$urlPath.queryExamWordLike,
-        data: {
-          levelCodes: this.paperModel.levelCodes.map(it => it.levelCode).join(','),
-          textBookId: this.paperModel.textBookId
-        }
-      }
-    },
     courseObj() {
       const o = {
         start: this.paperModel.startCourseCode,
@@ -345,19 +276,14 @@ export default {
       }
     },
     'paperModel.examType'(newVal) {
-      this.paperModel.questionType = 1
-      this.subjectTypes.forEach(it => {
-        it.disabled = newVal === 1 ? it.value !== 1 : it.disabled = false
-      })
-    },
-    'paperModel.wordsNum'() {
-      this.lockRandomWord = false
+      this.paperModel.practicePassType = 0
     }
   },
   methods: {
     show() {
       this.dialogFormVisible = true
       this.paperModel = {
+        textbookType: 1,
         examName: '', // 考试名称
         examType: 1, // 考试类型 0线下 1线上
         textBookId: '', // 教材主键ID
@@ -367,11 +293,10 @@ export default {
         levelCodes: [], // 关卡item
         startLevelCode: '', // 开始关卡
         endLevelCode: '', // 结束关卡
-        wordsNum: 5, // 单词数量
-        questionType: 1, // 题型 1汉译英(线上、线下) 2英译汉(线下) 3交叉(线下)
+        practicePassNum: 5, // 题目数量
+        practicePassType: 0, // 题型 1汉译英(线上、线下) 2英译汉(线下) 3交叉(线下)
         beginExamTime: new Date().getTime() + 10 * 60 * 1000, // 考试开始时间
-        useExamTime: 10, // 考试用时,单位分钟
-        selectedWordList: []
+        useExamTime: 10 // 考试用时,单位分钟
       }
       if (this.textBookList.length === 0) {
         this.getTextBookList()
@@ -384,7 +309,8 @@ export default {
         data: {
           schoolId: this.$store.getters.schoolId,
           pageNum: 1,
-          pageSize: 1000
+          pageSize: 1000,
+          textbookType: 1
         }
       }).then(res => {
         this.textBookList = res.obj.list
@@ -436,36 +362,29 @@ export default {
       }
       this.paperModel.levelCodes = this.calcRange(this.levelObj)
 
-      if (this.$refs.wordList.getRandomWord().length === 0) {
-        this.$errorMsg('请选择单词')
-        return
-      }
-
       if (this.paperModel.beginExamTime < new Date().getTime()) {
         this.$errorMsg('开始时间必须大于当前时间')
         return
       }
       const postData = {}
+      postData.textbookType = this.paperModel.textbookType
       postData.schoolId = this.$store.getters.schoolId
       postData.examName = this.paperModel.examName
       postData.examType = this.paperModel.examType
       postData.textBookId = this.paperModel.textBookId
       postData.courseCodes = this.paperModel.courseCodes.map(it => it.courseCode).join(',')
       postData.levelCodes = this.paperModel.levelCodes.map(it => it.levelCode).join(',')
-      postData.wordsNum = this.paperModel.wordsNum
-      postData.questionType = this.paperModel.questionType
+      postData.practicePassNum = this.paperModel.practicePassNum
+      postData.practicePassType = this.paperModel.practicePassType
       postData.beginExamTime = this.paperModel.beginExamTime
       postData.useExamTime = this.paperModel.useExamTime
-      postData.examWordsList = this.$refs.wordList.getRandomWord()
-      if (this.paperModel.questionType === 1 || this.paperModel.questionType === 2) {
-        postData.examWordsList.forEach(it => { it.questionType = this.paperModel.questionType })
-      }
       this.$showLoading(closeLoading => {
         this.$http({
           url: this.$urlPath.saveExam,
           methods: this.HTTP_POST,
           data: {
-            jsonParam: JSON.stringify(postData)
+            jsonParam: JSON.stringify(postData),
+            textbookType: this.paperModel.textbookType
           }
         }).then(res => {
           closeLoading()
