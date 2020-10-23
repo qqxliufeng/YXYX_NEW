@@ -29,7 +29,11 @@
               <el-radio-button :label="1">app考试</el-radio-button>
               <el-radio-button :label="0">线下试卷</el-radio-button>
             </el-radio-group>
-            <el-link :underline="false" type="danger" class="margin-left">请注意试卷使用范围</el-link>
+            <el-link
+              :underline="false"
+              type="danger"
+              class="margin-left"
+            >请注意试卷使用范围</el-link>
           </el-col>
         </el-form-item>
         <el-form-item label="选择题型">
@@ -199,6 +203,7 @@
         <el-button
           type="primary"
           size="mini"
+          :loading="submitLoading"
           @click="submitExam"
         >确 定</el-button>
       </div>
@@ -217,10 +222,11 @@
 <script>
 import userMixins from '@/mixins/user-mixins'
 import WordList from './WordList'
+import checkLoadMixin from '@/mixins/check-load-mixin'
 export default {
   name: 'AddWordTestPaper',
   components: { WordList },
-  mixins: [userMixins],
+  mixins: [userMixins, checkLoadMixin],
   data() {
     return {
       dialogFormVisible: false,
@@ -359,6 +365,7 @@ export default {
     show() {
       this.dialogFormVisible = true
       this.paperModel = {
+        textbookType: 0,
         examName: '', // 考试名称
         examType: 1, // 考试类型 0线下 1线上
         textBookId: '', // 教材主键ID
@@ -385,7 +392,8 @@ export default {
         data: {
           schoolId: this.$store.getters.schoolId,
           pageNum: 1,
-          pageSize: 1000
+          pageSize: 1000,
+          textbookType: 0
         }
       }).then(res => {
         this.textBookList = res.obj.list
@@ -417,6 +425,7 @@ export default {
       })
     },
     submitExam() {
+      if (this.submitLoading) return
       if (!this.paperModel.examName) {
         this.$errorMsg('请输入考试名称')
         return
@@ -446,6 +455,7 @@ export default {
         this.$errorMsg('开始时间必须大于当前时间')
         return
       }
+      this.startSubmitLoading()
       const postData = {}
       postData.textbookType = this.paperModel.textbookType
       postData.schoolId = this.$store.getters.schoolId
@@ -462,22 +472,20 @@ export default {
       if (this.paperModel.questionType === 1 || this.paperModel.questionType === 2) {
         postData.examWordsList.forEach(it => { it.questionType = this.paperModel.questionType })
       }
-      this.$showLoading(closeLoading => {
-        this.$http({
-          url: this.$urlPath.saveExam,
-          methods: this.HTTP_POST,
-          data: {
-            jsonParam: JSON.stringify(postData),
-            textbookType: this.paperModel.textbookType
-          }
-        }).then(res => {
-          closeLoading()
-          this.dialogFormVisible = false
-          this.$successMsg('添加成功')
-          this.$emit('reload')
-        }).catch(_ => {
-          closeLoading()
-        })
+      this.$http({
+        url: this.$urlPath.saveExam,
+        methods: this.HTTP_POST,
+        data: {
+          jsonParam: JSON.stringify(postData),
+          textbookType: this.paperModel.textbookType
+        }
+      }).then(res => {
+        this.closeSubmitLoading()
+        this.dialogFormVisible = false
+        this.$successMsg('添加成功')
+        this.$emit('reload')
+      }).catch(_ => {
+        this.closeSubmitLoading()
       })
     },
     validateCode({ start, end, type = '课程' }) {

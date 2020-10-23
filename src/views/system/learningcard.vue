@@ -79,8 +79,15 @@
           align="center"
           prop="cardErcode"
           label="二维码"
-          width="300"
-        />
+          width="320"
+        >
+          <template slot-scope="scope">
+            <el-link
+              type="primary"
+              @click="showCodeDialog(scope.row.cardErcode)"
+            >{{ scope.row.cardErcode }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="cardType"
@@ -175,9 +182,7 @@
       :visible.sync="dialogFormVisible"
     >
       <el-form class="dialog-container">
-        <el-form-item
-          label="教材的类别"
-        >
+        <el-form-item label="教材的类别">
           <el-col :span="$style.dialogColSpan">
             <el-select
               v-model="generatorCardObj.cardSource"
@@ -371,6 +376,8 @@
       </div>
     </el-dialog>
     <!-- 学习卡状态说明对话框 -->
+    <!-- 查看线上学生已经分配的学习卡 -->
+    <Qrcode ref="qrcode" />
   </div>
 </template>
 
@@ -508,6 +515,9 @@ export default {
     },
     studyCardNote() {
       this.dialogStudyCardStatusVisible = true
+    },
+    showCodeDialog(code) {
+      this.$refs.qrcode.show(code)
     }
   }
 }

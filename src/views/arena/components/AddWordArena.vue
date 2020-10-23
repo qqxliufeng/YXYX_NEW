@@ -233,6 +233,7 @@
         <el-button
           type="primary"
           size="mini"
+          :loading="submitLoading"
           @click="submitArena"
         >确 定</el-button>
       </div>
@@ -305,6 +306,7 @@ import schoolMixins from '@/mixins/school-mixins'
 import tableMixins from '@/mixins/table-mixins'
 import userMixins from '@/mixins/user-mixins'
 import WordList from './WordList'
+import checkLoadMixins from '@/mixins/check-load-mixin'
 const rewardBaseItems = [
   '电影票一张',
   '10元手机充值卡一张',
@@ -325,7 +327,7 @@ const reward410Items = [
 export default {
   name: 'AddArena',
   components: { WordList },
-  mixins: [schoolMixins, tableMixins, userMixins],
+  mixins: [schoolMixins, tableMixins, userMixins, checkLoadMixins],
   data() {
     return {
       rewardBaseItems,
@@ -426,21 +428,43 @@ export default {
     'arenaModel.textBookId'(newVal) {
       this.arenaModel.courseCodes = []
       this.arenaModel.wordsNum = 20
-      this.arenaModel.lockRandomWord = false
+      this.lockRandomWord = false
       this.getCourseList(newVal)
     },
     'arenaModel.courseCodes'(newVal) {
-      this.arenaModel.lockRandomWord = false
+      this.lockRandomWord = false
       this.arenaModel.wordsNum = 20
     },
     'arenaModel.wordsNum'(newVal) {
-      this.arenaModel.lockRandomWord = false
+      this.lockRandomWord = false
     }
   },
   methods: {
     showDialog() {
       this.dialogFormVisible = true
-      this.arenaModel.beginArenaTime = new Date().getTime() + 10 * 60 * 1000
+      this.closeSubmitLoading()
+      this.randomWordList = []
+      this.arenaModel = {
+        name: '',
+        textbookType: 0,
+        textBookId: '',
+        isExper: 0,
+        courseCodes: [],
+        wordsNum: 20,
+        questionType: [1, 2, 3, 4, 5, 6],
+        beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
+        useArenaTime: 60,
+        arenaEndTime: 0,
+        selectedSchoolList: [],
+        rewardType: 0,
+        offlineReward13: '',
+        offlineReward410: '',
+        replacedItem: null
+      }
+      this.lockRandomWord = false
+      this.$nextTick(_ => {
+        this.$refs.multipleTable.clearSelection()
+      })
       if (this.textbookList.length === 0) {
         this.getTextBookList()
       }
@@ -524,7 +548,7 @@ export default {
     },
     confirmRandomWordList() {
       this.drawerWordList = false
-      this.arenaModel.lockRandomWord = true
+      this.lockRandomWord = true
     },
     getCourseList(textbookId) {
       if (!textbookId) return
@@ -544,6 +568,7 @@ export default {
       this.arenaModel.selectedSchoolList = val
     },
     submitArena() {
+      if (this.submitLoading) return
       if (!this.arenaModel.name) {
         this.$errorMsg('请输入比赛名称')
         return
@@ -592,6 +617,7 @@ export default {
           return
         }
       }
+      this.startSubmitLoading()
       const postData = {}
       postData.textbookType = this.arenaModel.textbookType
       postData.arenaName = this.arenaModel.name
@@ -615,34 +641,16 @@ export default {
         data: {
           jsonParam: JSON.stringify(postData),
           schoolIsOnline: this.arenaModel.selectedSchoolList[0].isOnLine,
-          isExper: this.arenaModel.isExper
+          isExper: this.arenaModel.isExper,
+          textbookType: this.arenaModel.textbookType
         }
       }).then(res => {
+        this.closeSubmitLoading()
         this.dialogFormVisible = false
         this.$successMsg('添加成功')
-        this.randomWordList = []
-        this.arenaModel = {
-          name: '',
-          textbookType: 0,
-          textBookId: '',
-          isExper: 0,
-          courseCodes: [],
-          wordsNum: 20,
-          questionType: [1, 2, 3, 4, 5, 6],
-          beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
-          useArenaTime: 60,
-          arenaEndTime: 0,
-          selectedSchoolList: [],
-          rewardType: 0,
-          offlineReward13: '',
-          offlineReward410: '',
-          replacedItem: null,
-          lockRandomWord: false
-        }
-        this.$nextTick(_ => {
-          this.$refs.multipleTable.clearSelection()
-        })
         this.$emit('reload')
+      }).catch(_ => {
+        this.closeSubmitLoading()
       })
     },
     lockRandomHandler(result) {

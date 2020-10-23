@@ -39,8 +39,7 @@
           align="center"
           label="消息标题"
           prop="title"
-          width="150"
-          fixed="left"
+          width="200"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
@@ -56,9 +55,16 @@
         >
           <template slot-scope="scope">
             <div>
-              <el-link :underline="false" :type="targetFormat(scope.row).type" @click="seeTargetMore(scope.row)">
+              <el-link
+                :underline="false"
+                :type="targetFormat(scope.row).type"
+                @click="seeTargetMore(scope.row)"
+              >
                 {{ targetFormat(scope.row).label }}
-                <i v-if="scope.row.sendType !== 3" class="el-icon-view el-icon--right" />
+                <i
+                  v-if="scope.row.sendType !== 3"
+                  class="el-icon-view el-icon--right"
+                />
               </el-link>
               <!-- <table-status :status="targetFormat(scope.row)" />
               <el-link
@@ -71,7 +77,7 @@
         <el-table-column
           align="center"
           label="消息内容"
-          width="350"
+          width="500"
         >
           <template slot-scope="scope">
             <div

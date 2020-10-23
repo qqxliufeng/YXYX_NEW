@@ -121,8 +121,15 @@
           align="center"
           prop="cardErcode"
           label="二维码"
-          width="300"
-        />
+          width="320"
+        >
+          <template slot-scope="scope">
+            <el-link
+              type="primary"
+              @click="showCodeDialog(scope.row.cardErcode)"
+            >{{ scope.row.cardErcode }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="cardType"
@@ -311,6 +318,8 @@
       </div>
     </el-dialog>
     <!-- 授权列表对话框 -->
+    <!-- 查看线上学生已经分配的学习卡 -->
+    <Qrcode ref="qrcode" />
   </div>
 </template>
 
@@ -402,6 +411,9 @@ export default {
           })
         })
       })
+    },
+    showCodeDialog(code) {
+      this.$refs.qrcode.show(code)
     }
   }
 }

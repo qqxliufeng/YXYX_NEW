@@ -59,7 +59,7 @@
           align="center"
           prop="subject"
           label="题目"
-          width="300"
+          width="400"
         />
         <el-table-column
           align="center"
@@ -69,7 +69,12 @@
         >
           <template slot-scope="scope">
             <div v-if="scope.row.subjectType === 1">{{ scope.row.answer }}</div>
-            <el-link v-else type="primary" size="mini" @click="showAnswerList(scope.row)">{{ scope.row.answer }}</el-link>
+            <el-link
+              v-else
+              type="primary"
+              size="mini"
+              @click="showAnswerList(scope.row)"
+            >{{ scope.row.answer }}</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -86,6 +91,7 @@
           align="center"
           prop="status"
           label="状态"
+          width="80"
         >
           <template slot-scope="scope">
             <table-status :status="statusFormatter(scope.row)" />
@@ -131,7 +137,10 @@
       title="选项"
       :visible.sync="dialogAnswerListVisible"
     >
-      <div v-if="tempItem" class="padding">
+      <div
+        v-if="tempItem"
+        class="padding"
+      >
         <h3 style="margin-bottom: 40px">{{ tempItem && (tempItem.subject + '(' + subjectTypeFormat(tempItem) + ')') }}</h3>
         <h4 :style="{ color: tempItem.answer.indexOf('A') !== -1 ? '#67C23A' : '#909399', marginLeft: '20px' }">
           A：{{ tempItem && tempItem.aOption }}
@@ -238,7 +247,10 @@
         </el-form-item>
         <el-form-item label="选择题型">
           <el-col :span="20">
-            <el-radio-group v-model="practiceModel.subjectType" size="mini">
+            <el-radio-group
+              v-model="practiceModel.subjectType"
+              size="mini"
+            >
               <el-radio-button
                 v-for="item of subjectTypes"
                 :key="item.value"
@@ -267,7 +279,10 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item v-show="practiceModel.subjectType !== 1" label="选项A">
+        <el-form-item
+          v-show="practiceModel.subjectType !== 1"
+          label="选项A"
+        >
           <el-col :span="20">
             <el-input
               v-model="practiceModel.aOption"
@@ -275,7 +290,10 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item v-show="practiceModel.subjectType !== 1" label="选项B">
+        <el-form-item
+          v-show="practiceModel.subjectType !== 1"
+          label="选项B"
+        >
           <el-col :span="20">
             <el-input
               v-model="practiceModel.bOption"
@@ -283,7 +301,10 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item v-show="practiceModel.subjectType !== 1" label="选项C">
+        <el-form-item
+          v-show="practiceModel.subjectType !== 1"
+          label="选项C"
+        >
           <el-col :span="20">
             <el-input
               v-model="practiceModel.cOption"
@@ -291,7 +312,10 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item v-show="practiceModel.subjectType !== 1" label="选项D">
+        <el-form-item
+          v-show="practiceModel.subjectType !== 1"
+          label="选项D"
+        >
           <el-col :span="20">
             <el-input
               v-model="practiceModel.dOption"
@@ -299,7 +323,10 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item v-show="practiceModel.subjectType !== 1" label="选项E">
+        <el-form-item
+          v-show="practiceModel.subjectType !== 1"
+          label="选项E"
+        >
           <el-col :span="20">
             <el-input
               v-model="practiceModel.eOption"
@@ -617,7 +644,7 @@ export default {
       }
       if (this.practiceModel.subjectType !== 1) {
         if (!this.practiceModel.aOption || !this.practiceModel.bOption ||
-        !this.practiceModel.cOption || !this.practiceModel.dOption || !this.practiceModel.eOption) {
+          !this.practiceModel.cOption || !this.practiceModel.dOption || !this.practiceModel.eOption) {
           this.$errorMsg('请输入选项')
           return
         }
