@@ -345,6 +345,10 @@ export default {
     },
     'paperModel.endCourseCode'(newVal) {
       if (!newVal) return
+      this.levelList = []
+      this.paperModel.startLevelCode = ''
+      this.paperModel.endLevelCode = ''
+      this.paperModel.levelCodes = []
       const result = this.validateCode(this.courseObj)
       if (result) {
         this.paperModel.courseCodes = this.calcRange(this.courseObj)

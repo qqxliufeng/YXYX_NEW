@@ -111,13 +111,11 @@
         <el-form-item label="参赛学生">
           <el-col :span="20">
             <el-button
-              v-if="isSuperAdmin"
               type="primary"
               size="small"
               @click="openJoinStu"
             >查看参赛学生</el-button>
             <el-button
-              v-if="isSuperAdmin"
               type="danger"
               size="small"
               @click="openUnJoinStu"
@@ -408,7 +406,6 @@
 </template>
 
 <script>
-import userMixins from '@/mixins/user-mixins'
 import tableMixins from '@/mixins/table-mixins'
 export default {
   name: 'ArenaDetails',
@@ -430,7 +427,7 @@ export default {
       }
     }
   },
-  mixins: [userMixins, tableMixins],
+  mixins: [tableMixins],
   props: {
     arenaModel: {
       type: Object,
@@ -571,8 +568,11 @@ export default {
                 arenaId: this.arenaModel.arenaId
               }
             }).then(res => {
+              closeLoading()
               this.$successMsg('奖品发放成功')
               this.joinStudentList.forEach(it => { it.isAward = 1 })
+            }).catch(_ => {
+              closeLoading()
             })
           })
         })

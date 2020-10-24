@@ -91,19 +91,11 @@
               type="primary"
               @click="handlerUpdate(scope.row)"
             >编辑</el-button>
-            <el-dropdown
-              split-button
-              type="danger"
-              size="mini"
-              class="margin-left-sm"
-              @command="handler"
-            >
-              更多
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{type: 0, item: scope.row}">复习管理</el-dropdown-item>
-                <el-dropdown-item :command="{type: 1, item: scope.row}">添加学生</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <el-button
+              :size="$style.tableButtonSize"
+              type="warning"
+              @click="handlerReview(scope.row)"
+            >复习管理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -255,7 +247,7 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="单词数量">
+        <!-- <el-form-item label="单词数量">
           <el-col :span="$style.dialogColSpan">
             <el-input-number
               v-model="reviewModel.reviewWordNum"
@@ -264,7 +256,7 @@
               :max="100"
             />
           </el-col>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div
         slot="footer"
@@ -356,7 +348,7 @@ export default {
         classId: '',
         textBookVersion: '',
         reviewTextBookId: '',
-        reviewWordNum: 30,
+        reviewWordNum: 0,
         textBookList: [],
         textBookVersions: [],
         isOnLineSchool: true
@@ -426,16 +418,6 @@ export default {
         note: ''
       }
     },
-    handler({ type, item }) {
-      switch (type) {
-        case 0:
-          this.handlerReview(item)
-          break
-        case 1:
-          this.handlerAddStudent(item)
-          break
-      }
-    },
     handlerUpdate(item) {
       if (!this.checkButtonPermission('edit')) {
         return
@@ -501,7 +483,7 @@ export default {
       this.reviewModel.isOnLineSchool = this.isOnLineSchoolStatus(item.schoolId)
       this.reviewModel.textBookVersion = ''
       this.reviewModel.reviewTextBookId = item.reviewTextBookId ? item.reviewTextBookId : ''
-      this.reviewModel.reviewWordNum = item.reviewWordNum ? item.reviewWordNum : ''
+      this.reviewModel.reviewWordNum = 0
       if (this.reviewModel.isOnLineSchool) {
         this.loadAllTextBook()
       } else {

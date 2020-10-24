@@ -153,7 +153,10 @@
                 <el-dropdown-item :command="{type: 2, item: scope.row}">重置密码</el-dropdown-item>
                 <el-dropdown-item :command="{type: 3, item: scope.row}">查看陪伴号</el-dropdown-item>
                 <el-dropdown-item :command="{type: 4, item: scope.row}">{{ scope.row.isJumpVideo === 0 ? "跳过视频" : "恢复视频" }}</el-dropdown-item>
-                <el-dropdown-item v-if="scope.row.isOnLine === 1" :command="{type: 5, item: scope.row}">查看已分配的学习卡</el-dropdown-item>
+                <el-dropdown-item
+                  v-if="scope.row.isOnLine === 1"
+                  :command="{type: 5, item: scope.row}"
+                >查看已分配的学习卡</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -221,7 +224,12 @@
         >
           <el-col :span="$style.dialogColSpan">
             <el-radio-group v-model="studentModel.isTeacher">
-              <el-radio v-for="item of tempStudentTypes" :key="item.value" :label="item.value" :disabled="!item.isEnable">{{ item.label }}</el-radio>
+              <el-radio
+                v-for="item of tempStudentTypes"
+                :key="item.value"
+                :label="item.value"
+                :disabled="!item.isEnable"
+              >{{ item.label }}</el-radio>
             </el-radio-group>
             <span class="text-red margin-left">（注：请谨慎选择账号类型）</span>
           </el-col>
@@ -374,7 +382,10 @@
             prop="className"
           >
             <template slot-scope="scope">
-              <el-link type="primary" @click="showQrcode(scope.row.cardErcode)">{{ scope.row.cardErcode }}</el-link>
+              <el-link
+                type="primary"
+                @click="showQrcode(scope.row.cardErcode)"
+              >{{ scope.row.cardErcode }}</el-link>
             </template>
           </el-table-column>
           <el-table-column
@@ -772,7 +783,7 @@ export default {
           return
         }
       }
-      if (!this.studentModel.studentName.trim()) {
+      if (!this.studentModel.studentName) {
         this.$errorMsg('请输入学生姓名')
         return
       }
@@ -784,7 +795,7 @@ export default {
         this.$errorMsg('请输入合法的手机号码')
         return
       }
-      if (!this.studentModel.address.trim()) {
+      if (!this.studentModel.address) {
         this.$errorMsg('请输入学生家庭地址')
         return
       }

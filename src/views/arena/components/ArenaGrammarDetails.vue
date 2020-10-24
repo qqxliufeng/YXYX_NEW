@@ -113,13 +113,11 @@
         <el-form-item label="参赛学生">
           <el-col :span="20">
             <el-button
-              v-if="isSuperAdmin"
               type="primary"
               size="small"
               @click="openJoinStu"
             >查看参赛学生</el-button>
             <el-button
-              v-if="isSuperAdmin"
               type="danger"
               size="small"
               @click="openUnJoinStu"
@@ -401,7 +399,11 @@
             width="80"
           >
             <template slot-scope="scope">
-              <el-link type="primary" size="mini" @click="showAnswerList(scope.row)">{{ scope.row.answer }}</el-link>
+              <el-link
+                type="primary"
+                size="mini"
+                @click="showAnswerList(scope.row)"
+              >{{ scope.row.answer }}</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -412,7 +414,10 @@
       title="答案解析"
       :visible.sync="dialogAnswerListVisible"
     >
-      <div v-if="tempItem" class="padding">
+      <div
+        v-if="tempItem"
+        class="padding"
+      >
         <h3 style="margin-bottom: 20px; white-space: pre-wrap; over-flow:">{{ tempItem && (tempItem.subject + '单选') }}</h3>
         <h4 style="margin-bottom: 20px; white-space: pre-wrap; over-flow:">{{ tempItem.meaning }}</h4>
         <h4 style="margin-bottom: 40px; ">{{ '题目来源：' + tempItem.source }}</h4>
@@ -591,8 +596,11 @@ export default {
                 arenaId: this.arenaModel.arenaId
               }
             }).then(res => {
+              closeLoading()
               this.$successMsg('奖品发放成功')
               this.joinStudentList.forEach(it => { it.isAward = 1 })
+            }).catch(_ => {
+              closeLoading()
             })
           })
         })

@@ -284,6 +284,7 @@
 import schoolMixins from '@/mixins/school-mixins'
 import tableMixins from '@/mixins/table-mixins'
 import userMixins from '@/mixins/user-mixins'
+import checkLoadMixin from '@/mixins/check-load-mixin'
 const rewardBaseItems = [
   '电影票一张',
   '10元手机充值卡一张',
@@ -303,7 +304,7 @@ const reward410Items = [
 ]
 export default {
   name: 'AddArena',
-  mixins: [schoolMixins, tableMixins, userMixins],
+  mixins: [schoolMixins, tableMixins, userMixins, checkLoadMixin],
   data() {
     return {
       rewardBaseItems,
@@ -328,7 +329,7 @@ export default {
         practicePassNum: 20,
         questionType: [0],
         beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
-        useArenaTime: 60,
+        useArenaTime: 30,
         arenaEndTime: 0,
         selectedSchoolList: [],
         rewardType: 0,
@@ -386,7 +387,27 @@ export default {
   methods: {
     showDialog() {
       this.dialogFormVisible = true
-      this.arenaModel.beginArenaTime = new Date().getTime() + 10 * 60 * 1000
+      this.closeSubmitLoading()
+      this.arenaModel = {
+        name: '',
+        textbookType: 1,
+        textBookId: '',
+        isExper: 0,
+        courseCodes: [],
+        practicePassNum: 20,
+        questionType: [0],
+        beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
+        useArenaTime: 30,
+        arenaEndTime: 0,
+        selectedSchoolList: [],
+        rewardType: 0,
+        offlineReward13: '',
+        offlineReward410: '',
+        replacedItem: null
+      }
+      this.$nextTick(_ => {
+        this.$refs.multipleTable.clearSelection()
+      })
       if (this.textbookList.length === 0) {
         this.getTextBookList()
       }
@@ -486,6 +507,7 @@ export default {
       this.arenaModel.selectedSchoolList = val
     },
     submitArena() {
+      if (this.submitLoading) return
       if (!this.arenaModel.name) {
         this.$errorMsg('请输入比赛名称')
         return
@@ -530,6 +552,7 @@ export default {
           return
         }
       }
+      this.startSubmitLoading()
       const postData = {}
       postData.textbookType = this.arenaModel.textbookType
       postData.arenaName = this.arenaModel.name
@@ -556,29 +579,12 @@ export default {
           textbookType: this.arenaModel.textbookType
         }
       }).then(res => {
+        this.closeSubmitLoading()
         this.dialogFormVisible = false
         this.$successMsg('添加成功')
-        this.arenaModel = {
-          name: '',
-          textbookType: 1,
-          textBookId: '',
-          isExper: 0,
-          courseCodes: [],
-          practicePassNum: 20,
-          questionType: [0],
-          beginArenaTime: new Date().getTime() + 10 * 60 * 1000,
-          useArenaTime: 60,
-          arenaEndTime: 0,
-          selectedSchoolList: [],
-          rewardType: 0,
-          offlineReward13: '',
-          offlineReward410: '',
-          replacedItem: null
-        }
-        this.$nextTick(_ => {
-          this.$refs.multipleTable.clearSelection()
-        })
         this.$emit('reload')
+      }).catch(_ => {
+        this.closeSubmitLoading()
       })
     }
   }

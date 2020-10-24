@@ -229,7 +229,7 @@
       <el-form
         label-position="left"
         label-width="120px"
-        style="width: 400px; margin-left:50px;"
+        class="dialog-container"
       >
         <el-form-item label="到期时间">
           <el-col :span="24">
@@ -351,6 +351,14 @@ export default {
       }).then(res => {
         this.onSuccess(res.obj)
       })
+    },
+    addEndTime(item) {
+      this.dialogEditVisible = true
+      this.tempItem.studyCardId = item.studyCardId
+      this.tempItem.status = item.status
+      this.tempItem.isBind = item.isBind
+      this.tempItem.studentId = item.studentId || 0
+      this.endTime = item.endTime
     },
     grantTextBookList(item) {
       this.dialogGrantTextBookVisible = true

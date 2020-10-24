@@ -29,7 +29,11 @@
               <el-radio-button :label="1">app考试</el-radio-button>
               <el-radio-button :label="0">线下试卷</el-radio-button>
             </el-radio-group>
-            <el-link :underline="false" type="danger" class="margin-left">请注意试卷使用范围</el-link>
+            <el-link
+              :underline="false"
+              type="danger"
+              class="margin-left"
+            >请注意试卷使用范围</el-link>
           </el-col>
         </el-form-item>
         <el-form-item label="选择题型">
@@ -269,6 +273,10 @@ export default {
     },
     'paperModel.endCourseCode'(newVal) {
       if (!newVal) return
+      this.levelList = []
+      this.paperModel.startLevelCode = ''
+      this.paperModel.endLevelCode = ''
+      this.paperModel.levelCodes = []
       const result = this.validateCode(this.courseObj)
       if (result) {
         this.paperModel.courseCodes = this.calcRange(this.courseObj)

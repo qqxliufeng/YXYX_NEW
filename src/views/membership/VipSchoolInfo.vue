@@ -185,9 +185,9 @@ export default {
       })
     },
     grantedStudyCard() {
-      if (!this.checkButtonPermission('grant_card_list')) {
-        return
-      }
+      // if (!this.checkButtonPermission('grant_card_list')) {
+      //   return
+      // }
       this.$router.push({
         name: 'SchoolStudyCardList',
         params: {
@@ -209,9 +209,9 @@ export default {
       })
     },
     grantedMaterial() {
-      if (!this.checkButtonPermission('search_material')) {
-        return
-      }
+      // if (!this.checkButtonPermission('search_material')) {
+      //   return
+      // }
       this.$router.push({
         name: 'OffLineSchoolTextBook',
         params: {
