@@ -169,7 +169,7 @@
           </el-col>
         </el-form-item>
         <el-form-item v-if="arenaModel.rewardType === 0">
-          <div>若是没有找到合适的奖品，请直接在输入框输入想要设置的奖品</div>
+          <div>若是没有找到合适的奖品，请选择<span class="text-bold text-red">自定义</span>条目设置奖品</div>
           <el-select
             v-model="arenaModel.offlineReward13"
             filterable
@@ -200,6 +200,28 @@
               :value="item"
             />
           </el-select>
+          <el-row v-show="show13Model.show">
+            <el-col
+              :span="20"
+              class="margin-top"
+            >
+              <el-input
+                v-model="show13Model.value"
+                placeholder="请输入1-3名奖品"
+              />
+            </el-col>
+          </el-row>
+          <el-row v-show="show410Model.show">
+            <el-col
+              :span="20"
+              class="margin-top"
+            >
+              <el-input
+                v-model="show410Model.value"
+                placeholder="请输入4-10名奖品"
+              />
+            </el-col>
+          </el-row>
         </el-form-item>
         <el-form-item v-else>
           <div>
@@ -308,6 +330,7 @@ import userMixins from '@/mixins/user-mixins'
 import WordList from './WordList'
 import checkLoadMixins from '@/mixins/check-load-mixin'
 const rewardBaseItems = [
+  '自定义',
   '电影票一张',
   '10元手机充值卡一张',
   '学校纪念T恤一件',
@@ -386,6 +409,14 @@ export default {
         offlineReward410: '',
         replacedItem: null
       },
+      show13Model: {
+        show: false,
+        value: ''
+      },
+      show410Model: {
+        show: false,
+        value: ''
+      },
       lockRandomWord: false,
       allWordPageModel: {
         currentPage: 1,
@@ -437,6 +468,12 @@ export default {
     },
     'arenaModel.wordsNum'(newVal) {
       this.lockRandomWord = false
+    },
+    'arenaModel.offlineReward13'(newVal) {
+      this.show13Model.show = newVal === '自定义'
+    },
+    'arenaModel.offlineReward410'(newVal) {
+      this.show410Model.show = newVal === '自定义'
     }
   },
   methods: {
@@ -461,9 +498,13 @@ export default {
         offlineReward410: '',
         replacedItem: null
       }
+      this.show13Model.show = false
+      this.show13Model.value = ''
+      this.show410Model.show = false
+      this.show410Model.value = ''
       this.lockRandomWord = false
       this.$nextTick(_ => {
-        this.$refs.multipleTable.clearSelection()
+        this.$refs.multipleTable && this.$refs.multipleTable.clearSelection()
       })
       if (this.textbookList.length === 0) {
         this.getTextBookList()
@@ -612,9 +653,21 @@ export default {
           this.$errorMsg('请选择前三名的奖品信息')
           return
         }
+        if (this.arenaModel.offlineReward13 === '自定义') {
+          if (!this.show13Model.value) {
+            this.$errorMsg('请输入前三名的奖品信息')
+            return
+          }
+        }
         if (!this.arenaModel.offlineReward410) {
           this.$errorMsg('请选择四到十名的奖品信息')
           return
+        }
+        if (this.arenaModel.offlineReward410 === '自定义') {
+          if (!this.show410Model.value) {
+            this.$errorMsg('请输入四到十名的奖品信息')
+            return
+          }
         }
       }
       this.startSubmitLoading()
@@ -630,8 +683,8 @@ export default {
       postData.useArenaTime = this.arenaModel.useArenaTime
       postData.comeInArenaEndTime = this.arenaModel.beginArenaTime + this.arenaModel.arenaEndTime * 60 * 1000
       postData.rewardType = this.arenaModel.rewardType
-      postData.offlineReward13 = this.arenaModel.offlineReward13
-      postData.offlineReward410 = this.arenaModel.offlineReward410
+      postData.offlineReward13 = this.arenaModel.offlineReward13 === '自定义' ? this.show13Model.value : this.arenaModel.offlineReward13
+      postData.offlineReward410 = this.arenaModel.offlineReward410 === '自定义' ? this.show410Model.value : this.arenaModel.offlineReward410
       postData.wordsIdList = this.$refs.wordList.getRandomWord().map(it => { return { wordId: it.wordId } })
       postData.arenaSchoolIdList = this.arenaModel.selectedSchoolList.map(it => { return { schoolId: it.schoolId } })
       postData.createSchoolId = this.$store.getters.schoolId
@@ -653,8 +706,14 @@ export default {
         this.closeSubmitLoading()
       })
     },
-    lockRandomHandler(result) {
-      this.lockRandomWord = result
+    lockRandomHandler({ result, wordsNum }) {
+      if (wordsNum < this.arenaModel.wordsNum) {
+        this.$message('所选课程下最多只有' + wordsNum + '个单词')
+      }
+      this.arenaModel.wordsNum = wordsNum
+      this.$nextTick(_ => {
+        this.lockRandomWord = result
+      })
     }
   }
 }

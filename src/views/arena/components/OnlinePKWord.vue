@@ -95,7 +95,7 @@
         />
         <el-table-column
           align="center"
-          label="报名截止时间"
+          label="参赛截止时间"
           prop="comeInArenaEndTime"
           width="160"
         />

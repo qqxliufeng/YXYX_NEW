@@ -39,6 +39,7 @@
           label="账号"
           prop="studentNo"
           fixed="left"
+          width="150"
         />
         <el-table-column
           align="center"
@@ -46,6 +47,15 @@
           width="150"
           prop="school.schoolName"
         />
+        <el-table-column
+          align="center"
+          prop="isLock"
+          label="跳过复习"
+        >
+          <template slot-scope="scope">
+            <table-status :status="{ type: scope.row.isJumpReview === 0 ? 'primary' : 'danger', label: scope.row.isJumpReview === 0 ? '否' : '是' }" />
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="isLock"
@@ -113,6 +123,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="{tag: 1, item: scope.row}">编辑教材</el-dropdown-item>
                 <el-dropdown-item :command="{tag: 2, item: scope.row}">延长时间</el-dropdown-item>
+                <el-dropdown-item :command="{tag: 3, item: scope.row}">{{ scope.row.isJumpReview === 0 ? '跳过复习' : '恢复复习' }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <el-button
@@ -596,7 +607,31 @@ export default {
           this.editTextBookModel.tempItem = item
           this.addTimeModel.dialogAddTimeVisible = true
           return
+        case 3:
+          if (!this.checkButtonPermission('jumpView')) {
+            return
+          }
+          this.jumpReview(item)
       }
+    },
+    jumpReview(item) {
+      this.$warningConfirm('是否要对该账号设置' + (item.isJumpReview === 0 ? '跳过' : '恢复') + '复习功能？', _ => {
+        this.$showLoading(closeLoading => {
+          this.$http({
+            url: this.$urlPath.updateExperIsJumpReview,
+            data: {
+              studentId: item.studentId,
+              isJumpReview: item.isJumpReview === 0 ? 1 : 0
+            }
+          }).then(res => {
+            closeLoading()
+            this.$successMsg('设置成功')
+            this.getData()
+          }).catch(_ => {
+            closeLoading()
+          })
+        })
+      })
     },
     editTextBook(item) {
       if (!this.checkButtonPermission('edit')) {

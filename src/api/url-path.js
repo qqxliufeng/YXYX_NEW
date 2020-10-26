@@ -286,6 +286,8 @@ export const disableExperStudent = baseModuleUrl + 'disableExperStudent'
 
 export const delayExperStudent = baseModuleUrl + 'delayExperStudent'
 
+export const updateExperIsJumpReview = baseModuleUrl + 'updateExperIsJumpReview'
+
 // ****************会员管理 --- 体验账号管理 **************** //
 
 // ****************教材信息**************** //

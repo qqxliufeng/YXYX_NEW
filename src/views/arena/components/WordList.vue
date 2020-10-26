@@ -275,7 +275,7 @@ export default {
     },
     confirmRandomWordList() {
       this.drawerWordList = false
-      this.$emit('lockRandom', true)
+      this.$emit('lockRandom', { result: true, wordsNum: this.randomWordList.length })
     },
     prevClick(page) {
       this.allWordPageModel.currentPage = page

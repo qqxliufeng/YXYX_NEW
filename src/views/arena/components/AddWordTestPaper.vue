@@ -265,9 +265,7 @@ export default {
         questionType: 1, // 题型 1汉译英(线上、线下) 2英译汉(线下) 3交叉(线下)
         beginExamTime: new Date().getTime() + 10 * 60 * 1000, // 考试开始时间
         useExamTime: 10, // 考试用时,单位分钟
-        selectedWordList: [],
-
-        replacedItem: null
+        selectedWordList: []
       },
       lockRandomWord: false,
       allWordPageModel: {
@@ -368,6 +366,7 @@ export default {
   methods: {
     show() {
       this.dialogFormVisible = true
+      this.lockRandomWord = false
       this.paperModel = {
         textbookType: 0,
         examName: '', // 考试名称
@@ -535,12 +534,15 @@ export default {
         this.$refs.wordList.show(init)
       }
     },
-    lockRandomHandler(result) {
-      this.lockRandomWord = result
+    lockRandomHandler({ result, wordsNum }) {
+      if (wordsNum < this.paperModel.wordsNum) {
+        this.$message('所选课程关卡下最多只有' + wordsNum + '个单词')
+      }
+      this.paperModel.wordsNum = wordsNum
+      this.$nextTick(_ => {
+        this.lockRandomWord = result
+      })
     }
   }
 }
 </script>
-
-<style>
-</style>
