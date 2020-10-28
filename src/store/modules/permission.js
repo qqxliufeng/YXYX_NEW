@@ -44,6 +44,7 @@ pathMapName.set('prize', 'Prize')
 pathMapName.set('lucklist', 'LuckList')
 pathMapName.set('online', 'OnlinePK')
 pathMapName.set('testpaper', 'TestPager')
+pathMapName.set('everydaysubject', 'EverydaySubject')
 
 const pathToFileName = new Map()
 pathToFileName.set('/system/crontabmanager', '/system/CrontabManager')
@@ -57,6 +58,7 @@ pathToFileName.set('/material/grammarpractise', '/material/GrammarPractise')
 pathToFileName.set('/material/grammarlevel', '/material/GrammarLevel')
 pathToFileName.set('/arena/online', '/arena/OnlinePK')
 pathToFileName.set('/arena/testpaper', '/arena/TestPaper')
+pathToFileName.set('/subject-store/everydaysubject', '/subject-store/EverydaySubject')
 
 /**
  * Use meta.role to determine if the current user has permission

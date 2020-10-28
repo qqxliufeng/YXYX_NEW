@@ -63,11 +63,19 @@
           align="center"
           label="视频地址"
           prop="videoURL"
-          width="200"
-          show-overflow-tooltip
+          width="300"
         >
           <template slot-scope="scope">
-            {{ scope.row.videoURL || '--' }}
+            <el-link
+              class="text-cut"
+              type="primary"
+              :underline="true"
+            >
+              <a
+                :href="baseImageIp + (!!scope.row.videoURL ? scope.row.videoURL.replace('/opt/nginx/yxvue/dist', '') : '')"
+                target="_blank"
+              >{{ scope.row.videoURL | filterPath }}</a>
+            </el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -108,6 +116,7 @@
 <script>
 import MaterialTableHeader from './MaterialTableHeader'
 import tableMixins from '@/mixins/table-mixins'
+import { baseImageIp } from '@/api/url-path'
 export default {
   name: 'LevelGrammar',
   components: {
@@ -116,6 +125,7 @@ export default {
   mixins: [tableMixins],
   data() {
     return {
+      baseImageIp,
       textbookId: 0,
       courseCode: 0
     }

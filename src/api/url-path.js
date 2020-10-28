@@ -533,3 +533,21 @@ export const updatePracticePassIsDisable = baseModuleUrl + 'updatePracticePassIs
 export const updatePracticePassIsEnable = baseModuleUrl + 'updatePracticePassIsEnable'
 
 // ****************语法闯关**************** //
+
+// ****************每日一题**************** //
+
+export const queryQuestionStoreList = baseModuleUrl + 'queryQuestionStoreList'
+
+export const saveQuestionStore = baseModuleUrl + 'saveQuestionStore'
+
+export const editQuestionStore = baseModuleUrl + 'editQuestionStore'
+
+export const deleteQuestionStore = baseModuleUrl + 'deleteQuestionStore'
+
+export const updateQuestionStoreStatus = baseModuleUrl + 'updateQuestionStoreStatus'
+
+export const importExcelQuestionStore = baseModuleUrl + 'importExcelQuestionStore'
+
+export const uploadQuestionStoreExcelTemplate = baseModuleUrl + 'uploadQuestionStoreExcelTemplate'
+
+// ****************每日一题**************** //

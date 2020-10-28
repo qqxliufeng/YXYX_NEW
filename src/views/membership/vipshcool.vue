@@ -68,7 +68,8 @@
                       @click="grantToOffSchool(scope.row)"
                     >分配教材</a>
                   </el-tooltip>
-                </span></el-link>
+                </span>
+              </el-link>
               <el-link
                 v-else
                 :underline="false"
@@ -322,7 +323,10 @@ export default {
         return { label: '正常', type: 'primary' }
       }
       if (parseInt(item.status) === 1) {
-        return { label: '禁用', type: 'danger' }
+        return { label: '禁用', type: 'warning' }
+      }
+      if (parseInt(item.status) === 2) {
+        return { label: '已到期', type: 'danger' }
       }
       return { label: '未知', type: 'warning' }
     },

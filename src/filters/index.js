@@ -89,3 +89,13 @@ export function getImagePath(src) {
   }
   return ''
 }
+
+/**
+ * 获取图片的真正地址
+ */
+export function filterPath(src) {
+  if (src) {
+    return src.replace('/opt/nginx/yxvue/dist', '')
+  }
+  return '--'
+}
