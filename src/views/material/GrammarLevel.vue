@@ -74,7 +74,12 @@
         >
           <template slot-scope="scope">
             <div v-if="scope.row.subjectType === 1">{{ scope.row.answer }}</div>
-            <el-link v-else type="primary" size="mini" @click="showAnswerList(scope.row)">{{ scope.row.answer }}</el-link>
+            <el-link
+              v-else
+              type="primary"
+              size="mini"
+              @click="showAnswerList(scope.row)"
+            >{{ scope.row.answer }}</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -137,7 +142,10 @@
       title="答案解析"
       :visible.sync="dialogAnswerListVisible"
     >
-      <div v-if="tempItem" class="padding">
+      <div
+        v-if="tempItem"
+        class="padding"
+      >
         <h3 style="margin-bottom: 20px; white-space: pre-wrap; over-flow:">{{ tempItem && (tempItem.subject + '(' + subjectTypeFormat(tempItem) + ')') }}</h3>
         <h4 style="margin-bottom: 20px; white-space: pre-wrap; over-flow:">{{ tempItem.meaning }}</h4>
         <h4 style="margin-bottom: 40px; ">{{ '题目来源：' + tempItem.source }}</h4>
@@ -260,7 +268,10 @@
         </el-form-item>
         <el-form-item label="选择题型">
           <el-col :span="20">
-            <el-radio-group v-model="practicePassModel.subjectType" size="mini">
+            <el-radio-group
+              v-model="practicePassModel.subjectType"
+              size="mini"
+            >
               <el-radio-button
                 v-for="item of subjectTypes"
                 :key="item.value"
@@ -315,7 +326,10 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item v-show="practicePassModel.subjectType !== 1" label="选项A">
+        <el-form-item
+          v-show="practicePassModel.subjectType !== 1"
+          label="选项A"
+        >
           <el-col :span="20">
             <el-input
               v-model="practicePassModel.aOption"
@@ -323,7 +337,10 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item v-show="practicePassModel.subjectType !== 1" label="选项B">
+        <el-form-item
+          v-show="practicePassModel.subjectType !== 1"
+          label="选项B"
+        >
           <el-col :span="20">
             <el-input
               v-model="practicePassModel.bOption"
@@ -331,7 +348,10 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item v-show="practicePassModel.subjectType !== 1" label="选项C">
+        <el-form-item
+          v-show="practicePassModel.subjectType !== 1"
+          label="选项C"
+        >
           <el-col :span="20">
             <el-input
               v-model="practicePassModel.cOption"
@@ -339,7 +359,10 @@
             />
           </el-col>
         </el-form-item>
-        <el-form-item v-show="practicePassModel.subjectType !== 1" label="选项D">
+        <el-form-item
+          v-show="practicePassModel.subjectType !== 1"
+          label="选项D"
+        >
           <el-col :span="20">
             <el-input
               v-model="practicePassModel.dOption"
@@ -457,6 +480,7 @@ export default {
   },
   watch: {
     textBookId(newVal, oldVal) {
+      if (!newVal) return
       this.courseSelectModel.selectOptions = []
       this.levelSelectModel.selectOptions = []
       this.getData()
@@ -497,6 +521,10 @@ export default {
   },
   mounted() {
     this.getMaterialList(this.$urlPath.queryGrammarTextBookList, _ => {
+      if (!this.materialList || this.materialList.length === 0) {
+        this.loading = false
+        return
+      }
       this.textBookId = this.materialList[0].textbookId
       this.getCourseList(this.textBookId, _ => {
         this.courseSelectModel.selectOptions = this.courseList.map(it => {

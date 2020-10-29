@@ -320,7 +320,7 @@ export default {
           value: '',
           label: '题目内容',
           name: 'questionContent',
-          span: 10,
+          span: 20,
           type: 'input'
         }
       ],

@@ -431,6 +431,7 @@ export default {
   },
   watch: {
     textBookId(newVal, oldVal) {
+      if (!newVal) return
       this.courseSelectModel.selectOptions = []
       this.levelSelectModel.selectOptions = []
       this.getData()
@@ -470,6 +471,10 @@ export default {
   },
   mounted() {
     this.getMaterialList(this.$urlPath.queryGrammarTextBookList, _ => {
+      if (!this.materialList || this.materialList.length === 0) {
+        this.loading = false
+        return
+      }
       this.textBookId = this.materialList[0].textbookId
       this.getCourseList(this.textBookId, _ => {
         this.courseSelectModel.selectOptions = this.courseList.map(it => {

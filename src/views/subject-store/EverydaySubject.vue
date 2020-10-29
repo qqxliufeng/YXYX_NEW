@@ -8,7 +8,7 @@
       style="margin: 3px"
     >
       <el-tab-pane
-        label="词汇题目"
+        label="题目"
         name="first"
         class="tab-container"
         lazy
