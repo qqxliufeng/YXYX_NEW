@@ -72,9 +72,11 @@
               :underline="true"
             >
               <a
+                v-if="scope.row.videoURL"
                 :href="baseImageIp + (!!scope.row.videoURL ? scope.row.videoURL.replace('/opt/nginx/yxvue/dist', '') : '')"
                 target="_blank"
               >{{ scope.row.videoURL | filterPath }}</a>
+              <div v-else>--</div>
             </el-link>
           </template>
         </el-table-column>

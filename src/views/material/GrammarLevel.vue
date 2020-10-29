@@ -17,6 +17,7 @@
           v-model="textBookId"
           class="margin-left"
           size="small"
+          style="width: 40%"
           placeholder="请选择教材"
         >
           <el-option
