@@ -80,6 +80,18 @@
         </el-table-column>
         <el-table-column
           align="center"
+          prop="levelName"
+          label="关卡名称"
+          width="180"
+        />
+        <el-table-column
+          align="center"
+          prop="levelCode"
+          label="关卡编码"
+          width="80"
+        />
+        <el-table-column
+          align="center"
           prop="createTime"
           label="创建时间"
           width="160"
