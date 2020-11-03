@@ -463,11 +463,15 @@ import axios from 'axios'
 const textbookCategorys = [
   {
     label: '中考',
-    value: 0
+    value: 3
   },
   {
     label: '小升初',
-    value: 1
+    value: 4
+  },
+  {
+    label: '同步',
+    value: 5
   }
 ]
 const textbookVersion = [
@@ -514,8 +518,8 @@ export default {
       materialModel: {
         textbookName: '', // 教材名称
         unLockCoins: 0, // 解锁所需优钻
-        textbookType: 1, // 教材类型 0词汇 1语法 2体验 3自然拼读
-        textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
+        textbookType: 1,
+        textbookCategory: 3,
         textbookVersion: '综合版', // 教材版本主键ID
         isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
         isExper: 0, // 是否体验版 0 否 1是
@@ -551,10 +555,12 @@ export default {
   methods: {
     categoryFormatter(item) {
       switch (item.textbookCategory) {
-        case 0:
+        case 3:
           return '中考'
-        case 1:
+        case 4:
           return '小升初'
+        case 5:
+          return '同步'
       }
     },
     initData() {
@@ -577,7 +583,7 @@ export default {
         textbookName: '', // 教材名称
         unLockCoins: 0, // 解锁所需优钻
         textbookType: 1, // 教材类型 0词汇 1语法 2体验 3自然拼读
-        textbookCategory: 0, // 教材类别 0YouCan 1拳心同步 2智能英语
+        textbookCategory: 3, // 教材类别 3 中考 4 小升初 5同步
         textbookVersion: '综合版', // 教材版本
         isOpenUser: 0, // 是否对用户开放 0是 1否 否：可以为学校授权，也可以不授权  如果授权，需要传学校主键ID到后台
         isExper: 0,
@@ -788,8 +794,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
->>> .el-tabs__header{
-  margin: 0 0 5px
+>>> .el-tabs__header {
+  margin: 0 0 5px;
 }
 >>> .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
