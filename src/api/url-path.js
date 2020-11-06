@@ -266,6 +266,8 @@ export const updateStudentIsJumpVideo = baseModuleUrl + 'updateStudentIsJumpVide
 
 export const queryStudentStudyCardList = baseModuleUrl + 'queryStudentStudyCardList'
 
+export const queryStudentStudyTimeYearMonth = baseModuleUrl + 'queryStudentStudyTimeYearMonth'
+
 // ****************会员管理 --- 学生管理 **************** //
 
 // ****************会员管理 --- 体验账号管理 **************** //

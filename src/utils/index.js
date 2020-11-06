@@ -349,3 +349,27 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+
+/**
+ * 获取一个月中的天数
+ */
+export function getCountDays(month) {
+  var curDate = new Date()
+  curDate.setMonth(month)
+  curDate.setDate(0)
+  /* 返回当月的天数 */
+  return curDate.getDate()
+}
+
+export function formatMonthDate(date = new Date(), showYear = true, showDay = false) {
+  const month = date.getMonth() + 1
+  let str = month < 10 ? '0' + month : month
+  if (showYear) {
+    str = date.getFullYear() + '-' + str
+  }
+  if (showDay) {
+    const day = date.getDate()
+    str = str + '-' + (day < 10 ? '0' + day : day)
+  }
+  return str
+}

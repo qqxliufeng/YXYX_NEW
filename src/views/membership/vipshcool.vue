@@ -112,21 +112,20 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="创建时间"
-          prop="createTime"
-          min-width="180"
-          show-overflow-tooltip
+          label="市场顾问"
+          width="220"
         >
           <template slot-scope="scope">
             <div class="text-cut">
-              {{ scope.row.createTime | parseTime }}
+              {{ '姓名：' + scope.row.saleName }}
+              {{ '电话：' + scope.row.salePhone }}
             </div>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           label="到期时间"
-          min-width="180"
+          width="120"
           show-overflow-tooltip
         >
           <template slot-scope="scope">

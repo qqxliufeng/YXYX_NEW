@@ -472,6 +472,18 @@ const textbookCategorys = [
   {
     label: '同步',
     value: 5
+  },
+  {
+    label: '贝世卡',
+    value: 6
+  },
+  {
+    label: '语法逆袭',
+    value: 7
+  },
+  {
+    label: '拳心语法',
+    value: 8
   }
 ]
 const textbookVersion = [

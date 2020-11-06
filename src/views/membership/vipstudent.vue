@@ -47,17 +47,21 @@
         <el-table-column
           align="center"
           label="手机号码"
-          width="160"
+          width="130"
           prop="studentPhone"
         />
         <el-table-column
           align="center"
-          label="性别"
-          show-overflow-tooltip
+          label="学习时长"
+          width="150"
         >
-          <template slot-scope="scope">{{
-            scope.row.sex === 0 ? "男" : "女"
-          }}</template>
+          <template slot-scope="scope">
+            <el-link
+              :underline="true"
+              type="primary"
+              @click="timeAnalyse(scope.row)"
+            >查看分析</el-link>
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -152,7 +156,7 @@
                 <el-dropdown-item :command="{type: 1, item: scope.row}">编辑</el-dropdown-item>
                 <el-dropdown-item :command="{type: 2, item: scope.row}">重置密码</el-dropdown-item>
                 <el-dropdown-item :command="{type: 3, item: scope.row}">查看陪伴号</el-dropdown-item>
-                <el-dropdown-item :command="{type: 4, item: scope.row}">{{ scope.row.isJumpVideo === 0 ? "跳过视频" : "恢复视频" }}</el-dropdown-item>
+                <el-dropdown-item :command="{type: 4, item: scope.row}">{{ scope.row.isJumpVideo === 0 ? "跳过词汇视频" : "恢复词汇视频" }}</el-dropdown-item>
                 <el-dropdown-item
                   v-if="scope.row.isOnLine === 1"
                   :command="{type: 5, item: scope.row}"
@@ -339,7 +343,6 @@
       </div>
     </el-dialog>
     <!-- 查看陪伴号对话框 -->
-
     <!-- 查看线上学生已经分配的学习卡 -->
     <el-drawer
       :visible.sync="openDrawer"
@@ -405,6 +408,14 @@
     </el-drawer>
     <!-- 查看线上学生已经分配的学习卡 -->
     <Qrcode ref="qrcode" />
+    <ChartDialog
+      ref="chartDialog"
+      :title="chartTitle"
+      :chart-data="yAxisData"
+      :x-axis-data="xAxisData"
+      :months="months"
+      @onMonthChange="onMonthChange"
+    />
   </div>
 </template>
 
@@ -413,11 +424,22 @@ import tableMixins from '../../mixins/table-mixins'
 import schoolMixins from '../../mixins/school-mixins'
 import userMixins from '../../mixins/user-mixins'
 import { isvalidPhone } from '../../utils/validate'
+import ChartDialog from './components/ChartDialog'
+import { formatMonthDate, getCountDays, parseTime } from '@/utils'
 export default {
   name: 'VIPStudent',
+  components: { ChartDialog },
   mixins: [tableMixins, schoolMixins, userMixins],
   data() {
     return {
+      lineChartData: {},
+      xAxisData: [],
+      yAxisData: [],
+      months: [],
+      selectedMonth: '',
+      tempItem: null,
+      chartTitle: '学习时长分析表',
+      now: new Date(),
       formModelArray: [
         {
           id: 1,
@@ -576,9 +598,13 @@ export default {
       } else {
         this.isOnLineSchoolTip = ''
       }
+    },
+    selectedMonth(newVal) {
+      this.getTimeAnalyseData()
     }
   },
   mounted() {
+    this.initMonths()
     this.getData()
     this.getSchoolList(_ => {
       if (this.schoolList && this.schoolList.length > 0) {
@@ -593,6 +619,24 @@ export default {
     })
   },
   methods: {
+    initMonths() {
+      // this.now.setMonth(this.now.getMonth() + 1)
+      const date = new Date(this.now.getFullYear(), this.now.getMonth() - 11)
+      while (date - this.now < 0) {
+        this.months.unshift(formatMonthDate(date, true))
+        date.setMonth(date.getMonth() + 1)
+      }
+      console.log(this.months)
+    },
+    initDays(month) {
+      this.lineChartData = []
+      const dayCount = getCountDays(parseInt(this.selectedMonth.split('-')[1]))
+      for (let index = 1; index <= dayCount; index++) {
+        const day = month + '-' + (index < 10 ? '0' + index : index)
+        this.lineChartData[day] = 0
+      }
+      this.xAxisData = Object.keys(this.lineChartData)
+    },
     initData() {
       this.likeSearchUrl = this.$urlPath.queryStudentListLike
     },
@@ -735,7 +779,7 @@ export default {
       if (!this.checkButtonPermission('set_jump_video')) {
         return
       }
-      this.$warningConfirm(`是否要设置此学生${item.isJumpVideo === 0 ? '跳过' : '恢复'}视频功能？`, () => {
+      this.$warningConfirm(`是否要设置此学生${item.isJumpVideo === 0 ? '跳过' : '恢复'}词汇视频功能？`, () => {
         this.$showLoading(closeLoading => {
           this.$http({
             url: this.$urlPath.updateStudentIsJumpVideo,
@@ -868,6 +912,39 @@ export default {
           closeLoading()
         })
       })
+    },
+    onMonthChange(month) {
+      this.selectedMonth = month
+      this.initDays(month)
+    },
+    getTimeAnalyseData() {
+      if (!this.tempItem || !this.selectedMonth) {
+        return
+      }
+      this.$http({
+        url: this.$urlPath.queryStudentStudyTimeYearMonth,
+        methods: this.HTTP_GET,
+        data: {
+          studentId: this.tempItem.studentId,
+          yearMonth: this.selectedMonth
+        }
+      }).then(res => {
+        const list = res.obj
+        list.forEach(it => {
+          it.dayTime = parseTime(it.dayTime, '{y}-{m}-{d}')
+          if (this.lineChartData.hasOwnProperty(it.dayTime)) {
+            this.lineChartData[it.dayTime] = parseInt(it.studyTime / 1000 / 60)
+          }
+        })
+        this.yAxisData = Object.values(this.lineChartData)
+        this.$refs.chartDialog.show()
+      })
+    },
+    timeAnalyse(item) {
+      this.tempItem = item
+      this.initDays(this.selectedMonth)
+      this.chartTitle = item.studentName + '学习时长统计表'
+      this.getTimeAnalyseData()
     }
   }
 }

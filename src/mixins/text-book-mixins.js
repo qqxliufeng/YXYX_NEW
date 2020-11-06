@@ -22,7 +22,7 @@ export default {
         case 0:
           return 'YouCan'
         case 1:
-          return '拳心同步'
+          return '拳心词汇'
         case 2:
           return '智能英语'
       }

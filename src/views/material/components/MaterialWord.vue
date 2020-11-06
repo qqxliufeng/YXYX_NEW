@@ -464,7 +464,7 @@ const textbookCategorys = [
     value: 0
   },
   {
-    label: '拳心同步',
+    label: '拳心词汇',
     value: 1
   },
   {
