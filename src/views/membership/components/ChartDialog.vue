@@ -3,8 +3,8 @@
     <el-dialog
       :title="title"
       :visible.sync="dialogChartVisible"
-      width="60%"
-      top="8vh"
+      width="65%"
+      top="5vh"
     >
       <div class="text-right padding">
         选择月份
@@ -127,13 +127,22 @@ export default {
         })
       }
     },
+    reset() {
+      this.selectMonth = this.months[0]
+      this.$emit('onMonthChange', this.selectMonth)
+    },
     initChart() {
       this.chart = echarts.init(document.getElementById('echart'), 'macarons')
     },
     setOptions(chartData = []) {
       this.chart && this.chart.setOption({
+        title: {
+          text: '学习时长(单位：分钟)',
+          textStyle: {
+            fontSize: 14
+          }
+        },
         xAxis: {
-          name: '日期',
           data: this.xAxisData,
           boundaryGap: false,
           axisTick: {
@@ -158,30 +167,35 @@ export default {
           padding: [5, 10]
         },
         yAxis: {
-          name: '时长(单位:分)',
           axisTick: {
             show: false
           }
         },
         legend: {
-          data: ['expected']
+          data: ['chartData']
         },
-        series: [{
-          name: '', itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
+        series: [
+          {
+            name: '学习时长(单位：分钟)',
+            itemStyle: {
+              normal: {
                 color: '#FF005A',
-                width: 2
+                lineStyle: {
+                  color: '#FF005A',
+                  width: 2
+                }
               }
-            }
-          },
-          smooth: true,
-          type: 'line',
-          data: chartData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        }
+            },
+            smooth: true,
+            type: 'line',
+            data: chartData,
+            areaStyle: {
+              color: '#FF005A',
+              opacity: 0.1
+            },
+            animationDuration: 2800,
+            animationEasing: 'cubicInOut'
+          }
         ]
       })
     }

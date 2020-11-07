@@ -53,7 +53,7 @@
                     v-model="item.value"
                     placeholder="请输入内容"
                     clearable
-                    :style="{ width: 10 * (parseInt(item.span) || 5) + '%' }"
+                    :style="{ width: 10 * (Math.max(parseInt(item.span) || 10, 10)) + '%' }"
                   />
                   <el-cascader
                     v-else-if="item.type === 'address'"
@@ -61,13 +61,13 @@
                     :options="level"
                     :props="{label: 'name', value: 'name'}"
                     clearable
-                    :style="{ width: 10 * (parseInt(item.span) || 5) + '%' }"
+                    :style="{ width: 10 * (Math.max(parseInt(item.span) || 10, 10)) + '%' }"
                   />
                   <el-select
                     v-else-if="item.type === 'select'"
                     v-model="item.value"
                     clearable
-                    :style="{ width: 10 * (parseInt(item.span) || 5) + '%' }"
+                    :style="{ width: 10 * (Math.max(parseInt(item.span) || 10, 10)) + '%' }"
                   >
                     <el-option
                       v-for="it of item.selectOptions"

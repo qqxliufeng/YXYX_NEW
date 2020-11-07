@@ -53,14 +53,14 @@
         <el-table-column
           align="center"
           label="学习时长"
-          width="150"
+          width="100"
         >
           <template slot-scope="scope">
-            <el-link
-              :underline="true"
-              type="primary"
+            <img
+              style="width: 20px; vertical-align: middle"
+              :src="require('@/assets/custom-theme/images/echart.png')"
               @click="timeAnalyse(scope.row)"
-            >查看分析</el-link>
+            >
           </template>
         </el-table-column>
         <el-table-column
@@ -446,7 +446,7 @@ export default {
           value: '',
           label: '学校名称',
           name: 'schoolId',
-          span: 5,
+          span: 10,
           type: 'select',
           selectOptions: []
         },
@@ -455,7 +455,7 @@ export default {
           value: '',
           label: '班级列表',
           name: 'classId',
-          span: 5,
+          span: 10,
           type: 'select',
           selectOptions: []
         },
@@ -464,7 +464,7 @@ export default {
           value: '',
           label: '学生类型',
           name: 'isOnLine',
-          span: 5,
+          span: 10,
           type: 'select',
           selectOptions: [
             {
@@ -482,7 +482,7 @@ export default {
           value: '',
           label: '学生姓名',
           name: 'studentName',
-          span: 5,
+          span: 10,
           type: 'input'
         },
         {
@@ -490,7 +490,7 @@ export default {
           value: '',
           label: '联系方式',
           name: 'studentPhone',
-          span: 5,
+          span: 10,
           type: 'input'
         }
       ],
@@ -620,13 +620,11 @@ export default {
   },
   methods: {
     initMonths() {
-      // this.now.setMonth(this.now.getMonth() + 1)
       const date = new Date(this.now.getFullYear(), this.now.getMonth() - 11)
       while (date - this.now < 0) {
         this.months.unshift(formatMonthDate(date, true))
         date.setMonth(date.getMonth() + 1)
       }
-      console.log(this.months)
     },
     initDays(month) {
       this.lineChartData = []
@@ -916,35 +914,40 @@ export default {
     onMonthChange(month) {
       this.selectedMonth = month
       this.initDays(month)
+      this.getTimeAnalyseData()
     },
     getTimeAnalyseData() {
       if (!this.tempItem || !this.selectedMonth) {
         return
       }
-      this.$http({
-        url: this.$urlPath.queryStudentStudyTimeYearMonth,
-        methods: this.HTTP_GET,
-        data: {
-          studentId: this.tempItem.studentId,
-          yearMonth: this.selectedMonth
-        }
-      }).then(res => {
-        const list = res.obj
-        list.forEach(it => {
-          it.dayTime = parseTime(it.dayTime, '{y}-{m}-{d}')
-          if (this.lineChartData.hasOwnProperty(it.dayTime)) {
-            this.lineChartData[it.dayTime] = parseInt(it.studyTime / 1000 / 60)
+      this.$showLoading(closeLoading => {
+        this.$http({
+          url: this.$urlPath.queryStudentStudyTimeYearMonth,
+          methods: this.HTTP_GET,
+          data: {
+            studentId: this.tempItem.studentId,
+            yearMonth: this.selectedMonth
           }
+        }).then(res => {
+          closeLoading()
+          const list = res.obj
+          list.forEach(it => {
+            it.dayTime = parseTime(it.dayTime, '{y}-{m}-{d}')
+            if (this.lineChartData.hasOwnProperty(it.dayTime)) {
+              this.lineChartData[it.dayTime] = parseInt(it.studyTime / 1000 / 60)
+            }
+          })
+          this.yAxisData = Object.values(this.lineChartData)
+          this.$refs.chartDialog.show()
+        }).catch(_ => {
+          closeLoading()
         })
-        this.yAxisData = Object.values(this.lineChartData)
-        this.$refs.chartDialog.show()
       })
     },
     timeAnalyse(item) {
       this.tempItem = item
-      this.initDays(this.selectedMonth)
       this.chartTitle = item.studentName + '学习时长统计表'
-      this.getTimeAnalyseData()
+      this.$refs.chartDialog.reset()
     }
   }
 }
