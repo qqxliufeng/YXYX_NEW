@@ -56,11 +56,13 @@
           width="100"
         >
           <template slot-scope="scope">
-            <img
-              style="width: 20px; vertical-align: middle"
-              :src="require('@/assets/custom-theme/images/echart.png')"
-              @click="timeAnalyse(scope.row)"
-            >
+            <a>
+              <img
+                style="width: 20px; vertical-align: middle"
+                :src="require('@/assets/custom-theme/images/echart.png')"
+                @click="timeAnalyse(scope.row)"
+              >
+            </a>
           </template>
         </el-table-column>
         <el-table-column
