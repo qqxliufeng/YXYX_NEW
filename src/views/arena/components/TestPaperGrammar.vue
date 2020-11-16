@@ -322,7 +322,11 @@
             width="80"
           >
             <template slot-scope="scope">
-              <el-link type="primary" size="mini" @click="showAnswerList(scope.row)">{{ scope.row.answer }}</el-link>
+              <el-link
+                type="primary"
+                size="mini"
+                @click="showAnswerList(scope.row)"
+              >{{ scope.row.answer }}</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -333,7 +337,10 @@
       title="答案解析"
       :visible.sync="dialogAnswerListVisible"
     >
-      <div v-if="tempItem" class="padding">
+      <div
+        v-if="tempItem"
+        class="padding"
+      >
         <h3 style="margin-bottom: 20px; white-space: pre-wrap; over-flow:">{{ tempItem && (tempItem.subject + '单选') }}</h3>
         <h4 style="margin-bottom: 20px; white-space: pre-wrap; over-flow:">{{ tempItem.meaning }}</h4>
         <h4 style="margin-bottom: 40px; ">{{ '题目来源：' + tempItem.source }}</h4>
@@ -525,7 +532,8 @@ export default {
             data: {
               examId: this.examItem.examId,
               classOrStudent: this.examItem.classOrStudent,
-              examName: this.examItem.examName
+              examName: this.examItem.examName,
+              textbookType: this.examItem.textbookType
             }
           }).then(res => {
             closeLoading()

@@ -25,6 +25,18 @@ export default {
           return '拳心词汇'
         case 2:
           return '智能英语'
+        case 3:
+          return '中考'
+        case 4:
+          return '小升初'
+        case 5:
+          return '同步'
+        case 6:
+          return '贝世卡'
+        case 7:
+          return '语法逆袭'
+        case 8:
+          return '拳心语法'
       }
     },
     videoFormatter(item) {
