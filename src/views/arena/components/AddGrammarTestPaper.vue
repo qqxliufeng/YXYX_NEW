@@ -312,7 +312,7 @@ export default {
     },
     getTextBookList() {
       this.$http({
-        url: this.isOnLineSchool ? this.$urlPath.queryTextBookList : this.$urlPath.querySchoolAndTextBook,
+        url: this.isOnLineSchool ? this.$urlPath.queryGrammarTextBookList : this.$urlPath.querySchoolAndTextBook,
         methods: this.HTTP_GET,
         data: {
           schoolId: this.$store.getters.schoolId,

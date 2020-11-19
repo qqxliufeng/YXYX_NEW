@@ -71,6 +71,7 @@
                 >{{ textbook.textbookVersion }}</el-link>
               </el-col>
               <el-col
+                v-if="materialType === 0"
                 :span="4"
                 style="margin-top: 5px"
               >
@@ -80,7 +81,10 @@
                   :type="textbook.isJumpSpell === 1 ? 'primary' : 'danger'"
                 >{{ textbook.isJumpSpell === 1 ? '已跳过' : '未跳过' }}</el-link>
               </el-col>
-              <el-col :span="3">
+              <el-col
+                v-if="materialType === 0"
+                :span="3"
+              >
                 <el-button
                   size="mini"
                   :type="textbook.isJumpSpell === 1 ? 'primary' : 'danger'"
@@ -88,6 +92,7 @@
                 >{{ textbook.isJumpSpell === 1 ? '恢复拼读' : '跳过拼读' }}</el-button>
               </el-col>
               <el-col
+                v-if="materialType === 0"
                 :span="4"
                 style="margin-top: 5px"
               >
@@ -97,7 +102,10 @@
                   :type="textbook.isJumpWrite === 1 ? 'primary' : 'danger'"
                 >{{ textbook.isJumpWrite === 1 ? '已跳过' : '未跳过' }}</el-link>
               </el-col>
-              <el-col :span="3">
+              <el-col
+                v-if="materialType === 0"
+                :span="3"
+              >
                 <el-button
                   size="mini"
                   :type="textbook.isJumpWrite === 1 ? 'primary' : 'danger'"
