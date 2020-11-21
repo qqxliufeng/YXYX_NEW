@@ -21,7 +21,7 @@
           type="warning"
           :loading="uploadZipLoading"
           @click="submitZip"
-        >提交</el-button>
+        >更改地址</el-button>
         <el-link
           v-else
           size="mini"
@@ -33,9 +33,9 @@
         v-if="currentStep === shouldStep"
         style="text-align: center"
       >
-        <el-row>
-          <el-link type="primary">请更改文件地址</el-link>
-        </el-row>
+        <div style="padding: 50px; font-size: 16px;font-weight: bold">
+          请点击右上角按钮更改文件地址
+        </div>
       </div>
       <div
         v-else-if="currentStep < shouldStep"

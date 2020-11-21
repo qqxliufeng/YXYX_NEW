@@ -9,11 +9,11 @@
         class="flex justify-between"
       >
         <span class="title text-bold">生成资源包</span>
-        <el-link
+        <!-- <el-link
           v-if="currentStep < shouldStep"
           :loading="generateResourceLoading"
           type="danger"
-        >未开始</el-link>
+        >未开始</el-link> -->
         <el-button
           :loading="generateResourceLoading"
           type="primary"

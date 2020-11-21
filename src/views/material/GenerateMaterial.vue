@@ -39,15 +39,21 @@
           :current-step="currentProgressNo"
           @changeImageSuccess="addStep"
         />
-        <GenerateMaterialMTOSS />
-        <generate-material-upload-zip
+        <GenerateMaterialMTOSS
           :should-step="4"
+          :current-step="currentProgressNo"
+        />
+        <generate-material-upload-zip
+          :should-step="5"
           :current-step="currentProgressNo"
           @uploadZipSuccess="addStep"
         />
-        <GenerateMaterialMTECS />
+        <GenerateMaterialMTECS
+          :should-step="6"
+          :current-step="currentProgressNo"
+        />
         <generate-material-resource-package
-          :should-step="5"
+          :should-step="7"
           :current-step="currentProgressNo"
         />
       </div>

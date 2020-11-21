@@ -21,7 +21,7 @@
           type="warning"
           :loading="uploadZipLoading"
           @click="submitZip"
-        >已上传</el-button>
+        >我已上传完成</el-button>
         <el-link
           v-else
           size="mini"
@@ -30,8 +30,8 @@
         >已完成</el-link>
       </div>
       <div style="text-align: center">
-        <div style="padding: 50px">
-          <el-link>请手动将单词音频、例句音频、图片，上传到ECS服务器上</el-link>
+        <div style="padding: 50px; font-size: 16px;font-weight: bold">
+          请手动将单词音频、例句音频、图片，上传到ECS服务器上
         </div>
       </div>
     </el-card>
