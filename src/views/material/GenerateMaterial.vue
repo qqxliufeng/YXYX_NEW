@@ -39,13 +39,13 @@
           :current-step="currentProgressNo"
           @changeImageSuccess="addStep"
         />
-
+        <GenerateMaterialMTOSS />
         <generate-material-upload-zip
           :should-step="4"
           :current-step="currentProgressNo"
           @uploadZipSuccess="addStep"
         />
-
+        <GenerateMaterialMTECS />
         <generate-material-resource-package
           :should-step="5"
           :current-step="currentProgressNo"
@@ -80,8 +80,16 @@
               description="点击按钮更改名称"
             />
             <el-step
-              title="上传文件"
-              description="例句(音频)、图片、MP3(单词音频)"
+              title="上传OSS"
+              description="上传到OSS服务器"
+            />
+            <el-step
+              title="更改地址"
+              description="文件地址"
+            />
+            <el-step
+              title="上传ECS"
+              description="上传到ECS服务器"
             />
             <el-step
               title="生成资源"
@@ -98,7 +106,9 @@
 import GenerateMaterialUploadExcel from './components/GenerateMaterialUploadExcel'
 import GenerateMaterialDownTxt from './components/GenerateMaterialDownTxt'
 import GenerateMaterialChangeImage from './components/GenerateMaterialChangeImage'
+import GenerateMaterialMTOSS from './components/GenerateMaterialMTOSS'
 import GenerateMaterialUploadZip from './components/GenerateMaterialUploadZip'
+import GenerateMaterialMTECS from './components/GenerateMaterialMTECS'
 import GenerateMaterialResourcePackage from './components/GenerateMaterialResourcePackage'
 export default {
   name: 'GenerateMaterial',
@@ -106,7 +116,9 @@ export default {
     GenerateMaterialUploadExcel,
     GenerateMaterialDownTxt,
     GenerateMaterialChangeImage,
+    GenerateMaterialMTOSS,
     GenerateMaterialUploadZip,
+    GenerateMaterialMTECS,
     GenerateMaterialResourcePackage
   },
   data() {

@@ -322,6 +322,12 @@ export const importAudioAndImage = baseModuleUrl + 'importAudioAndImage'
 
 export const wordZipResourceFile = baseModuleUrl + 'wordZipResourceFile'
 
+export const updateWordEgsAndImageAndAudioUrl = baseModuleUrl + 'updateWordEgsAndImageAndAudioUrl'
+
+export const finishOSSFile = baseModuleUrl + 'finishOSSFile'
+
+export const finishECSFile = baseModuleUrl + 'finishECSFile'
+
 export const updateImageName = baseModuleUrl + 'updateImageName'
 
 export const grantTextBookToSchool = baseModuleUrl + 'grantTextBookToSchool'

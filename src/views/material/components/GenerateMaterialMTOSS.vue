@@ -8,7 +8,7 @@
         slot="header"
         class="flex justify-between"
       >
-        <span class="title text-bold">更改单词对应的例句音频、图片、单词音频文件地址</span>
+        <span class="title text-bold">手动上传文件到OSS</span>
         <el-link
           v-if="currentStep < shouldStep"
           size="mini"
@@ -21,7 +21,7 @@
           type="warning"
           :loading="uploadZipLoading"
           @click="submitZip"
-        >提交</el-button>
+        >已上传</el-button>
         <el-link
           v-else
           size="mini"
@@ -29,27 +29,10 @@
           :underline="false"
         >已完成</el-link>
       </div>
-      <div
-        v-if="currentStep === shouldStep"
-        style="text-align: center"
-      >
-        <el-row>
-          <el-link type="primary">请更改文件地址</el-link>
-        </el-row>
-      </div>
-      <div
-        v-else-if="currentStep < shouldStep"
-        class="flex justify-center align-center flex-direction padding"
-      >
-        <i class="el-icon-error error-icon" />
-        <div class="success-tip">等待更改</div>
-      </div>
-      <div
-        v-else
-        class="flex justify-center align-center flex-direction padding"
-      >
-        <i class="el-icon-success success-icon" />
-        <div class="success-tip">更改文件地址成功</div>
+      <div style="text-align: center">
+        <div style="padding: 50px">
+          <el-link>请手动将视频、单词音频、例句音频、图片，上传到OSS服务器上</el-link>
+        </div>
       </div>
     </el-card>
   </div>
@@ -61,7 +44,7 @@ export default {
   props: {
     shouldStep: {
       type: Number,
-      default: 5
+      default: 4
     },
     currentStep: {
       type: Number,
@@ -77,16 +60,17 @@ export default {
     submitZip() {
       this.uploadZipLoading = true
       this.$http({
-        url: this.$urlPath.updateWordEgsAndImageAndAudioUrl,
+        url: this.$urlPath.finishOSSFile,
         data: {
           textBookId: this.$route.params.textbookId
         }
       }).then(res => {
         this.uploadZipLoading = false
-        this.$successMsg('地址更改成功')
+        console.log(res)
+        this.$successMsg('更改成功')
       }).catch(_ => {
         this.uploadZipLoading = false
-        this.$errorMsg('地址更改失败')
+        this.$successMsg('更改失败')
       })
     }
   }

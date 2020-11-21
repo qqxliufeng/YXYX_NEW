@@ -50,7 +50,7 @@ export default {
   props: {
     shouldStep: {
       type: Number,
-      default: 5
+      default: 7
     },
     currentStep: {
       type: Number,

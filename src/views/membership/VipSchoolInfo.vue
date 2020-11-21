@@ -117,13 +117,13 @@
               @click="grantedStudyCard"
             >已分配学习卡</el-button>
           </div>
-          <div class="button-item">
+          <!-- <div class="button-item">
             <el-button
               type="success"
               size="small"
               @click="searchServiceRecord"
             >查看服务记录</el-button>
-          </div>
+          </div> -->
         </div>
       </div>
     </el-card>
