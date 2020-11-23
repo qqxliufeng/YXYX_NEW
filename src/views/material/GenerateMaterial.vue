@@ -42,6 +42,7 @@
         <GenerateMaterialMTOSS
           :should-step="4"
           :current-step="currentProgressNo"
+          @uploadToOSSSuccess="addStep"
         />
         <generate-material-upload-zip
           :should-step="5"
@@ -51,6 +52,7 @@
         <GenerateMaterialMTECS
           :should-step="6"
           :current-step="currentProgressNo"
+          @uploadToECSSuccess="addStep"
         />
         <generate-material-resource-package
           :should-step="7"

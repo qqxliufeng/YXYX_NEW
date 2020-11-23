@@ -68,6 +68,7 @@ export default {
         this.uploadZipLoading = false
         console.log(res)
         this.$successMsg('更改成功')
+        this.$emit('uploadToOSSSuccess')
       }).catch(_ => {
         this.uploadZipLoading = false
         this.$successMsg('更改失败')

@@ -71,9 +71,13 @@ export default {
           textbookId: this.$route.params.textbookId
         }
       }).then(res => {
-        this.generateResourceLoading = false
-        this.$successMsg('生成资源包成功')
-        this.$closeCurrentView()
+        if (res.status === 200) {
+          this.generateResourceLoading = false
+          this.$successMsg('生成资源包成功')
+          this.$closeCurrentView()
+        } else {
+          this.$errorMsg('生成资源包失败')
+        }
       }).catch(_ => {
         this.generateResourceLoading = false
       })

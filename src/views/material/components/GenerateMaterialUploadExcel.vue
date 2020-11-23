@@ -77,11 +77,13 @@ export default {
   },
   methods: {
     beforeUploadExcel(file) {
-      const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      if (!isExcel) {
-        this.$errorMsg('只能上传Excel文件')
-        return false
-      }
+      // console.log(file.type)
+      // const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      // if (!isExcel) {
+      //   this.$errorMsg('只能上传Excel文件')
+      //   return false
+      // }
+      return true
     },
     onUploadExcelSuccess(response, file, fileList) {
       if (response && response.status === 200) {

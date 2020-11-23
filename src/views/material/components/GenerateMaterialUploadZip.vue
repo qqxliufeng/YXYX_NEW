@@ -84,6 +84,7 @@ export default {
       }).then(res => {
         this.uploadZipLoading = false
         this.$successMsg('地址更改成功')
+        this.$emit('uploadZipSuccess')
       }).catch(_ => {
         this.uploadZipLoading = false
         this.$errorMsg('地址更改失败')
